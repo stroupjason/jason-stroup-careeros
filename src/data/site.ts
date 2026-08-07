@@ -223,17 +223,17 @@ export const skills: Skill[] = [
     visible: true,
   },
   {
-    id: "runtime-observability",
-    name: "Runtime observability",
+    id: "linux-system-administration",
+    name: "Linux System Administration",
     category: "Observability & Infrastructure",
     careerOsStatus: "Demonstrated",
     evidenceSummary:
-      "I connect Linux, Docker, logs, Grafana, and Prometheus signals to customer-facing symptoms.",
+      "Hands-on Linux administration and troubleshooting experience spanning patching, network rollback procedures, permissions, configuration editing, and log-based investigation.",
     evidenceSources: [
-      { type: "work", label: "Professional runtime investigation", verified: true },
+      { type: "work", label: "Professional Linux use", verified: true },
     ],
     relatedProjectSlugs: [],
-    relatedRoleSlugs: ["senior-technical-support-engineer", "application-engineer", "software-engineer"],
+    relatedRoleSlugs: ["senior-technical-support-engineer", "application-engineer", "forward-deployed-engineer"],
     visible: true,
   },
   {
@@ -419,10 +419,10 @@ export const capabilities: Array<{
     supports: ["Senior TSE", "CSE", "Application Engineer", "FDE"],
   },
   {
-    name: "Observability and runtime investigation",
+    name: "Linux systems and runtime investigation",
     state: "Demonstrated",
     evidence:
-      "Linux, Docker, Grafana, Prometheus, logs, and structured escalation packages.",
+      "Linux patching, network rollback, permissions, configuration editing, logs, Docker, Grafana, Prometheus, and structured escalation packages.",
     supports: ["Senior TSE", "Application Engineer", "FDE"],
   },
   {
@@ -715,7 +715,7 @@ export const roleLenses: RoleLens[] = [
     demonstratedEvidence: [
       "Enterprise SaaS troubleshooting and escalation ownership",
       "API, authentication, integration, and data-quality investigations",
-      "Linux, Docker, logs, Grafana, and Prometheus",
+      "Linux administration, patching, network rollback, permissions, configuration editing, and log-based investigation",
       "Customer communication in regulated and federal environments",
       "Runbooks, documentation, reproduction, and structured escalation packages",
     ],
@@ -899,7 +899,7 @@ export const roleLenses: RoleLens[] = [
       "I would bring production context into the engineering loop: reproduce a failure, trace the relevant request and data flow, add useful diagnostics or a regression test, make a narrow change, and validate it. The transition depends on building a consistent record of reviewed code and deployment ownership. Small, well-tested contributions are the right first step. That sequence matches how I already investigate technical problems.",
     demonstratedEvidence: [
       "Strong debugging and reproduction discipline",
-      "Python, JavaScript, SQL, APIs, Linux, Docker, and observability",
+      "Python, JavaScript, SQL, APIs, Linux administration, Docker, logs, and observability",
       "Independent hardware/software prototypes",
       "Architecture-first backend development",
       "Cross-functional translation between customer symptoms and engineering work",
@@ -953,7 +953,7 @@ export const roleLenses: RoleLens[] = [
       "React, JavaScript, TypeScript, and an existing MERN/full-stack foundation",
       "CareerOS design, typed implementation, routing, responsive behavior, and deployment",
       "Python/OpenCV Nerf Turret prototype and Rallye Control architecture and implementation work",
-      "APIs, SQL, debugging, Linux, Docker, logs, and observability in customer-facing production context",
+      "APIs, SQL, debugging, Linux administration, patching, permissions, Docker, logs, and observability in customer-facing production context",
     ],
     relevantProjects: [
       "careeros",

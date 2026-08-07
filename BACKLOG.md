@@ -49,12 +49,16 @@
 
 ## EPIC 6 — Personal CareerOS product after portfolio launch
 
-- PRODUCT-201 Learning-event entry
-- PRODUCT-202 Evidence records
+- PRODUCT-201 Fast private learning-event and daily evidence entry
+- PRODUCT-202 Evidence records with skill, role, evidence-type, and maturity tags
 - PRODUCT-203 Current and target roles
 - PRODUCT-204 Private/public visibility states
 - PRODUCT-205 Personal capability timeline
 - PRODUCT-206 Transparent next-action rules
+- PRODUCT-207 Draft STAR stories and public-safe summaries
+- PRODUCT-208 Confidentiality review gate before publication
+- PRODUCT-209 Evidence search by role, skill, challenge, or result
+- PRODUCT-210 Weekly strongest-evidence review prompt
 
 ## Deferred organization product
 

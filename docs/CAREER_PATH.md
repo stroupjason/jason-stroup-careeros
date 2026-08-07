@@ -16,7 +16,8 @@ Demonstrated evidence includes:
 - enterprise SaaS troubleshooting
 - customer issue ownership and escalation coordination
 - APIs, integrations, authentication, logs, and data-flow analysis
-- Linux, Docker, Grafana, and Prometheus
+- hands-on Linux administration across patching, network rollback, permissions,
+  configuration editing, and log-based investigation
 - regulated and federal environment experience
 - documentation, reproduction, and technical communication
 

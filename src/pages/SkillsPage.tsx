@@ -51,7 +51,7 @@ export function SkillsPage() {
           <SectionHeader
             kicker="Evidence-backed skills"
             title="What I use today"
-            copy="Each skill links to its strongest public-safe evidence."
+            copy="Each skill links to public-safe evidence."
           />
           <div className="skillGroups">
             {skillCategories.map((category) => {
@@ -93,7 +93,7 @@ export function SkillsPage() {
           <SectionHeader
             kicker="Learning profiles"
             title="Verified public learning"
-            copy="Verified public profiles appear here."
+            copy="Verified public profiles."
           />
           <div className="learningProfileGrid">
             {visibleProfiles.map((profile) => (
