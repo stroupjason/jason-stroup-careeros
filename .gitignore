@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+.DS_Store
+*.log
+.vercel/
+.vscode/
+.idea/
+.codex/
+private/**
+!private/
+!private/project-intake/
+!private/project-intake/.gitkeep
+public/resume/*.pdf

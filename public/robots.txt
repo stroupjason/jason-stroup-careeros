@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Public beta pages emit noindex metadata and an X-Robots-Tag header until
+# Jason approves recruiter launch. Crawlers must be allowed to read noindex.
+# Remove the noindex controls only with explicit approval.
+
+# Add the absolute Sitemap URL after VITE_SITE_URL is set to the approved
+# production domain. See docs/DEPLOYMENT.md.
