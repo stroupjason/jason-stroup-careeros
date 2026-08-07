@@ -13,6 +13,7 @@ import { RoadmapPage } from "./pages/RoadmapPage";
 import { RoleDetailPage } from "./pages/RoleDetailPage";
 import { RolesPage } from "./pages/RolesPage";
 import { SkillsPage } from "./pages/SkillsPage";
+import { WritingPage } from "./pages/WritingPage";
 
 function normalizePath(pathname: string) {
   if (pathname === "/") return "/";
@@ -143,6 +144,14 @@ function resolveRoute(path: string) {
       description:
         "Jason Stroup's public CareerOS execution roadmap from portfolio launch to backend evidence and forward deployment.",
       element: <RoadmapPage />,
+    };
+  }
+  if (path === "/writing") {
+    return {
+      title: "Technical Writing",
+      description:
+        "Technical writing by Jason Stroup on SaaS integrations, troubleshooting, APIs, application behavior, customer-facing engineering, and software delivery.",
+      element: <WritingPage />,
     };
   }
   if (path === "/journal") {

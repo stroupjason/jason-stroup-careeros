@@ -117,6 +117,37 @@ export type LearningProfile = {
   visible: boolean;
 };
 
+export type PublicationPlatform = "Medium" | "LinkedIn";
+
+export type PublicationProfile = {
+  platform: PublicationPlatform;
+  url: string;
+  description: string;
+};
+
+export type WritingEntry = {
+  id: string;
+  title: string;
+  summary: string;
+  url: string;
+  platform: PublicationPlatform;
+  publicationDate?: string;
+  topics: string[];
+  featured: boolean;
+};
+
+export type WritingTheme = {
+  title: string;
+  status: "Published" | "Future direction";
+  description: string;
+};
+
+export const externalProfileUrls = {
+  github: "https://github.com/stroupjason",
+  linkedin: "https://www.linkedin.com/in/jasonstroup",
+  medium: "https://medium.com/@jasonstroup12",
+};
+
 export const profile = {
   name: "Jason Stroup",
   location: "Fort Collins, Colorado",
@@ -131,9 +162,70 @@ export const profile = {
     "I turn complex customer problems into clear technical solutions.",
   summary:
     "I specialize in SaaS troubleshooting, integrations, observability, analytics, and customer ownership while building deeper backend delivery skills.",
-  github: "https://github.com/stroupjason",
-  linkedin: "https://www.linkedin.com/in/jasonstroup/",
+  github: externalProfileUrls.github,
+  linkedin: externalProfileUrls.linkedin,
 };
+
+export const publicationProfiles: PublicationProfile[] = [
+  {
+    platform: "Medium",
+    url: externalProfileUrls.medium,
+    description: "Published technical writing on SaaS, APIs, debugging, and customer-facing engineering.",
+  },
+  {
+    platform: "LinkedIn",
+    url: externalProfileUrls.linkedin,
+    description: "Professional updates, experience, and article announcements.",
+  },
+];
+
+export const writingEntries: WritingEntry[] = [
+  {
+    id: "why-saas-integrations-break",
+    title:
+      "Why SaaS Integrations Break: Event Names, Identity Mapping, and the Hidden Work of Support Engineering",
+    summary:
+      "A practical look at why successful API responses do not always mean successful customer outcomes, including event naming, payload interpretation, identity mapping, and the role of Support Engineering in closing that gap.",
+    url: "https://medium.com/@jasonstroup12/why-saas-integrations-break-event-names-identity-mapping-and-support-engineering-c2472631674a",
+    platform: "Medium",
+    publicationDate: "2026-05-05",
+    topics: ["SaaS integrations", "APIs", "Identity mapping", "Support engineering"],
+    featured: true,
+  },
+];
+
+export const writingThemes: WritingTheme[] = [
+  {
+    title: "SaaS integrations and failure modes",
+    status: "Published",
+    description: "Delivery, interpretation, event naming, and identity behavior across connected systems.",
+  },
+  {
+    title: "APIs, authentication, and data flows",
+    status: "Future direction",
+    description: "Practical guidance on requests, payloads, identity, authentication, and system boundaries.",
+  },
+  {
+    title: "Technical troubleshooting and root-cause analysis",
+    status: "Published",
+    description: "Layered investigation that moves from symptoms to validated customer outcomes.",
+  },
+  {
+    title: "Customer-facing engineering",
+    status: "Published",
+    description: "Translating technical investigation into clear, useful next steps for customers and teams.",
+  },
+  {
+    title: "Application support and observability",
+    status: "Future direction",
+    description: "Support workflows, application behavior, diagnostic signals, and operational clarity.",
+  },
+  {
+    title: "Software engineering development",
+    status: "Future direction",
+    description: "Lessons from building, testing, and delivering software as the development path grows.",
+  },
+];
 
 export const evidenceStates: Array<{
   state: EvidenceState;

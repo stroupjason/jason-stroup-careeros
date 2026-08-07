@@ -173,6 +173,23 @@ h3 {
   background: #8af0d1;
 }
 
+.navLinks .navCta.active {
+  box-shadow: inset 0 0 0 2px rgba(232, 238, 245, 0.58);
+}
+
+.mobileNavToggle {
+  display: none;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.035);
+  cursor: pointer;
+}
+
 .pageHero {
   padding-top: 112px;
   padding-bottom: 88px;
@@ -1336,59 +1353,195 @@ code {
   text-decoration: none;
 }
 
-.contactSkillsLink {
-  margin-bottom: 34px;
-  border: 1px solid rgba(103, 232, 193, 0.2);
-  border-radius: 12px;
-  padding: 18px 20px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
+.writingGrid {
+  display: grid;
+  max-width: 920px;
+}
+
+.writingCard {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(17, 31, 43, 0.96), rgba(11, 21, 30, 0.95));
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.writingCard:hover,
+.writingCard:focus-within {
+  border-color: rgba(103, 232, 193, 0.42);
+  transform: translateY(-2px);
+}
+
+.writingCard > a {
+  display: block;
+  padding: 30px;
   color: var(--text);
-  background: rgba(103, 232, 193, 0.04);
   text-decoration: none;
 }
 
-.contactSkillsLink svg {
+.writingMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.writingMeta span {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.writingCard h3 {
+  max-width: 790px;
+  margin: 28px 0 14px;
+  font-size: clamp(1.7rem, 3vw, 2.45rem);
+  line-height: 1.12;
+}
+
+.writingCard p {
+  max-width: 760px;
+  margin-bottom: 24px;
+}
+
+.writingAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 28px;
+  color: var(--accent);
+  font-weight: 750;
+}
+
+.writingThemes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+}
+
+.writingThemes article {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.writingThemes article:nth-child(odd) {
+  padding-right: 28px;
+}
+
+.writingThemes article:nth-child(even) {
+  padding-left: 28px;
+  border-left: 1px solid var(--line);
+}
+
+.writingThemes article > div {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.writingThemes h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.writingThemes p {
+  margin: 10px 0 0;
+  font-size: 0.9rem;
+}
+
+.writingThemes article span {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 5px 8px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.writingThemes .published {
+  color: var(--accent);
+  border-color: rgba(103, 232, 193, 0.25);
+  background: rgba(103, 232, 193, 0.07);
+}
+
+.writingThemes .future {
+  color: #9fc2ff;
+  border-color: rgba(121, 168, 255, 0.26);
+  background: rgba(121, 168, 255, 0.07);
+}
+
+.publicationProfiles,
+.contactProfileLinks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.publicationProfiles a,
+.contactProfileLinks a {
+  min-height: 104px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.025);
+  text-decoration: none;
+}
+
+.publicationProfiles a:hover,
+.publicationProfiles a:focus-visible,
+.contactProfileLinks a:hover,
+.contactProfileLinks a:focus-visible {
+  border-color: rgba(103, 232, 193, 0.42);
+  background: rgba(103, 232, 193, 0.045);
+}
+
+.publicationProfiles a > span,
+.contactProfileLinks a > span {
+  display: grid;
+  gap: 6px;
+}
+
+.publicationProfiles small,
+.contactProfileLinks small {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.publicationProfiles svg,
+.contactProfileLinks svg {
   flex: 0 0 auto;
   color: var(--accent);
 }
 
-.contactSkillsLink span {
-  display: grid;
-  gap: 4px;
+.contactProfileLinks a {
+  justify-content: flex-start;
 }
 
-.contactSkillsLink small {
-  color: var(--muted);
+.writingFuture {
+  border-top: 1px solid var(--line);
+  background: rgba(14, 24, 34, 0.38);
 }
 
-.contactGrid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.writingFuture h2 {
+  max-width: 760px;
+  margin: 12px 0 14px;
+  font-size: clamp(1.8rem, 4vw, 3rem);
 }
 
-.contactCard {
-  min-height: 280px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.contactCard > svg {
-  color: var(--accent);
-}
-
-.contactCard h2 {
-  margin: 28px 0 8px;
-}
-
-.contactCard p {
-  flex: 1;
-}
-
-.contactCard > span {
-  color: var(--warn);
-  font-size: 0.85rem;
+.writingFuture p {
+  max-width: 720px;
+  margin: 0;
 }
 
 .footer {
@@ -1466,7 +1619,6 @@ code {
   }
 
   .projectOverviewGrid,
-  .contactGrid,
   .featuredProjectGrid,
   .priorityRoleGrid {
     grid-template-columns: 1fr;
@@ -1497,16 +1649,39 @@ code {
 
   .nav {
     display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    padding-block: 12px;
   }
 
   .navLinks {
-    justify-content: flex-start;
-    gap: 3px;
+    display: none;
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: none;
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding-top: 8px;
+  }
+
+  .navLinks.open {
+    display: grid;
   }
 
   .navLinks > a {
+    width: 100%;
     font-size: 0.8rem;
-    padding: 8px;
+    padding: 10px 12px;
+  }
+
+  .navLinks .navCta {
+    justify-content: center;
+    margin-top: 4px;
+  }
+
+  .mobileNavToggle {
+    display: inline-flex;
+    justify-self: end;
   }
 
   .hero,
@@ -1530,15 +1705,23 @@ code {
   .roleGrid,
   .capabilityGrid,
   .journalGrid,
-    .caseStudyGrid,
-    .mediaGrid,
+  .caseStudyGrid,
+  .mediaGrid,
   .factGrid,
   .twoColumnSection,
   .aboutPageGrid,
-  .contactGrid,
   .archetypeGrid,
-  .footerGrid {
+  .footerGrid,
+  .writingThemes,
+  .publicationProfiles,
+  .contactProfileLinks {
     grid-template-columns: 1fr;
+  }
+
+  .writingThemes article:nth-child(odd),
+  .writingThemes article:nth-child(even) {
+    padding-inline: 0;
+    border-left: 0;
   }
 
   .skillGrid,

@@ -1,8 +1,59 @@
-import { BookOpenCheck, Github, Linkedin } from "lucide-react";
-import { PageHero } from "../components/UI";
-import { profile } from "../data/site";
+import { BookOpenCheck, Github, Linkedin, Newspaper, PenLine, type LucideIcon } from "lucide-react";
+import { PageHero, SectionHeader } from "../components/UI";
+import { profile, publicationProfiles } from "../data/site";
+
+type ContactLink = {
+  label: string;
+  description: string;
+  href: string;
+  external: boolean;
+  icon: LucideIcon;
+};
 
 export function ResumeContactPage() {
+  const mediumProfile = publicationProfiles.find((item) => item.platform === "Medium");
+  const contactLinks: ContactLink[] = [
+    {
+      label: "LinkedIn",
+      description: "Professional history, current updates, and direct messaging.",
+      href: profile.linkedin,
+      external: true,
+      icon: Linkedin,
+    },
+    {
+      label: "GitHub",
+      description: "Repositories, code history, documentation, and public project evidence.",
+      href: profile.github,
+      external: true,
+      icon: Github,
+    },
+    {
+      label: "Skills",
+      description: "Evidence-backed capabilities, project connections, and current learning.",
+      href: "/skills",
+      external: false,
+      icon: BookOpenCheck,
+    },
+    {
+      label: "Writing",
+      description: "Published technical guidance and future writing directions.",
+      href: "/writing",
+      external: false,
+      icon: PenLine,
+    },
+    ...(mediumProfile
+      ? [
+          {
+            label: "Medium",
+            description: mediumProfile.description,
+            href: mediumProfile.url,
+            external: true,
+            icon: Newspaper,
+          },
+        ]
+      : []),
+  ];
+
   return (
     <>
       <PageHero
@@ -10,32 +61,28 @@ export function ResumeContactPage() {
         title="See my work and connect."
         copy="LinkedIn is the best way to reach me. GitHub shows my public repositories and code history."
       />
-      <section className="section shell sectionAfterHero contactGrid">
-        <article className="contactCard">
-          <Linkedin size={26} />
-          <h2>LinkedIn</h2>
-          <p>Professional history, current role, and direct messaging.</p>
-          <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">
-            Open LinkedIn
-          </a>
-        </article>
-        <article className="contactCard">
-          <Github size={26} />
-          <h2>GitHub</h2>
-          <p>Repositories, code history, project documentation, and public proof.</p>
-          <a href={profile.github} target="_blank" rel="noopener noreferrer">
-            Open GitHub
-          </a>
-        </article>
-      </section>
-      <section className="section shell">
-        <a className="contactSkillsLink" href="/skills">
-          <BookOpenCheck size={23} aria-hidden="true" />
-          <span>
-            <strong>Review skills and continuous learning</strong>
-            <small>See current evidence, project connections, and development priorities.</small>
-          </span>
-        </a>
+      <section className="section shell sectionAfterHero">
+        <SectionHeader
+          kicker="Profiles"
+          title="Writing and professional profiles"
+          copy="Verified destinations for Jason's work, technical writing, and professional background."
+        />
+        <div className="contactProfileLinks">
+          {contactLinks.map(({ description, external, href, icon: Icon, label }) => (
+            <a
+              href={href}
+              target={external ? "_blank" : undefined}
+              rel={external ? "noopener noreferrer" : undefined}
+              key={label}
+            >
+              <Icon size={22} aria-hidden="true" />
+              <span>
+                <strong>{label}</strong>
+                <small>{description}</small>
+              </span>
+            </a>
+          ))}
+        </div>
       </section>
     </>
   );

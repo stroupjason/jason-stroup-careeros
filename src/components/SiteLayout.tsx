@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
-import { ArrowUpRight, Github, Linkedin } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { ArrowUpRight, Github, Linkedin, Menu, X } from "lucide-react";
 import { profile } from "../data/site";
 
 type SiteLayoutProps = {
@@ -8,10 +8,13 @@ type SiteLayoutProps = {
 };
 
 const navItems = [
+  { href: "/", label: "Home" },
   { href: "/projects", label: "Projects" },
   { href: "/skills", label: "Skills" },
   { href: "/roles", label: "Role Fit" },
-  { href: "/about", label: "About" },
+  { href: "/writing", label: "Writing" },
+  { href: "/roadmap", label: "Roadmap" },
+  { href: "/resume-contact", label: "Contact", cta: true },
 ];
 
 function isActive(currentPath: string, href: string) {
@@ -20,6 +23,23 @@ function isActive(currentPath: string, href: string) {
 }
 
 export function SiteLayout({ currentPath, children }: SiteLayoutProps) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [currentPath]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setMenuOpen(false);
+    }
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [menuOpen]);
+
   return (
     <div className="siteFrame">
       <a className="skipLink" href="#main-content">
@@ -30,24 +50,33 @@ export function SiteLayout({ currentPath, children }: SiteLayoutProps) {
           <a className="brand" href="/" aria-label="Jason Stroup home">
             JS<span>.</span>
           </a>
-          <div className="navLinks">
+          <button
+            className="mobileNavToggle"
+            type="button"
+            aria-expanded={menuOpen}
+            aria-controls="primary-navigation-links"
+            aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {menuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
+          </button>
+          <div
+            className={`navLinks ${menuOpen ? "open" : ""}`}
+            id="primary-navigation-links"
+          >
             {navItems.map((item) => (
               <a
-                className={isActive(currentPath, item.href) ? "active" : ""}
+                className={`${item.cta ? "navCta" : ""} ${
+                  isActive(currentPath, item.href) ? "active" : ""
+                }`.trim()}
                 href={item.href}
                 key={item.href}
                 aria-current={isActive(currentPath, item.href) ? "page" : undefined}
+                onClick={() => setMenuOpen(false)}
               >
-                {item.label}
+                {item.label} {item.cta ? <ArrowUpRight size={15} aria-hidden="true" /> : null}
               </a>
             ))}
-            <a
-              className={`navCta ${isActive(currentPath, "/resume-contact") ? "active" : ""}`}
-              href="/resume-contact"
-              aria-current={isActive(currentPath, "/resume-contact") ? "page" : undefined}
-            >
-              Contact <ArrowUpRight size={15} />
-            </a>
           </div>
         </nav>
       </header>
@@ -72,7 +101,9 @@ export function SiteLayout({ currentPath, children }: SiteLayoutProps) {
             <a href="/projects">Projects</a>
             <a href="/skills">Skills</a>
             <a href="/roles">Role Fit</a>
+            <a href="/writing">Writing</a>
             <a href="/roadmap">Roadmap</a>
+            <a href="/about">About</a>
             <a href="/resume-contact">
               Contact <ArrowUpRight size={17} />
             </a>
