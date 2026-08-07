@@ -1,0 +1,17 @@
+.env
+.env.*
+.git
+.github
+.vercel
+node_modules
+dist
+private
+docs
+templates
+AGENTS.md
+BACKLOG.md
+CODEX_PROMPTS.md
+CONFIDENTIALITY.md
+README.md
+SPRINT_001.md
+START_HERE.md
