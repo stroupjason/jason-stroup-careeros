@@ -87,6 +87,18 @@ h3 {
   transform: translateY(0);
 }
 
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .shell {
   width: min(calc(100% - 40px), var(--shell));
   margin-inline: auto;
@@ -1044,6 +1056,217 @@ code {
   color: var(--text);
 }
 
+.verificationGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.verificationCard,
+.skillCard,
+.learningProfileCard {
+  border: 1px solid var(--line);
+  background: linear-gradient(145deg, rgba(17, 31, 43, 0.96), rgba(11, 21, 30, 0.95));
+  border-radius: 14px;
+  padding: 24px;
+}
+
+.verificationCard > svg,
+.learningProfileCard > svg {
+  color: var(--accent);
+}
+
+.verificationCard h3 {
+  margin: 22px 0 8px;
+  font-size: 1.1rem;
+}
+
+.verificationCard p {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+}
+
+.skillGroups {
+  display: grid;
+  gap: 58px;
+}
+
+.skillGroup > h3 {
+  margin: 0 0 20px;
+  color: var(--text);
+  font-size: clamp(1.5rem, 2.6vw, 2.2rem);
+}
+
+.skillGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.developingSkillGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.skillCard {
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+}
+
+.skillCard h4 {
+  margin: 26px 0 10px;
+  font-size: 1.45rem;
+}
+
+.skillCard > p {
+  flex: 1;
+}
+
+.skillSources {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.skillSources > div {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 9px;
+}
+
+.skillSources span {
+  width: fit-content;
+  border-radius: 999px;
+  padding: 5px 8px;
+  color: var(--accent-2);
+  background: rgba(121, 168, 255, 0.08);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.skillSources strong,
+.skillSources a {
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.skillSources a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.platformAssessment {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid rgba(103, 232, 193, 0.2);
+  border-radius: 10px;
+  display: grid;
+  gap: 4px;
+}
+
+.platformAssessment span,
+.platformAssessment small,
+.lastVerified {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.skillConnections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 18px;
+}
+
+.skillConnections a {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 9px;
+  color: #bfd0dc;
+  font-size: 0.72rem;
+  text-decoration: none;
+}
+
+.skillConnections a:hover,
+.skillConnections a:focus-visible {
+  color: var(--accent);
+  border-color: rgba(103, 232, 193, 0.4);
+}
+
+.lastVerified {
+  margin-top: 12px;
+}
+
+.learningProfileGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.learningProfileCard {
+  max-width: 580px;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.learningProfileCard .kicker {
+  margin-top: 24px;
+}
+
+.learningProfileCard h3 {
+  margin: 10px 0;
+  font-size: 1.5rem;
+}
+
+.learningProfileCard p {
+  flex: 1;
+}
+
+.learningProfileCard a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--accent);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.contactSkillsLink {
+  margin-bottom: 34px;
+  border: 1px solid rgba(103, 232, 193, 0.2);
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--text);
+  background: rgba(103, 232, 193, 0.04);
+  text-decoration: none;
+}
+
+.contactSkillsLink svg {
+  flex: 0 0 auto;
+  color: var(--accent);
+}
+
+.contactSkillsLink span {
+  display: grid;
+  gap: 4px;
+}
+
+.contactSkillsLink small {
+  color: var(--muted);
+}
+
 .contactGrid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
@@ -1157,6 +1380,11 @@ code {
   .roleSummaryGrid {
     grid-template-columns: 1fr;
   }
+
+  .verificationGrid,
+  .developingSkillGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 720px) {
@@ -1211,6 +1439,13 @@ code {
   .contactGrid,
   .archetypeGrid,
   .footerGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .verificationGrid,
+  .skillGrid,
+  .developingSkillGrid,
+  .learningProfileGrid {
     grid-template-columns: 1fr;
   }
 

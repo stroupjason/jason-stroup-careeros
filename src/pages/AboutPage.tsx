@@ -1,4 +1,4 @@
-import { Github, Linkedin, Workflow } from "lucide-react";
+import { BookOpenCheck, Github, Linkedin, Workflow } from "lucide-react";
 import { PageHero, SectionHeader } from "../components/UI";
 import { profile } from "../data/site";
 
@@ -36,6 +36,9 @@ export function AboutPage() {
           </a>
           <a href="/projects">
             <Workflow size={20} /> Projects
+          </a>
+          <a href="/skills">
+            <BookOpenCheck size={20} /> Skills & learning
           </a>
         </div>
       </section>

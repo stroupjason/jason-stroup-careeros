@@ -1,4 +1,4 @@
-import { PageHero, RoleCard, SectionHeader } from "../components/UI";
+import { LinkButton, PageHero, RoleCard, SectionHeader } from "../components/UI";
 import { roleLenses } from "../data/site";
 
 export function RolesPage() {
@@ -14,6 +14,7 @@ export function RolesPage() {
         eyebrow="Role Fit"
         title="Where my experience fits now—and where it is growing."
         copy="I lead with customer-facing technical depth, then show adjacent and longer-term paths without treating every role as equally mature."
+        actions={<LinkButton href="/skills" secondary>Review skills & learning</LinkButton>}
       />
       <section className="section shell sectionAfterHero">
         <SectionHeader kicker="Strongest alignment" title="Customer-facing technical roles" copy="Senior TSE is the clearest fit; TAM and CSE are strong adjacent paths." />

@@ -12,6 +12,7 @@ import { ResumeContactPage } from "./pages/ResumeContactPage";
 import { RoadmapPage } from "./pages/RoadmapPage";
 import { RoleDetailPage } from "./pages/RoleDetailPage";
 import { RolesPage } from "./pages/RolesPage";
+import { SkillsPage } from "./pages/SkillsPage";
 
 function normalizePath(pathname: string) {
   if (pathname === "/") return "/";
@@ -96,6 +97,14 @@ function resolveRoute(path: string) {
       description:
         "CareerOS, Automatic Nerf Turret, Rallye Control solar trailer telemetry, and backend debugging projects.",
       element: <ProjectsPage />,
+    };
+  }
+  if (path === "/skills") {
+    return {
+      title: "Skills & Learning",
+      description:
+        "Jason Stroup's evidence-backed technical skills, current learning, supporting projects, and public learning profiles.",
+      element: <SkillsPage />,
     };
   }
   if (path.startsWith("/projects/")) {

@@ -6,6 +6,7 @@
 |---|---|
 | `/` | Core identity, featured projects, evidence system, and role-lens overview |
 | `/projects` | All portfolio projects |
+| `/skills` | Evidence-backed skills, current learning, and verified public profiles |
 | `/roles` | Role priorities and recruiter views |
 | `/roadmap` | Public execution sequence |
 | `/journal` | Learning and engineering history |
@@ -34,4 +35,5 @@
 
 The primary navigation should remain compact. Individual role and project pages
 are reached through their index pages rather than adding every destination to
-the header.
+the header. Roadmap remains available from the footer and contextual calls to
+action rather than the primary navigation.

@@ -1,4 +1,4 @@
-import { Github, Linkedin } from "lucide-react";
+import { BookOpenCheck, Github, Linkedin } from "lucide-react";
 import { PageHero, SectionHeader } from "../components/UI";
 import { profile } from "../data/site";
 
@@ -29,6 +29,13 @@ export function ResumeContactPage() {
         </article>
       </section>
       <section className="section shell">
+        <a className="contactSkillsLink" href="/skills">
+          <BookOpenCheck size={23} aria-hidden="true" />
+          <span>
+            <strong>Review skills and continuous learning</strong>
+            <small>See current evidence, project connections, and development priorities.</small>
+          </span>
+        </a>
         <SectionHeader
           kicker="Role Fit"
           title="Choose the view that matches your need"

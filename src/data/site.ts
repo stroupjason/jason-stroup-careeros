@@ -57,6 +57,63 @@ export type RoleLens = {
   keywords: string[];
 };
 
+export type SkillCategory =
+  | "Customer & Technical Delivery"
+  | "APIs & Backend"
+  | "Observability & Infrastructure"
+  | "Data & Analytics"
+  | "Frontend & Product Delivery"
+  | "Currently Developing";
+
+export type EvidenceSourceType =
+  | "work"
+  | "project"
+  | "assessment"
+  | "credential"
+  | "course"
+  | "lab";
+
+export type EvidenceSource = {
+  type: EvidenceSourceType;
+  label: string;
+  provider?: string;
+  url?: string;
+  verified: boolean;
+  date?: string;
+};
+
+export type PlatformAssessment = {
+  provider: string;
+  label: string;
+  level: string;
+  assessedOn?: string;
+  verified: boolean;
+};
+
+export type Skill = {
+  id: string;
+  name: string;
+  category: SkillCategory;
+  careerOsStatus: EvidenceState;
+  evidenceSummary: string;
+  evidenceSources: EvidenceSource[];
+  relatedProjectSlugs: string[];
+  relatedRoleSlugs: string[];
+  platformAssessment?: PlatformAssessment;
+  lastVerified?: string;
+  visible: boolean;
+};
+
+export type LearningProfile = {
+  provider: "Pluralsight" | "Microsoft Learn" | "freeCodeCamp" | "Coursera" | "DataCamp";
+  label: string;
+  url?: string;
+  publicVerified: boolean;
+  description: string;
+  actionLabel: "View public profile" | "View transcript";
+  visible: boolean;
+};
+
 export const profile = {
   name: "Jason Stroup",
   location: "Northern Colorado",
@@ -94,6 +151,247 @@ export const evidenceStates: Array<{
     state: "Planned",
     definition:
       "Intentionally deferred until higher-leverage evidence is complete.",
+  },
+];
+
+export const skillCategories: SkillCategory[] = [
+  "Customer & Technical Delivery",
+  "APIs & Backend",
+  "Observability & Infrastructure",
+  "Data & Analytics",
+  "Frontend & Product Delivery",
+];
+
+export const skills: Skill[] = [
+  {
+    id: "customer-troubleshooting",
+    name: "Complex SaaS troubleshooting",
+    category: "Customer & Technical Delivery",
+    careerOsStatus: "Demonstrated",
+    evidenceSummary:
+      "I reproduce difficult issues, investigate integrations and data flows, coordinate escalations, and keep customers informed.",
+    evidenceSources: [
+      { type: "work", label: "Professional support experience", verified: true },
+    ],
+    relatedProjectSlugs: [],
+    relatedRoleSlugs: ["senior-technical-support-engineer"],
+    visible: true,
+  },
+  {
+    id: "technical-customer-ownership",
+    name: "Technical customer ownership",
+    category: "Customer & Technical Delivery",
+    careerOsStatus: "Demonstrated",
+    evidenceSummary:
+      "Issue ownership, expectation-setting, documentation, and translation between customers and engineering are core parts of my work.",
+    evidenceSources: [
+      { type: "work", label: "Professional customer-facing work", verified: true },
+    ],
+    relatedProjectSlugs: [],
+    relatedRoleSlugs: ["technical-account-manager", "customer-success-engineer"],
+    visible: true,
+  },
+  {
+    id: "api-integration-debugging",
+    name: "REST API and integration debugging",
+    category: "APIs & Backend",
+    careerOsStatus: "Demonstrated",
+    evidenceSummary:
+      "My support investigations use REST, JSON, authentication, logs, Postman, Python, JavaScript, and SQL to isolate failures.",
+    evidenceSources: [
+      { type: "work", label: "Professional integration investigations", verified: true },
+    ],
+    relatedProjectSlugs: [],
+    relatedRoleSlugs: ["senior-technical-support-engineer", "application-engineer"],
+    visible: true,
+  },
+  {
+    id: "python-prototyping",
+    name: "Python prototyping",
+    category: "APIs & Backend",
+    careerOsStatus: "Demonstrated",
+    evidenceSummary:
+      "I used Python to build and test a working Raspberry Pi/OpenCV motion-tracking prototype with hardware control.",
+    evidenceSources: [
+      { type: "project", label: "Automatic Nerf Turret", provider: "CareerOS", verified: true },
+    ],
+    relatedProjectSlugs: ["automatic-nerf-turret"],
+    relatedRoleSlugs: ["application-engineer"],
+    visible: true,
+  },
+  {
+    id: "runtime-observability",
+    name: "Runtime observability",
+    category: "Observability & Infrastructure",
+    careerOsStatus: "Demonstrated",
+    evidenceSummary:
+      "I use Linux, Docker, logs, Grafana, and Prometheus to connect runtime behavior to customer-facing symptoms.",
+    evidenceSources: [
+      { type: "work", label: "Professional runtime investigation", verified: true },
+    ],
+    relatedProjectSlugs: [],
+    relatedRoleSlugs: ["senior-technical-support-engineer", "application-engineer"],
+    visible: true,
+  },
+  {
+    id: "edge-telemetry",
+    name: "Edge telemetry and systems integration",
+    category: "Observability & Infrastructure",
+    careerOsStatus: "Practicing",
+    evidenceSummary:
+      "Rallye Control is active work across Raspberry Pi edge computing, live power visibility, and local connectivity.",
+    evidenceSources: [
+      { type: "project", label: "Rallye Control", provider: "CareerOS", verified: true },
+    ],
+    relatedProjectSlugs: ["rallye-control"],
+    relatedRoleSlugs: ["forward-deployed-engineer"],
+    visible: true,
+  },
+  {
+    id: "sql-data-investigation",
+    name: "SQL and data investigation",
+    category: "Data & Analytics",
+    careerOsStatus: "Demonstrated",
+    evidenceSummary:
+      "I use SQL and product or support data to trace data-quality issues and explain operational behavior.",
+    evidenceSources: [
+      { type: "work", label: "Professional data investigation", verified: true },
+    ],
+    relatedProjectSlugs: [],
+    relatedRoleSlugs: ["data-analytics"],
+    visible: true,
+  },
+  {
+    id: "dashboards-data-storytelling",
+    name: "Dashboards and data storytelling",
+    category: "Data & Analytics",
+    careerOsStatus: "Demonstrated",
+    evidenceSummary:
+      "My analytics experience includes Redshift, Superset, QuickSight, Athena, dashboards, and decision-focused communication.",
+    evidenceSources: [
+      { type: "work", label: "Professional analytics experience", verified: true },
+    ],
+    relatedProjectSlugs: [],
+    relatedRoleSlugs: ["data-analytics", "technical-account-manager"],
+    visible: true,
+  },
+  {
+    id: "react-typescript-delivery",
+    name: "React, TypeScript, and Vite delivery",
+    category: "Frontend & Product Delivery",
+    careerOsStatus: "Demonstrated",
+    evidenceSummary:
+      "I built and deployed the CareerOS beta with typed content, reusable components, responsive layouts, and direct-route support.",
+    evidenceSources: [
+      { type: "project", label: "CareerOS public beta", provider: "CareerOS", verified: true },
+    ],
+    relatedProjectSlugs: ["careeros"],
+    relatedRoleSlugs: ["application-engineer"],
+    visible: true,
+  },
+  {
+    id: "product-domain-modeling",
+    name: "Product and domain modeling",
+    category: "Frontend & Product Delivery",
+    careerOsStatus: "Demonstrated",
+    evidenceSummary:
+      "CareerOS turns projects, role fit, proof states, and confidentiality rules into one maintainable typed product model.",
+    evidenceSources: [
+      { type: "project", label: "CareerOS public beta", provider: "CareerOS", verified: true },
+    ],
+    relatedProjectSlugs: ["careeros"],
+    relatedRoleSlugs: ["application-engineer"],
+    visible: true,
+  },
+];
+
+export const developingSkills: Skill[] = [
+  {
+    id: "backend-testing-reviewed-delivery",
+    name: "Backend testing and reviewed delivery",
+    category: "Currently Developing",
+    careerOsStatus: "Learning",
+    evidenceSummary:
+      "The next proof is a small regression test, logging improvement, or narrow defect fix completed through review.",
+    evidenceSources: [
+      { type: "lab", label: "Backend evidence plan", provider: "CareerOS", verified: true },
+    ],
+    relatedProjectSlugs: ["python-mongodb-debugging-lab"],
+    relatedRoleSlugs: ["application-engineer"],
+    visible: true,
+  },
+  {
+    id: "python-mongodb-tracing",
+    name: "Python and MongoDB data-flow tracing",
+    category: "Currently Developing",
+    careerOsStatus: "Learning",
+    evidenceSummary:
+      "I am strengthening the path from a customer symptom through logs, Python code, stored data, a test, and validation.",
+    evidenceSources: [
+      { type: "lab", label: "Planned Python/MongoDB debugging lab", provider: "CareerOS", verified: true },
+    ],
+    relatedProjectSlugs: ["python-mongodb-debugging-lab"],
+    relatedRoleSlugs: ["application-engineer"],
+    visible: true,
+  },
+  {
+    id: "implementation-deployment",
+    name: "End-to-end implementation and deployment",
+    category: "Currently Developing",
+    careerOsStatus: "Learning",
+    evidenceSummary:
+      "I am building toward repeatable ownership across implementation, testing, deployment, production debugging, and outcomes.",
+    evidenceSources: [
+      { type: "work", label: "Application Engineering to FDE development path", verified: true },
+    ],
+    relatedProjectSlugs: ["rallye-control"],
+    relatedRoleSlugs: ["application-engineer", "forward-deployed-engineer"],
+    visible: true,
+  },
+];
+
+export const learningProfiles: LearningProfile[] = [
+  {
+    provider: "Pluralsight",
+    label: "Pluralsight public profile",
+    url: "https://app.pluralsight.com/profile/stroupjason",
+    publicVerified: true,
+    description:
+      "A public learning profile showing activity and interests; no assessment score or course completion is claimed here.",
+    actionLabel: "View public profile",
+    visible: true,
+  },
+  {
+    provider: "Microsoft Learn",
+    label: "Microsoft Learn transcript",
+    publicVerified: false,
+    description: "Transcript content could not be verified in a public session.",
+    actionLabel: "View transcript",
+    visible: false,
+  },
+  {
+    provider: "freeCodeCamp",
+    label: "freeCodeCamp profile",
+    publicVerified: false,
+    description: "The supplied public profile URL currently returns 404.",
+    actionLabel: "View public profile",
+    visible: false,
+  },
+  {
+    provider: "Coursera",
+    label: "Coursera certificates",
+    publicVerified: false,
+    description: "Waiting for a public certificate share URL.",
+    actionLabel: "View public profile",
+    visible: false,
+  },
+  {
+    provider: "DataCamp",
+    label: "DataCamp accomplishments",
+    publicVerified: false,
+    description: "Waiting for a public profile or statement-of-accomplishment URL.",
+    actionLabel: "View public profile",
+    visible: false,
   },
 ];
 
