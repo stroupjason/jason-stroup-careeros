@@ -43,6 +43,7 @@ export type RoleLens = {
   slug: string;
   title: string;
   group: "Immediate" | "Bridge" | "Long-term" | "Exploratory";
+  eyebrow?: string;
   fit: string;
   priority: string;
   headline: string;
@@ -54,6 +55,8 @@ export type RoleLens = {
   nextProof: string;
   recruiterTakeaway: string;
   notClaimed: string[];
+  scopeNote: string;
+  gapDisplayLimit?: number;
   keywords: string[];
 };
 
@@ -169,7 +172,7 @@ export const skills: Skill[] = [
     category: "Customer & Technical Delivery",
     careerOsStatus: "Demonstrated",
     evidenceSummary:
-      "I reproduce difficult issues, investigate integrations and data flows, coordinate escalations, and keep customers informed.",
+      "I trace complex SaaS, integration, and data issues while keeping customers and technical teams aligned.",
     evidenceSources: [
       { type: "work", label: "Professional support experience", verified: true },
     ],
@@ -183,7 +186,7 @@ export const skills: Skill[] = [
     category: "Customer & Technical Delivery",
     careerOsStatus: "Demonstrated",
     evidenceSummary:
-      "Issue ownership, expectation-setting, documentation, and translation between customers and engineering are core parts of my work.",
+      "I own expectations, documentation, and translation between customers and engineering.",
     evidenceSources: [
       { type: "work", label: "Professional customer-facing work", verified: true },
     ],
@@ -197,12 +200,12 @@ export const skills: Skill[] = [
     category: "APIs & Backend",
     careerOsStatus: "Demonstrated",
     evidenceSummary:
-      "My support investigations use REST, JSON, authentication, logs, Postman, Python, JavaScript, and SQL to isolate failures.",
+      "I use REST, JSON, authentication, logs, Postman, Python, JavaScript, and SQL to isolate failures.",
     evidenceSources: [
       { type: "work", label: "Professional integration investigations", verified: true },
     ],
     relatedProjectSlugs: [],
-    relatedRoleSlugs: ["senior-technical-support-engineer", "application-engineer"],
+    relatedRoleSlugs: ["senior-technical-support-engineer", "application-engineer", "software-engineer"],
     visible: true,
   },
   {
@@ -211,12 +214,12 @@ export const skills: Skill[] = [
     category: "APIs & Backend",
     careerOsStatus: "Demonstrated",
     evidenceSummary:
-      "I used Python to build and test a working Raspberry Pi/OpenCV motion-tracking prototype with hardware control.",
+      "I built a Raspberry Pi/OpenCV motion-tracking prototype with Python and hardware control.",
     evidenceSources: [
       { type: "project", label: "Automatic Nerf Turret", provider: "CareerOS", verified: true },
     ],
     relatedProjectSlugs: ["automatic-nerf-turret"],
-    relatedRoleSlugs: ["application-engineer"],
+    relatedRoleSlugs: ["application-engineer", "software-engineer"],
     visible: true,
   },
   {
@@ -225,12 +228,12 @@ export const skills: Skill[] = [
     category: "Observability & Infrastructure",
     careerOsStatus: "Demonstrated",
     evidenceSummary:
-      "I use Linux, Docker, logs, Grafana, and Prometheus to connect runtime behavior to customer-facing symptoms.",
+      "I connect Linux, Docker, logs, Grafana, and Prometheus signals to customer-facing symptoms.",
     evidenceSources: [
       { type: "work", label: "Professional runtime investigation", verified: true },
     ],
     relatedProjectSlugs: [],
-    relatedRoleSlugs: ["senior-technical-support-engineer", "application-engineer"],
+    relatedRoleSlugs: ["senior-technical-support-engineer", "application-engineer", "software-engineer"],
     visible: true,
   },
   {
@@ -239,12 +242,12 @@ export const skills: Skill[] = [
     category: "Observability & Infrastructure",
     careerOsStatus: "Practicing",
     evidenceSummary:
-      "Rallye Control is active work across Raspberry Pi edge computing, live power visibility, and local connectivity.",
+      "Rallye Control exercises edge computing, power telemetry, and local connectivity.",
     evidenceSources: [
       { type: "project", label: "Rallye Control", provider: "CareerOS", verified: true },
     ],
     relatedProjectSlugs: ["rallye-control"],
-    relatedRoleSlugs: ["forward-deployed-engineer"],
+    relatedRoleSlugs: ["software-engineer", "forward-deployed-engineer"],
     visible: true,
   },
   {
@@ -253,7 +256,7 @@ export const skills: Skill[] = [
     category: "Data & Analytics",
     careerOsStatus: "Demonstrated",
     evidenceSummary:
-      "I use SQL and product or support data to trace data-quality issues and explain operational behavior.",
+      "I use SQL and operational data to trace quality issues and explain system behavior.",
     evidenceSources: [
       { type: "work", label: "Professional data investigation", verified: true },
     ],
@@ -267,7 +270,7 @@ export const skills: Skill[] = [
     category: "Data & Analytics",
     careerOsStatus: "Demonstrated",
     evidenceSummary:
-      "My analytics experience includes Redshift, Superset, QuickSight, Athena, dashboards, and decision-focused communication.",
+      "I turn product and operational data into decision-focused dashboards and explanations.",
     evidenceSources: [
       { type: "work", label: "Professional analytics experience", verified: true },
     ],
@@ -281,12 +284,12 @@ export const skills: Skill[] = [
     category: "Frontend & Product Delivery",
     careerOsStatus: "Demonstrated",
     evidenceSummary:
-      "I built and deployed the CareerOS beta with typed content, reusable components, responsive layouts, and direct-route support.",
+      "I shipped CareerOS with React, TypeScript, Vite, responsive layouts, and direct-route support.",
     evidenceSources: [
       { type: "project", label: "CareerOS public beta", provider: "CareerOS", verified: true },
     ],
     relatedProjectSlugs: ["careeros"],
-    relatedRoleSlugs: ["application-engineer"],
+    relatedRoleSlugs: ["application-engineer", "software-engineer"],
     visible: true,
   },
   {
@@ -295,12 +298,12 @@ export const skills: Skill[] = [
     category: "Frontend & Product Delivery",
     careerOsStatus: "Demonstrated",
     evidenceSummary:
-      "CareerOS turns projects, role fit, proof states, and confidentiality rules into one maintainable typed product model.",
+      "I modeled CareerOS projects, roles, evidence states, and confidentiality rules as typed content.",
     evidenceSources: [
       { type: "project", label: "CareerOS public beta", provider: "CareerOS", verified: true },
     ],
     relatedProjectSlugs: ["careeros"],
-    relatedRoleSlugs: ["application-engineer"],
+    relatedRoleSlugs: ["application-engineer", "software-engineer"],
     visible: true,
   },
 ];
@@ -312,12 +315,12 @@ export const developingSkills: Skill[] = [
     category: "Currently Developing",
     careerOsStatus: "Learning",
     evidenceSummary:
-      "The next proof is a small regression test, logging improvement, or narrow defect fix completed through review.",
+      "Next: deliver a regression test, logging improvement, or narrow fix through review.",
     evidenceSources: [
       { type: "lab", label: "Backend evidence plan", provider: "CareerOS", verified: true },
     ],
     relatedProjectSlugs: ["python-mongodb-debugging-lab"],
-    relatedRoleSlugs: ["application-engineer"],
+    relatedRoleSlugs: ["application-engineer", "software-engineer"],
     visible: true,
   },
   {
@@ -326,12 +329,12 @@ export const developingSkills: Skill[] = [
     category: "Currently Developing",
     careerOsStatus: "Learning",
     evidenceSummary:
-      "I am strengthening the path from a customer symptom through logs, Python code, stored data, a test, and validation.",
+      "Next: trace one symptom through logs, Python, stored data, a test, and validation.",
     evidenceSources: [
       { type: "lab", label: "Planned Python/MongoDB debugging lab", provider: "CareerOS", verified: true },
     ],
     relatedProjectSlugs: ["python-mongodb-debugging-lab"],
-    relatedRoleSlugs: ["application-engineer"],
+    relatedRoleSlugs: ["application-engineer", "software-engineer"],
     visible: true,
   },
   {
@@ -340,12 +343,12 @@ export const developingSkills: Skill[] = [
     category: "Currently Developing",
     careerOsStatus: "Learning",
     evidenceSummary:
-      "I am building toward repeatable ownership across implementation, testing, deployment, production debugging, and outcomes.",
+      "Next: repeat implementation, testing, deployment, production debugging, and outcome ownership.",
     evidenceSources: [
       { type: "work", label: "Application Engineering to FDE development path", verified: true },
     ],
     relatedProjectSlugs: ["rallye-control"],
-    relatedRoleSlugs: ["application-engineer", "forward-deployed-engineer"],
+    relatedRoleSlugs: ["application-engineer", "software-engineer", "forward-deployed-engineer"],
     visible: true,
   },
 ];
@@ -357,7 +360,7 @@ export const learningProfiles: LearningProfile[] = [
     url: "https://app.pluralsight.com/profile/stroupjason",
     publicVerified: true,
     description:
-      "A public learning profile showing activity and interests; no assessment score or course completion is claimed here.",
+      "Public learning activity and interests.",
     actionLabel: "View public profile",
     visible: true,
   },
@@ -731,6 +734,8 @@ export const roleLenses: RoleLens[] = [
       "Unapproved internal performance metrics",
       "Confidential customer or incident details",
     ],
+    scopeNote:
+      "This reflects role alignment, not a formal Senior TSE title; confidential examples and unapproved metrics remain private.",
     keywords: [
       "root cause analysis",
       "production support",
@@ -775,6 +780,8 @@ export const roleLenses: RoleLens[] = [
       "Commercial renewal ownership",
       "Executive QBR ownership without evidence",
     ],
+    scopeNote:
+      "This is a technically aligned path; formal TAM, commercial renewal, and executive QBR ownership remain growth areas.",
     keywords: [
       "technical account management",
       "customer strategy",
@@ -822,6 +829,8 @@ export const roleLenses: RoleLens[] = [
       "Direct renewal quota ownership",
       "Unverified adoption metrics",
     ],
+    scopeNote:
+      "This is an adjacent path; formal CSE, renewal-quota ownership, and verified adoption outcomes remain growth areas.",
     keywords: [
       "customer success engineering",
       "technical onboarding",
@@ -865,6 +874,8 @@ export const roleLenses: RoleLens[] = [
       "Advanced statistical modeling",
       "Unverified business-impact metrics",
     ],
+    scopeNote:
+      "This is a secondary analytics lens; senior analyst scope, advanced statistical modeling, and verified impact metrics remain open.",
     keywords: [
       "SQL",
       "data analysis",
@@ -914,11 +925,67 @@ export const roleLenses: RoleLens[] = [
       "Completed production code ownership",
       "Senior software engineering readiness",
     ],
+    scopeNote:
+      "Current evidence supports the engineering bridge; production backend ownership and senior software engineering readiness remain to be demonstrated.",
     keywords: [
       "application engineering",
       "Python",
       "MongoDB",
       "debugging",
+      "testing",
+      "deployment",
+    ],
+  },
+  {
+    slug: "software-engineer",
+    title: "Software Engineer",
+    group: "Bridge",
+    eyebrow: "Active development path",
+    fit: "Active development path",
+    priority: "Active software engineering path",
+    headline:
+      "Building from customer-facing technical depth into tested, maintainable software delivery.",
+    overview:
+      "I’m currently pursuing a master’s degree in computer science while strengthening my software engineering practice through shipped projects, backend development, testing, and deployment.",
+    contribution:
+      "I bring customer-facing production context, structured debugging, and a MERN/full-stack foundation to software work. My focus is turning that foundation into maintainable backend delivery, automated tests, and repeatable deployment evidence.",
+    demonstratedEvidence: [
+      "React, JavaScript, TypeScript, and an existing MERN/full-stack foundation",
+      "CareerOS design, typed implementation, routing, responsive behavior, and deployment",
+      "Python/OpenCV Nerf Turret prototype and Rallye Control architecture and implementation work",
+      "APIs, SQL, debugging, Linux, Docker, logs, and observability in customer-facing production context",
+    ],
+    relevantProjects: [
+      "careeros",
+      "automatic-nerf-turret",
+      "rallye-control",
+      "python-mongodb-debugging-lab",
+    ],
+    gaps: [
+      "Reviewed backend contributions",
+      "Automated testing depth",
+      "Software design and maintainability evidence",
+      "Repeatable deployment ownership",
+      "Data structures, algorithms, and computer-science depth through the master’s program",
+    ],
+    gapDisplayLimit: 5,
+    nextProof:
+      "Ship and document one tested full-stack application with a backend API, persistent data, automated tests, deployment, and a short engineering decision record.",
+    recruiterTakeaway:
+      "I bring customer-facing technical depth and shipped project evidence to an active software engineering path.",
+    notClaimed: [
+      "Senior production engineering experience",
+      "Sustained production feature delivery",
+      "Extensive code-review or deployment ownership",
+    ],
+    scopeNote:
+      "My current evidence supports an active software engineering path, not a claim of senior production engineering experience.",
+    keywords: [
+      "software engineering",
+      "MERN",
+      "React",
+      "TypeScript",
+      "backend development",
       "testing",
       "deployment",
     ],
@@ -932,7 +999,7 @@ export const roleLenses: RoleLens[] = [
     headline:
       "Own the path from customer ambiguity through implementation, deployment, production debugging, and measurable outcomes.",
     overview:
-      "FDE is where my customer-facing, troubleshooting, integration, data, and builder strengths can converge. This is a roadmap, not a current-readiness claim.",
+      "FDE is where my customer-facing, troubleshooting, integration, data, and builder strengths can converge; implementation and deployment depth are the work ahead.",
     contribution:
       "My long-term value would be owning the translation from an ambiguous customer problem into a deployed technical result. I already bring discovery, troubleshooting, integration, and communication strengths. The work ahead is to make implementation, testing, deployment, and maintainability equally repeatable through finished independent builds and reviewed contributions. Measured customer outcomes would complete that delivery story. This is the path I am actively building toward.",
     demonstratedEvidence: [
@@ -964,6 +1031,8 @@ export const roleLenses: RoleLens[] = [
       "Production-scale software ownership",
       "Advanced distributed-systems expertise",
     ],
+    scopeNote:
+      "This is the long-term direction; production-scale software ownership and advanced distributed-systems depth remain to be demonstrated.",
     keywords: [
       "forward deployed engineering",
       "customer implementation",
@@ -982,7 +1051,7 @@ export const roleLenses: RoleLens[] = [
     headline:
       "Build from Python, SQL, applied computer vision, and operational data toward rigorous modeling and evaluation.",
     overview:
-      "I have credible foundations and one applied computer-vision build, but I do not present myself as a job-ready data scientist today.",
+      "I bring Python, SQL, operational analytics, and an applied computer-vision build; rigorous modeling evidence is still developing.",
     contribution:
       "The credible starting point is applied problem framing, Python, SQL, operational analytics, and a working computer-vision prototype. A serious move toward this field would require reproducible datasets, sound experiment design, baseline comparisons, model evaluation, and error analysis. Until that proof exists, this remains exploration rather than a recruiting focus.",
     demonstratedEvidence: [
@@ -1008,6 +1077,8 @@ export const roleLenses: RoleLens[] = [
       "Production machine-learning deployment",
       "Advanced statistical or ML expertise",
     ],
+    scopeNote:
+      "This remains exploratory; a Data Scientist title, production ML deployment, and advanced statistical depth are not part of the current evidence.",
     keywords: [
       "Python",
       "OpenCV",

@@ -1,7 +1,8 @@
-import { ArrowUpRight, BookOpenCheck, ExternalLink, Route, ShieldCheck } from "lucide-react";
+import { BookOpenCheck, ExternalLink } from "lucide-react";
 import { LinkButton, PageHero, SectionHeader, StateBadge } from "../components/UI";
 import {
   developingSkills,
+  evidenceStates,
   learningProfiles,
   projects,
   roleLenses,
@@ -12,12 +13,12 @@ import {
 } from "../data/site";
 
 const sourceTypeLabels: Record<EvidenceSource["type"], string> = {
-  work: "Work evidence",
-  project: "Project evidence",
+  work: "Work",
+  project: "Project",
   assessment: "Assessment",
   credential: "Credential",
   course: "Course",
-  lab: "Lab plan",
+  lab: "Lab",
 };
 
 export function SkillsPage() {
@@ -30,37 +31,19 @@ export function SkillsPage() {
       <PageHero
         eyebrow="Skills & learning"
         title="Skills backed by work, projects, and continuous learning."
-        copy="A practical view of what I use today, what I’m strengthening, and the evidence behind each claim."
+        copy="What I use today, what I’m strengthening, and the evidence behind each skill."
       />
 
-      <section className="section shell sectionAfterHero">
-        <SectionHeader
-          kicker="How to read this page"
-          title="Status and verification are different signals."
-          copy="CareerOS describes the evidence I can support. Platform assessments and completed credentials appear only when their exact public result is verified."
-        />
-        <div className="verificationGrid">
-          <article className="verificationCard">
-            <ShieldCheck size={23} aria-hidden="true" />
-            <h3>CareerOS status</h3>
-            <p>Demonstrated, Practicing, Learning, or Planned—never an invented percentage.</p>
-          </article>
-          <article className="verificationCard">
-            <Route size={23} aria-hidden="true" />
-            <h3>Platform assessment</h3>
-            <p>An exact provider-issued level, such as Pluralsight Skill IQ, only after verification.</p>
-          </article>
-          <article className="verificationCard">
-            <BookOpenCheck size={23} aria-hidden="true" />
-            <h3>Course or credential</h3>
-            <p>A completion record can support learning; it does not independently prove professional ability.</p>
-          </article>
-          <article className="verificationCard">
-            <ArrowUpRight size={23} aria-hidden="true" />
-            <h3>Current activity</h3>
-            <p>Active study or practice stays distinct from demonstrated work and finished project proof.</p>
-          </article>
-        </div>
+      <section className="section shell sectionAfterHero compactSkillsIntro">
+        <aside className="skillsLegend" aria-label="CareerOS skill status legend">
+          <p>
+            CareerOS status reflects the evidence available today. Provider assessments and
+            credentials appear only when their exact public results can be verified.
+          </p>
+          <div>
+            {evidenceStates.map((item) => <StateBadge state={item.state} key={item.state} />)}
+          </div>
+        </aside>
       </section>
 
       <section className="section band">
@@ -68,7 +51,7 @@ export function SkillsPage() {
           <SectionHeader
             kicker="Evidence-backed skills"
             title="What I use today"
-            copy="Each card points to the strongest approved work, project, or role evidence available in CareerOS."
+            copy="Each skill links to its strongest public-safe evidence."
           />
           <div className="skillGroups">
             {skillCategories.map((category) => {
@@ -92,7 +75,7 @@ export function SkillsPage() {
         <SectionHeader
           kicker="Currently developing"
           title="The next engineering proof"
-          copy="These priorities strengthen the Application Engineer bridge and the longer-term Forward Deployed Engineer path."
+          copy="Current priorities for the Application and Software Engineer paths."
         />
         <div className="skillGrid developingSkillGrid">
           {developingSkills.filter((skill) => skill.visible).map((skill) => (
@@ -109,8 +92,8 @@ export function SkillsPage() {
         <div className="shell">
           <SectionHeader
             kicker="Learning profiles"
-            title="Public verification, without imported scores"
-            copy="These links were checked in a public session. CareerOS does not copy private dashboards or infer completions from platform activity."
+            title="Verified public learning"
+            copy="Verified public profiles appear here."
           />
           <div className="learningProfileGrid">
             {visibleProfiles.map((profile) => (
@@ -143,8 +126,7 @@ function SkillCard({ skill }: { skill: Skill }) {
 
   return (
     <article className="skillCard">
-      <div className="cardTop">
-        <span>{skill.category}</span>
+      <div className="skillCardState">
         <StateBadge state={skill.careerOsStatus} />
       </div>
       <h4>{skill.name}</h4>
@@ -175,10 +157,10 @@ function SkillCard({ skill }: { skill: Skill }) {
       ) : null}
       <div className="skillConnections" aria-label="Related CareerOS evidence">
         {relatedProjects.map((project) => (
-          <a href={`/projects/${project.slug}`} key={project.slug}>Project: {project.shortTitle}</a>
+          <a aria-label={`Project: ${project.shortTitle}`} href={`/projects/${project.slug}`} key={project.slug}>{project.shortTitle}</a>
         ))}
         {relatedRoles.slice(0, 2).map((role) => (
-          <a href={`/roles/${role.slug}`} key={role.slug}>Role: {role.title}</a>
+          <a aria-label={`Role fit: ${role.title}`} href={`/roles/${role.slug}`} key={role.slug}>{role.title}</a>
         ))}
       </div>
       {skill.lastVerified ? <small className="lastVerified">Last verified {skill.lastVerified}</small> : null}

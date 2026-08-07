@@ -6,7 +6,8 @@ export function RolesPage() {
     ["senior-technical-support-engineer", "technical-account-manager", "customer-success-engineer"].includes(role.slug),
   );
   const analytics = roleLenses.find((role) => role.slug === "data-analytics")!;
-  const directions = roleLenses.filter((role) => ["application-engineer", "forward-deployed-engineer", "data-science"].includes(role.slug));
+  const directionOrder = ["application-engineer", "software-engineer", "forward-deployed-engineer", "data-science"];
+  const directions = directionOrder.map((slug) => roleLenses.find((role) => role.slug === slug)!);
 
   return (
     <>
@@ -25,7 +26,7 @@ export function RolesPage() {
         <div className="singleRole"><RoleCard role={analytics} /></div>
       </div></section>
       <section className="section shell">
-        <SectionHeader kicker="Where I’m heading" title="Engineering delivery, then forward deployment" copy="These paths are roadmaps, not current-role claims." />
+        <SectionHeader kicker="Where I’m heading" title="Engineering paths and long-term direction" copy="Application Engineering is the primary bridge; Software Engineering is an active development path." />
         <div className="directionList">{directions.map((role) => <a href={`/roles/${role.slug}`} key={role.slug}><span>{role.title}</span><small>{role.priority}</small></a>)}</div>
       </section>
     </>

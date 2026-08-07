@@ -29,22 +29,31 @@ A role lens:
 
 ## Role priority
 
-### Immediate
+### Strong current alignment
 
 - Senior Technical Support Engineer
+
+### Strong adjacent alignment
+
 - Technical Account Manager
 - Customer Success Engineer
+
+### Transferable secondary alignment
+
 - Data Analytics
 
-These roles can use substantial evidence already present today, though formal
-title-specific gaps remain.
+These roles use substantial evidence already present today, with maturity made
+clear on each role page.
 
-### Bridge
+### Active engineering paths
 
-- Application Engineer
+- Application Engineer — primary engineering bridge
+- Software Engineer — active development path
 
-This is the active engineering development path. The decisive evidence will be
-reviewed code, tests, deployment, and maintainable fixes.
+These paths build from current technical depth toward reviewed code, tests,
+deployment, and maintainable delivery. Software Engineering also reflects
+Jason's confirmed pursuit of a master's degree in computer science; no school,
+dates, coursework, specialization, or academic outcomes are yet public facts.
 
 ### Long-term
 

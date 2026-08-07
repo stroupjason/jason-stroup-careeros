@@ -27,9 +27,10 @@ authorize scope expansion.
   specializing in troubleshooting, integrations, analytics, solution delivery,
   and business value.
 - Treat role pages as lenses over the same evidence, never as credentials.
-- Keep Senior TSE, TAM, CSE, and Data Analytics as immediate lenses;
-  Application Engineer as the active bridge; FDE as long-term; and Data Science
-  as exploratory.
+- Keep Senior TSE as the strongest current alignment; TAM and CSE as strong
+  adjacent lenses; and Data Analytics as a transferable secondary lens.
+  Application Engineer is the primary engineering bridge, Software Engineer is
+  an active development path, FDE is long-term, and Data Science is exploratory.
 - Use only Demonstrated, Practicing, Learning, and Planned evidence states as
   defined in `docs/EVIDENCE_MODEL.md`.
 - Never invent dates, metrics, titles, links, project facts, completion states,

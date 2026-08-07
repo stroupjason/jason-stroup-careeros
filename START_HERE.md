@@ -11,8 +11,8 @@ This is **not** the organization/LMS/retention product yet.
 ## The positioning decision
 
 The site can include Data Analytics, Data Science, TAM, CSE, Application
-Engineering, and FDE pages without becoming unfocused **only because they are
-role lenses rather than separate identities**.
+Engineering, Software Engineering, and FDE pages without becoming unfocused
+**only because they are role lenses rather than separate identities**.
 
 The homepage must always lead with the same core identity:
 
@@ -85,7 +85,7 @@ npm run dev
 - manager dashboards
 - organization workspaces
 - numeric role-readiness percentages
-- more role pages
+- more role pages beyond the explicitly approved Software Engineer lens
 - unsupported project metrics
 
 ## Definition of a useful first release

@@ -1,17 +1,20 @@
 import type { ReactNode } from "react";
-import { BarChart3, Braces, Headphones, Users } from "lucide-react";
-import { profile, projects, roleLenses } from "../data/site";
+import { ArrowUpRight, BarChart3, Braces, Headphones, Users } from "lucide-react";
+import { projects, roleLenses } from "../data/site";
 import { LinkButton, ProjectCard, SectionHeader } from "../components/UI";
 
 const featuredProjects = projects.filter((project) =>
   ["careeros", "automatic-nerf-turret", "rallye-control"].includes(project.slug),
 );
 
-const featuredRoles = roleLenses.filter((role) =>
-  ["senior-technical-support-engineer", "technical-account-manager", "customer-success-engineer"].includes(
-    role.slug,
-  ),
-);
+const roleSelector = [
+  { slug: "senior-technical-support-engineer", label: "Senior TSE", context: "Strong current fit", strong: true },
+  { slug: "technical-account-manager", label: "TAM", context: "Strong adjacent fit", strong: true },
+  { slug: "customer-success-engineer", label: "CSE", context: "Strong adjacent fit", strong: true },
+  { slug: "data-analytics", label: "Data Analytics", context: "Transferable secondary", strong: false },
+  { slug: "application-engineer", label: "Application Engineer", context: "Engineering bridge", strong: false },
+  { slug: "software-engineer", label: "Software Engineer", context: "Active development path", strong: false },
+];
 
 export function HomePage() {
   return (
@@ -33,6 +36,30 @@ export function HomePage() {
         </div>
       </section>
 
+      <section className="section shell homeRoleSelector">
+        <SectionHeader
+          kicker="Role-specific view"
+          title="Choose the view that matches your need."
+          copy="Choose a role to see the experience, projects, and skills most relevant to your search."
+        />
+        <div className="homeRoleSelectorGrid">
+          {roleSelector.map((item) => {
+            const role = roleLenses.find((candidate) => candidate.slug === item.slug)!;
+            return (
+              <a
+                className={`homeRoleSelectorCard${item.strong ? " strongFit" : ""}`}
+                href={`/roles/${role.slug}`}
+                key={role.slug}
+              >
+                <span>{item.label}</span>
+                <small>{item.context}</small>
+                <ArrowUpRight size={17} aria-hidden="true" />
+              </a>
+            );
+          })}
+        </div>
+      </section>
+
       <section className="section band">
         <div className="shell">
           <SectionHeader kicker="What I do" title="Customer context, technical depth, clear action." />
@@ -40,7 +67,7 @@ export function HomePage() {
             <Focus icon={<Headphones />} title="Troubleshoot" copy="Trace complex SaaS, API, integration, and data issues." />
             <Focus icon={<Users />} title="Own the customer path" copy="Set expectations and coordinate across technical teams." />
             <Focus icon={<BarChart3 />} title="Explain the signal" copy="Use logs, dashboards, SQL, and operational context." />
-            <Focus icon={<Braces />} title="Build forward" copy="Turn investigations into tested backend delivery." />
+            <Focus icon={<Braces />} title="Build forward" copy="Turn investigations into maintainable software." />
           </div>
         </div>
       </section>
@@ -55,26 +82,6 @@ export function HomePage() {
           {featuredProjects.map((project) => (
             <ProjectCard key={project.slug} project={project} />
           ))}
-        </div>
-      </section>
-
-      <section className="section band">
-        <div className="shell">
-          <SectionHeader
-            kicker="Role alignment"
-            title="Strong now. Deliberate about what comes next."
-            copy="Senior Technical Support Engineer is my strongest fit. TAM and CSE are close adjacent paths; analytics is a secondary strength."
-          />
-          <div className="compactRoleLinks">
-            {featuredRoles.map((role) => <a href={`/roles/${role.slug}`} key={role.slug}>{role.title}</a>)}
-          </div>
-          <div className="inlineCallout">
-            <Braces size={22} />
-            <div>
-              <strong>Growth direction</strong>
-              <p>Application Engineering is my active bridge toward a long-term Forward Deployed Engineer path. Data Science remains exploratory.</p>
-            </div>
-          </div>
         </div>
       </section>
 

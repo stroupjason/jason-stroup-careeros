@@ -49,7 +49,7 @@ Definition of done:
 
 Definition of done:
 
-- Senior TSE, TAM, CSE, Data Analytics, Application Engineer, FDE, and Data Science render
+- Senior TSE, TAM, CSE, Data Analytics, Application Engineer, Software Engineer, FDE, and Data Science render
 - each page includes current evidence, project links, gaps, next proof, and truth boundary
 - role priority is visible
 - no page implies Jason currently holds that title unless true

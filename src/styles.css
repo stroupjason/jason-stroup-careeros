@@ -173,7 +173,6 @@ h3 {
   background: #8af0d1;
 }
 
-.hero,
 .pageHero {
   padding-top: 112px;
   padding-bottom: 88px;
@@ -181,6 +180,8 @@ h3 {
 
 .hero {
   max-width: var(--shell);
+  padding-top: 88px;
+  padding-bottom: 70px;
 }
 
 .eyebrow,
@@ -672,6 +673,58 @@ h3 {
   margin-bottom: 0;
 }
 
+.homeRoleSelector {
+  padding-top: 76px;
+  padding-bottom: 76px;
+}
+
+.homeRoleSelectorGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.homeRoleSelectorCard {
+  min-height: 108px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 7px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 20px;
+  color: var(--text);
+  background: linear-gradient(145deg, rgba(17, 31, 43, 0.9), rgba(11, 21, 30, 0.86));
+  text-decoration: none;
+}
+
+.homeRoleSelectorCard span {
+  font-size: 1.05rem;
+  font-weight: 780;
+}
+
+.homeRoleSelectorCard small {
+  color: var(--muted);
+}
+
+.homeRoleSelectorCard svg {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  color: var(--accent);
+}
+
+.homeRoleSelectorCard:hover,
+.homeRoleSelectorCard:focus-visible {
+  border-color: rgba(103, 232, 193, 0.48);
+  background: rgba(103, 232, 193, 0.07);
+}
+
+.homeRoleSelectorCard.strongFit {
+  border-color: rgba(103, 232, 193, 0.25);
+  background: linear-gradient(145deg, rgba(103, 232, 193, 0.085), rgba(11, 21, 30, 0.9));
+}
+
 .compactRoleLinks,
 .directionList,
 .compactProjectLinks {
@@ -705,7 +758,7 @@ h3 {
 }
 
 .directionList {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .directionList a {
@@ -1056,13 +1109,11 @@ code {
   color: var(--text);
 }
 
-.verificationGrid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+.compactSkillsIntro {
+  padding-top: 46px;
+  padding-bottom: 46px;
 }
 
-.verificationCard,
 .skillCard,
 .learningProfileCard {
   border: 1px solid var(--line);
@@ -1071,19 +1122,31 @@ code {
   padding: 24px;
 }
 
-.verificationCard > svg,
 .learningProfileCard > svg {
   color: var(--accent);
 }
 
-.verificationCard h3 {
-  margin: 22px 0 8px;
-  font-size: 1.1rem;
+.skillsLegend {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 20px 22px;
+  background: rgba(255, 255, 255, 0.025);
 }
 
-.verificationCard p {
-  margin-bottom: 0;
-  font-size: 0.9rem;
+.skillsLegend p {
+  max-width: 760px;
+  margin: 0;
+}
+
+.skillsLegend > div {
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+  flex-wrap: wrap;
 }
 
 .skillGroups {
@@ -1108,13 +1171,18 @@ code {
 }
 
 .skillCard {
-  min-height: 360px;
+  min-height: 330px;
   display: flex;
   flex-direction: column;
 }
 
+.skillCardState {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .skillCard h4 {
-  margin: 26px 0 10px;
+  margin: 16px 0 10px;
   font-size: 1.45rem;
 }
 
@@ -1212,7 +1280,7 @@ code {
 
 .learningProfileCard {
   max-width: 580px;
-  min-height: 300px;
+  min-height: 260px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -1372,16 +1440,19 @@ code {
   .projectOverviewGrid,
   .contactGrid,
   .featuredProjectGrid,
-  .priorityRoleGrid,
-  .directionList {
+  .priorityRoleGrid {
     grid-template-columns: 1fr;
+  }
+
+  .homeRoleSelectorGrid,
+  .directionList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .roleSummaryGrid {
     grid-template-columns: 1fr;
   }
 
-  .verificationGrid,
   .developingSkillGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1442,16 +1513,25 @@ code {
     grid-template-columns: 1fr;
   }
 
-  .verificationGrid,
   .skillGrid,
   .developingSkillGrid,
   .learningProfileGrid {
     grid-template-columns: 1fr;
   }
 
+  .skillsLegend {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .skillsLegend > div {
+    justify-content: flex-start;
+  }
+
   .compactRoleLinks,
   .compactProjectLinks,
   .evidenceLegend > div,
+  .directionList,
   .plannedProject,
   .projectConnections,
   .nextProofLine {
@@ -1487,6 +1567,12 @@ code {
 
   .footerLinks {
     display: grid;
+  }
+}
+
+@media (max-width: 420px) {
+  .homeRoleSelectorGrid {
+    grid-template-columns: 1fr;
   }
 }
 

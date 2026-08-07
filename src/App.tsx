@@ -122,7 +122,7 @@ function resolveRoute(path: string) {
     return {
       title: "Role Fit",
       description:
-        "Recruiter role fit for Senior TSE, TAM, CSE, Data Analytics, Application Engineering, FDE, and exploratory Data Science.",
+        "Recruiter role fit for Senior TSE, TAM, CSE, Data Analytics, Application Engineering, Software Engineering, FDE, and exploratory Data Science.",
       element: <RolesPage />,
     };
   }

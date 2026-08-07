@@ -20,17 +20,20 @@ Demonstrated evidence includes:
 - regulated and federal environment experience
 - documentation, reproduction, and technical communication
 
-## Immediate role lenses
+## Strong current and adjacent role lenses
 
 - Senior Technical Support Engineer
 - Technical Account Manager
 - Customer Success Engineer
+
+## Transferable secondary lens
+
 - Data Analytics
 
 These roles emphasize different parts of current evidence. They are not all
 claimed as current titles.
 
-## Active bridge
+## Active engineering paths
 
 ### Application Engineer
 
@@ -42,6 +45,23 @@ Required next evidence:
 - narrow maintainable fixes
 - deployment and validation
 - software design and lifecycle ownership
+
+### Software Engineer
+
+Current positioning:
+
+- active development path, not strongest current alignment
+- React, JavaScript, TypeScript, and an existing MERN/full-stack foundation
+- shipped project, API, database, testing, and deployment evidence in development
+- currently pursuing a master's degree in computer science
+
+Required next evidence:
+
+- reviewed backend contributions
+- automated testing depth
+- maintainable software-design evidence
+- repeatable deployment ownership
+- data structures, algorithms, and computer-science depth through the master's program
 
 ## Long-term convergence
 
@@ -77,5 +97,5 @@ Required before job-ready positioning:
 
 ## Rule
 
-Do not add another role lens until at least one existing lens gains a strong new
-proof artifact.
+Software Engineer is the explicitly approved Sprint 001 addition. Do not add
+another role lens until an existing lens gains a strong new proof artifact.

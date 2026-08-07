@@ -10,7 +10,7 @@ export function RoleDetailPage({ role }: { role: RoleLens }) {
   return (
     <>
       <PageHero
-        eyebrow={`${role.group} fit · ${role.fit}`}
+        eyebrow={role.eyebrow ?? `${role.group} fit · ${role.fit}`}
         title={role.title}
         copy={role.headline}
         actions={
@@ -71,9 +71,9 @@ export function RoleDetailPage({ role }: { role: RoleLens }) {
       <section className="section band">
         <div className="shell stillBuilding">
           <SectionHeader kicker="Still building" title="The proof that would strengthen this fit" />
-          <ul className="cleanList">{role.gaps.slice(0, 3).map((gap) => <li key={gap}>{gap}</li>)}</ul>
+          <ul className="cleanList">{role.gaps.slice(0, role.gapDisplayLimit ?? 3).map((gap) => <li key={gap}>{gap}</li>)}</ul>
           <div className="nextProofLine"><span className="kicker">Next proof</span><p>{role.nextProof}</p></div>
-          <small>Boundary: {role.notClaimed.join("; ")}.</small>
+          <small>{role.scopeNote}</small>
         </div>
       </section>
     </>

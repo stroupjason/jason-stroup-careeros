@@ -1,5 +1,5 @@
 import { BookOpenCheck, Github, Linkedin } from "lucide-react";
-import { PageHero, SectionHeader } from "../components/UI";
+import { PageHero } from "../components/UI";
 import { profile } from "../data/site";
 
 export function ResumeContactPage() {
@@ -15,7 +15,7 @@ export function ResumeContactPage() {
           <Linkedin size={26} />
           <h2>LinkedIn</h2>
           <p>Professional history, current role, and direct messaging.</p>
-          <a href={profile.linkedin} target="_blank" rel="noreferrer">
+          <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">
             Open LinkedIn
           </a>
         </article>
@@ -23,7 +23,7 @@ export function ResumeContactPage() {
           <Github size={26} />
           <h2>GitHub</h2>
           <p>Repositories, code history, project documentation, and public proof.</p>
-          <a href={profile.github} target="_blank" rel="noreferrer">
+          <a href={profile.github} target="_blank" rel="noopener noreferrer">
             Open GitHub
           </a>
         </article>
@@ -36,18 +36,6 @@ export function ResumeContactPage() {
             <small>See current evidence, project connections, and development priorities.</small>
           </span>
         </a>
-        <SectionHeader
-          kicker="Role Fit"
-          title="Choose the view that matches your need"
-          copy="Each page uses the same evidence while making current strengths and growth areas clear."
-        />
-        <div className="roleLinkList largeTags">
-          <a href="/roles/senior-technical-support-engineer">Senior TSE</a>
-          <a href="/roles/technical-account-manager">TAM</a>
-          <a href="/roles/customer-success-engineer">CSE</a>
-          <a href="/roles/data-analytics">Data Analytics</a>
-          <a href="/roles/application-engineer">Application Engineer</a>
-        </div>
       </section>
     </>
   );

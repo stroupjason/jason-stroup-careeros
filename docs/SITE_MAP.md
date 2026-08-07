@@ -28,6 +28,7 @@
 - `/roles/customer-success-engineer`
 - `/roles/data-analytics`
 - `/roles/application-engineer`
+- `/roles/software-engineer`
 - `/roles/forward-deployed-engineer`
 - `/roles/data-science`
 
