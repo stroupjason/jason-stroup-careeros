@@ -119,8 +119,12 @@ export type LearningProfile = {
 
 export const profile = {
   name: "Jason Stroup",
-  location: "Northern Colorado",
+  location: "Fort Collins, Colorado",
+  availability: "Open to remote opportunities",
   currentRole: "Technical Support Engineer",
+  professionalIdentity: "Customer-Facing Technical Systems Professional",
+  supportingLine:
+    "Technical solutions, SaaS integrations, application support, and software delivery.",
   coreIdentity:
     "I’m a customer-facing technical systems professional specializing in troubleshooting, integrations, analytics, solution delivery, and business value.",
   headline:

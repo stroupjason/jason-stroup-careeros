@@ -8,7 +8,7 @@ export function AboutPage() {
       <PageHero
         eyebrow="About"
         title="I work between the customer, the data, and the codebase."
-        copy="I’m a Technical Support Engineer in Northern Colorado with deep experience in SaaS troubleshooting, integrations, observability, analytics, and customer ownership."
+        copy="I’m a customer-facing technical systems professional with deep experience in SaaS troubleshooting, integrations, observability, analytics, and customer ownership. Based in Fort Collins, Colorado, and open to remote opportunities."
       />
       <section className="section shell sectionAfterHero aboutPageGrid">
         <article>

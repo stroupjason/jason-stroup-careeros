@@ -184,6 +184,15 @@ h3 {
   padding-bottom: 70px;
 }
 
+.heroName {
+  margin-bottom: 14px;
+  color: var(--text);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
 .eyebrow,
 .kicker {
   text-transform: uppercase;
@@ -201,6 +210,18 @@ h3 {
   background: rgba(103, 232, 193, 0.055);
   padding: 8px 11px;
   border-radius: 999px;
+}
+
+.hero .heroIdentity {
+  max-width: 100%;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.heroIdentity > span:last-child {
+  text-wrap: balance;
 }
 
 .pulse {
@@ -228,6 +249,13 @@ h3 {
 .pageHero > p {
   max-width: 810px;
   font-size: clamp(1.05rem, 1.8vw, 1.28rem);
+}
+
+.heroLocation {
+  max-width: 810px;
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
 }
 
 .pageHero {

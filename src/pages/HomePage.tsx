@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { ArrowUpRight, BarChart3, Braces, Headphones, Users } from "lucide-react";
-import { projects, roleLenses } from "../data/site";
+import { profile, projects, roleLenses } from "../data/site";
 import { LinkButton, ProjectCard, SectionHeader } from "../components/UI";
 
 const featuredProjects = projects.filter((project) =>
@@ -20,13 +20,15 @@ export function HomePage() {
   return (
     <>
       <section className="hero shell">
-        <div className="eyebrow">
-          <span className="pulse" /> Technical Support Engineer · Northern Colorado
+        <p className="heroName">{profile.name}</p>
+        <div className="eyebrow heroIdentity">
+          <span className="pulse" aria-hidden="true" />
+          <span>{profile.professionalIdentity}</span>
         </div>
         <h1>I turn complex customer problems into clear technical solutions.</h1>
-        <p className="heroCopy">
-          I specialize in SaaS troubleshooting, integrations, observability,
-          analytics, and customer ownership while building deeper backend delivery skills.
+        <p className="heroCopy">{profile.supportingLine}</p>
+        <p className="heroLocation">
+          {profile.location} · {profile.availability}
         </p>
         <div className="heroActions">
           <LinkButton href="/projects">View projects</LinkButton>

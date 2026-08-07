@@ -46,7 +46,7 @@ export function App() {
   const route = resolveRoute(path);
 
   useEffect(() => {
-    const pageTitle = `${route.title} | Jason Stroup CareerOS`;
+    const pageTitle = path === "/" ? route.title : `${route.title} | Jason Stroup CareerOS`;
     const configuredSiteUrl = import.meta.env.VITE_SITE_URL?.replace(/\/$/, "");
     const canonicalUrl = configuredSiteUrl
       ? `${configuredSiteUrl}${path === "/" ? "/" : path}`
@@ -85,9 +85,9 @@ export function App() {
 function resolveRoute(path: string) {
   if (path === "/") {
     return {
-      title: "Technical Portfolio",
+      title: "Jason Stroup | Technical Solutions, Integrations & Application Support",
       description:
-        "Jason Stroup's CareerOS portfolio: technical support, customer engineering, analytics, backend development, and forward-deployment evidence.",
+        "Jason Stroup is a customer-facing technical systems professional specializing in SaaS integrations, application support, troubleshooting, data, and software delivery.",
       element: <HomePage />,
     };
   }
