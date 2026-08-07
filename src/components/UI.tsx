@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { ArrowUpRight } from "lucide-react";
-import type { EvidenceState, Project, RoleLens } from "../data/site";
+import { evidenceStates, type EvidenceState, type Project, type RoleLens } from "../data/site";
 
 export function StateBadge({ state }: { state: EvidenceState }) {
   return <span className={`stateBadge state-${state.toLowerCase()}`}>{state}</span>;
@@ -82,9 +82,24 @@ export function RoleCard({ role }: { role: RoleLens }) {
       <p>{role.headline}</p>
       <small>{role.priority}</small>
       <a href={`/roles/${role.slug}`}>
-        Open role lens <ArrowUpRight size={16} />
+        View role fit <ArrowUpRight size={16} />
       </a>
     </article>
+  );
+}
+
+export function EvidenceLegend() {
+  return (
+    <aside className="evidenceLegend" aria-label="Project and proof status">
+      <strong>Project / proof status</strong>
+      <div>
+        {evidenceStates.map((item) => (
+          <span key={item.state}>
+            <StateBadge state={item.state} /> {item.definition}
+          </span>
+        ))}
+      </div>
+    </aside>
   );
 }
 

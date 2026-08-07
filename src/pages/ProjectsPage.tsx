@@ -1,4 +1,4 @@
-import { PageHero, ProjectCard, SectionHeader } from "../components/UI";
+import { EvidenceLegend, PageHero, ProjectCard, SectionHeader, StateBadge } from "../components/UI";
 import { projects } from "../data/site";
 
 export function ProjectsPage() {
@@ -6,20 +6,26 @@ export function ProjectsPage() {
     <>
       <PageHero
         eyebrow="Projects"
-        title="Technical work with a reason to exist."
-        copy="These projects demonstrate computer vision, edge and IoT systems, product thinking, backend debugging, analytics, and the ability to connect a problem to a working solution."
+        title="Technical work with clear proof states."
+        copy="I separate demonstrated work, active builds, and planned proof so each project is easy to evaluate."
       />
       <section className="section shell sectionAfterHero">
         <SectionHeader
-          kicker="Featured portfolio"
-          title="Demonstrated, active, and next-build work"
-          copy="Every project page separates verified facts, current evidence, planned work, and missing proof."
+          kicker="Featured work"
+          title="Demonstrated and active"
+          copy="Three projects show product thinking, computer vision, edge systems, and technical delivery."
         />
-        <div className="projectGrid">
-          {projects.map((project) => (
+        <div className="projectGrid featuredProjectGrid">
+          {projects.slice(0, 3).map((project) => (
             <ProjectCard key={project.slug} project={project} />
           ))}
         </div>
+        <article className="plannedProject">
+          <div><StateBadge state="Planned" /><h2>Python/MongoDB Debugging Lab</h2></div>
+          <p>A safe backend lab is specified but not built. It will demonstrate symptom-to-code tracing, tests, deployment, and validation.</p>
+          <a href="/projects/python-mongodb-debugging-lab">View planned proof</a>
+        </article>
+        <EvidenceLegend />
       </section>
     </>
   );

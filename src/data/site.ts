@@ -26,12 +26,15 @@ export type Project = {
   summary: string;
   problem: string;
   outcome: string;
+  approach: string;
   stack: string[];
   capabilities: string[];
   roleLinks: string[];
   verifiedFacts: string[];
   unknowns: string[];
-  mediaPath: string;
+  proofNote: string;
+  nextProof: string;
+  liveUrl?: string;
   media?: ProjectMedia[];
   subsystems?: ProjectSubsystem[];
 };
@@ -44,6 +47,7 @@ export type RoleLens = {
   priority: string;
   headline: string;
   overview: string;
+  contribution: string;
   demonstratedEvidence: string[];
   relevantProjects: string[];
   gaps: string[];
@@ -58,11 +62,11 @@ export const profile = {
   location: "Northern Colorado",
   currentRole: "Technical Support Engineer",
   coreIdentity:
-    "Customer-facing technical systems professional specializing in troubleshooting, integrations, analytics, solution delivery, and business value.",
+    "I’m a customer-facing technical systems professional specializing in troubleshooting, integrations, analytics, solution delivery, and business value.",
   headline:
-    "I turn difficult customer problems into structured technical investigations—and I am expanding that strength into backend delivery, data, and forward deployment.",
+    "I turn complex customer problems into clear technical solutions.",
   summary:
-    "My strongest evidence sits at the intersection of enterprise SaaS support, APIs, integrations, observability, customer ownership, analytics, and technical communication. CareerOS organizes that evidence into truthful role-specific views without pretending every adjacent role is already demonstrated.",
+    "I specialize in SaaS troubleshooting, integrations, observability, analytics, and customer ownership while building deeper backend delivery skills.",
   github: "https://github.com/stroupjason",
   linkedin: "https://www.linkedin.com/in/jasonstroup/",
 };
@@ -177,14 +181,16 @@ export const projects: Project[] = [
     title: "CareerOS",
     shortTitle: "CareerOS",
     type: "Portfolio product / career evidence system",
-    status: "Active build",
-    evidenceState: "Practicing",
+    status: "Public beta live",
+    evidenceState: "Demonstrated",
     summary:
-      "A recruiter-safe portfolio and proof-of-concept for connecting learning, applied capability, target roles, and the next highest-leverage action.",
+      "A live recruiter-first portfolio that connects projects, role fit, and honest proof states.",
     problem:
       "Traditional resumes fragment hybrid technical experience and rarely show how learning becomes applied capability over time.",
     outcome:
-      "A functioning product narrative, typed content model, role-lens system, project evidence model, and deployable public website foundation.",
+      "A deployed Vite/React product with typed content, client-side routing, responsive design, and public-safe evidence boundaries.",
+    approach:
+      "I treated the portfolio as a product rather than a static resume. I modeled shared project and role data, built reusable page components, configured direct-route handling and canonical metadata, and checked the final experience across content, accessibility, privacy, build quality, and deployment. The result keeps one professional story while letting recruiters reach the most relevant proof quickly. I also kept unfinished evidence visible without turning it into a claim.",
     stack: ["React", "TypeScript", "Vite", "Product design", "Career evidence"],
     capabilities: [
       "Product discovery",
@@ -201,18 +207,19 @@ export const projects: Project[] = [
       "FDE",
     ],
     verifiedFacts: [
-      "The project is being built as Jason's public portfolio and personal career evidence system.",
-      "The first release uses evidence states instead of unsupported readiness percentages.",
-      "The product separates private career evidence from public recruiter-safe proof.",
-      "The future organization concept is intentionally deferred until the personal product is useful.",
+      "I built and deployed the public beta at jason-stroup-careeros.vercel.app.",
+      "The React/TypeScript site uses typed project and role data with direct-route support.",
+      "I use named proof states instead of unsupported readiness percentages.",
+      "The public product remains separate from private career evidence.",
     ],
     unknowns: [
-      "Final production URL",
       "Long-term database and authentication architecture",
       "Validated user demand beyond the first user",
       "Measured impact on job-search outcomes",
     ],
-    mediaPath: "/projects/careeros/",
+    proofNote: "The live product is the primary artifact for this project.",
+    nextProof: "Add a concise product decision note after the public beta produces real feedback.",
+    liveUrl: "https://jason-stroup-careeros.vercel.app",
   },
   {
     slug: "automatic-nerf-turret",
@@ -222,11 +229,13 @@ export const projects: Project[] = [
     status: "Completed prototype",
     evidenceState: "Demonstrated",
     summary:
-      "A Raspberry Pi and OpenCV motion-detection and 360-degree tracking prototype integrating Python, camera processing, state management, and hardware control.",
+      "A working Raspberry Pi/OpenCV prototype that joined motion detection, tracking, state management, and hardware control.",
     problem:
       "Coordinate real-time visual detection with physical tracking and actuation in a constrained edge-computing environment.",
     outcome:
       "A working personal prototype validated end to end across camera input, software logic, state coordination, and physical movement.",
+    approach:
+      "I combined camera input, OpenCV processing, motion logic, state coordination, and servo control on a Raspberry Pi. The key challenge was keeping visual detection and physical movement working as one system under edge-compute constraints. I iterated across software and hardware together, then tested the complete path instead of treating detection, tracking, and actuation as isolated pieces. That end-to-end debugging under constraint was the central engineering lesson.",
     stack: [
       "Python",
       "OpenCV",
@@ -244,11 +253,10 @@ export const projects: Project[] = [
     ],
     roleLinks: ["Data Science", "Application Engineer", "CSE", "FDE"],
     verifiedFacts: [
-      "Built with Python on Linux/Raspberry Pi.",
-      "Used OpenCV for motion detection and object tracking.",
-      "Implemented 360-degree tracking behavior.",
-      "Integrated camera processing, software logic, servo-driven hardware control, and end-to-end testing.",
-      "Used SQLAlchemy and web technologies for state/workflow management.",
+      "I built the prototype with Python on Linux and Raspberry Pi.",
+      "I used OpenCV for motion detection and object tracking.",
+      "I implemented 360-degree tracking behavior and servo-driven movement.",
+      "I tested the camera, software logic, state coordination, and hardware together.",
     ],
     unknowns: [
       "Exact build date",
@@ -257,21 +265,24 @@ export const projects: Project[] = [
       "Measured latency, tracking accuracy, or reliability metrics",
       "Available photographs or demonstration video",
     ],
-    mediaPath: "/projects/automatic-nerf-turret/",
+    proofNote: "The working prototype is verified, but the original public code and media are not currently available.",
+    nextProof: "Recover owned media or publish a clearly labeled reconstruction and architecture diagram.",
   },
   {
     slug: "rallye-control",
     title: "Rallye Control — Solar Trailer Telemetry",
     shortTitle: "Rallye Control",
     type: "Personal edge / IoT systems project",
-    status: "Active architecture and build journal",
+    status: "Active build",
     evidenceState: "Practicing",
     summary:
-      "An off-grid solar trailer telemetry and control concept connecting edge compute, live power visibility, sensors, local networking, backend services, dashboards, and a future cross-platform mobile experience.",
+      "An active off-grid solar trailer project connecting edge compute, power telemetry, local networking, and planned control services.",
     problem:
       "Create useful visibility and control for an off-grid trailer where power, connectivity, environmental conditions, and field reliability matter.",
     outcome:
-      "An active systems-integration project with a documented architecture, subsystem evidence states, and a clear sequence of testable engineering experiments.",
+      "A working systems-integration direction with active edge and power-visibility work plus clearly planned subsystems.",
+    approach:
+      "I am approaching Rallye Control as a sequence of field-tested subsystems. Power visibility and the Raspberry Pi edge environment come first; messaging, sensor nodes, backend services, and mobile control follow only when their interfaces and evidence are clear. That order keeps the project useful under off-grid power and connectivity constraints without presenting planned architecture as finished implementation.",
     stack: [
       "Raspberry Pi",
       "ESP32",
@@ -296,11 +307,9 @@ export const projects: Project[] = [
       "FDE",
     ],
     verifiedFacts: [
-      "The project centers on an off-grid solar trailer and edge observability.",
-      "The design uses or is evaluating Raspberry Pi edge computing, live power telemetry, local connectivity, and dashboard/alerting workflows.",
-      "The architecture includes planned MQTT, ESP32, Python/FastAPI, Docker, and mobile-control components.",
-      "The cross-platform mobile direction targets iPadOS/iOS and Android using React Native/Expo and TypeScript.",
-      "The project must not be represented as a completed security-camera or computer-vision system.",
+      "I am building around an off-grid solar trailer and edge observability.",
+      "Current work focuses on Raspberry Pi edge computing, live power visibility, and local connectivity.",
+      "MQTT, ESP32, Python/FastAPI, Docker, and mobile control remain planned or in learning states.",
     ],
     unknowns: [
       "Battery, panel, inverter, and telemetry hardware specifications",
@@ -309,7 +318,8 @@ export const projects: Project[] = [
       "Measured telemetry, alerting, and field-reliability outcomes",
       "Public repository, photographs, architecture diagram, and demo links",
     ],
-    mediaPath: "/projects/rallye-control/",
+    proofNote: "The build is active; a reviewed architecture diagram and field evidence are still being assembled.",
+    nextProof: "Publish one owned architecture diagram and a measured power-telemetry walkthrough.",
     subsystems: [
       {
         name: "Solar and power telemetry",
@@ -354,14 +364,16 @@ export const projects: Project[] = [
     title: "Python/MongoDB Debugging Lab",
     shortTitle: "Backend Debugging Lab",
     type: "Independent engineering lab",
-    status: "Next build",
-    evidenceState: "Learning",
+    status: "Planned lab",
+    evidenceState: "Planned",
     summary:
-      "A fictional backend environment for practicing code navigation, database tracing, structured logs, regression tests, Docker deployment, and public-safe debugging case studies.",
+      "A planned fictional backend environment for practicing code tracing, MongoDB debugging, regression tests, and Docker deployment.",
     problem:
       "Create a safe, independent environment for demonstrating the complete path from customer symptom to code, data, test, fix, and validation.",
     outcome:
       "Not yet completed. The lab specification and evidence goals are defined so the eventual build can produce a credible public case study.",
+    approach:
+      "The lab will start with a small fictional service and one reproducible failure. I will trace the symptom through structured logs, Python code, and MongoDB data; state a testable hypothesis; add a regression test; make the narrowest useful fix; and validate the deployed behavior. Nothing on this page represents that workflow as completed today. The finished proof will include runnable code, tests, logs, and a concise end-to-end retrospective for review.",
     stack: ["Python", "MongoDB", "Docker", "Tests", "Structured logs"],
     capabilities: [
       "Backend debugging",
@@ -372,16 +384,17 @@ export const projects: Project[] = [
     ],
     roleLinks: ["Senior TSE", "Application Engineer", "FDE"],
     verifiedFacts: [
-      "The lab is intentionally fictional and independent from employer architecture.",
-      "Its target workflow is symptom → logs → code/data trace → reproduction → hypothesis → test → small fix → validation.",
-      "It is the next public proof project, not a completed achievement.",
+      "The planned lab is fictional and independent from employer architecture.",
+      "The intended workflow runs from symptom and logs through code/data tracing, a test, a small fix, and validation.",
+      "No working lab exists yet.",
     ],
     unknowns: [
       "Final service domain and failure scenario",
       "Repository and deployment URL",
       "Completed tests, screenshots, and outcome",
     ],
-    mediaPath: "/projects/python-mongodb-debugging-lab/",
+    proofNote: "No working lab or artifact exists yet; this project is planned.",
+    nextProof: "Build the smallest runnable service, reproduce one failure, and add a regression test.",
   },
 ];
 
@@ -395,7 +408,9 @@ export const roleLenses: RoleLens[] = [
     headline:
       "Deep production troubleshooting, customer ownership, and cross-functional technical judgment.",
     overview:
-      "This lens leads with Jason's strongest demonstrated work: resolving complex SaaS issues, analyzing integrations and data flows, using observability tools, coordinating escalations, and communicating under customer pressure.",
+      "This is my strongest fit: I resolve complex SaaS issues, analyze integrations and data flows, use observability tools, coordinate escalations, and communicate under customer pressure.",
+    contribution:
+      "I would contribute as an investigator and owner: narrow ambiguous symptoms, reproduce behavior, connect logs and data to the customer impact, and give engineering a precise escalation when a fix crosses team boundaries. I also look for the durable follow-up—better documentation, diagnostics, or a repeatable troubleshooting path.",
     demonstratedEvidence: [
       "Enterprise SaaS troubleshooting and escalation ownership",
       "API, authentication, integration, and data-quality investigations",
@@ -412,7 +427,7 @@ export const roleLenses: RoleLens[] = [
     nextProof:
       "Publish one sanitized case study showing a repeatable troubleshooting method, durable documentation, and a measurable operational improvement.",
     recruiterTakeaway:
-      "Jason is closest to Senior TSE today and brings unusually broad customer, integration, observability, data, and builder experience.",
+      "I’m closest to Senior TSE today, with broad customer, integration, observability, data, and builder experience.",
     notClaimed: [
       "Formal Senior TSE title",
       "Unapproved internal performance metrics",
@@ -436,7 +451,9 @@ export const roleLenses: RoleLens[] = [
     headline:
       "Translate technical risk, customer goals, and product behavior into a durable account strategy.",
     overview:
-      "This lens emphasizes customer trust, technical depth, stakeholder coordination, issue ownership, adoption insight, and the ability to translate between customers and internal teams.",
+      "I bring customer trust, technical depth, stakeholder coordination, issue ownership, adoption insight, and translation between customers and internal teams.",
+    contribution:
+      "I would pair proactive account context with hands-on technical judgment. That means translating goals into technical risks, recognizing patterns across incidents and integrations, keeping owners and next actions clear, and turning product signals into a practical customer plan. Commercial ownership would remain a growth area, not an assumed strength. My clearest starting value today is technical risk ownership.",
     demonstratedEvidence: [
       "Long-running customer-facing technical work",
       "Clear communication during complex incidents and escalations",
@@ -454,7 +471,7 @@ export const roleLenses: RoleLens[] = [
     nextProof:
       "Create a fictional technical account plan connecting customer goals, technical risks, adoption signals, actions, owners, and measurable outcomes.",
     recruiterTakeaway:
-      "Jason brings more hands-on troubleshooting and integration depth than many traditional TAM profiles while already operating comfortably with customers.",
+      "I bring hands-on troubleshooting and integration depth to a customer-facing account path.",
     notClaimed: [
       "Formal TAM title",
       "Commercial renewal ownership",
@@ -478,7 +495,9 @@ export const roleLenses: RoleLens[] = [
     headline:
       "Combine integrations, troubleshooting, technical enablement, and adoption to help customers realize value.",
     overview:
-      "This lens presents Jason as a technical partner who can understand customer objectives, guide integrations, diagnose blockers, improve adoption, and convert product complexity into a clear success path.",
+      "I can understand customer objectives, guide integrations, diagnose blockers, improve adoption, and turn product complexity into a clear success path.",
+    contribution:
+      "I would help customers move from technical uncertainty to a working path: clarify the desired outcome, guide integration decisions, diagnose blockers, explain product behavior, and close the loop with validation and enablement. My support background makes me attentive to failure modes as well as the intended implementation experience. I would measure success today through adoption and time-to-value only when supported by real data.",
     demonstratedEvidence: [
       "API and integration troubleshooting",
       "Customer education and technical communication",
@@ -499,7 +518,7 @@ export const roleLenses: RoleLens[] = [
     nextProof:
       "Publish a fictional integration onboarding case study from discovery through validation, enablement, adoption measurement, and follow-up.",
     recruiterTakeaway:
-      "Jason's differentiator is the combination of customer empathy, deep technical troubleshooting, integrations, analytics, and independent building.",
+      "My differentiator is the combination of customer empathy, technical troubleshooting, integrations, analytics, and independent building.",
     notClaimed: [
       "Formal CSE title",
       "Direct renewal quota ownership",
@@ -523,7 +542,9 @@ export const roleLenses: RoleLens[] = [
     headline:
       "Use SQL, dashboards, product data, and operational context to turn technical activity into decisions.",
     overview:
-      "This lens highlights Jason's practical analytics work across SQL, product/support data, dashboards, customer-health thinking, and the ability to explain what the data means operationally.",
+      "I use SQL, product and support data, dashboards, and customer-health context to explain what technical activity means operationally.",
+    contribution:
+      "I would connect the analysis to a decision. My approach is to understand the operational question first, trace how the data was produced, check quality and edge cases, and present the signal with its limitations. The strongest fit is analytics close to customers, products, or support operations.",
     demonstratedEvidence: [
       "SQL and data investigation in technical support contexts",
       "Redshift, Superset, QuickSight, Athena, and product analytics exposure",
@@ -540,7 +561,7 @@ export const roleLenses: RoleLens[] = [
     nextProof:
       "Build a public support-operations or customer-health analytics project with SQL, a reproducible dataset, a dashboard, and a written recommendation.",
     recruiterTakeaway:
-      "Jason stands out as an analyst who understands the operational and customer context behind technical data—not just the visualization layer.",
+      "I bring the operational and customer context behind technical data, not just the visualization layer.",
     notClaimed: [
       "Senior Data Analyst title",
       "Advanced statistical modeling",
@@ -564,7 +585,9 @@ export const roleLenses: RoleLens[] = [
     headline:
       "Move from diagnosing system behavior into reviewed code, tests, deployment, and maintainable fixes.",
     overview:
-      "This lens makes the transition explicit: Jason already understands customer symptoms, logs, integrations, and system behavior; the next proof is sustained software lifecycle contribution.",
+      "I already understand customer symptoms, logs, integrations, and system behavior; my next proof is sustained software-lifecycle contribution.",
+    contribution:
+      "I would bring production context into the engineering loop: reproduce a failure, trace the relevant request and data flow, add useful diagnostics or a regression test, make a narrow change, and validate it. The transition depends on building a consistent record of reviewed code and deployment ownership. Small, well-tested contributions are the right first step. That sequence matches how I already investigate technical problems.",
     demonstratedEvidence: [
       "Strong debugging and reproduction discipline",
       "Python, JavaScript, SQL, APIs, Linux, Docker, and observability",
@@ -587,7 +610,7 @@ export const roleLenses: RoleLens[] = [
     nextProof:
       "Complete the Python/MongoDB debugging lab and one small reviewed contribution focused on tests, logging, or a narrow defect.",
     recruiterTakeaway:
-      "Jason already brings the customer and production context that many application engineers must learn; his current gap is repeatable reviewed delivery.",
+      "I bring customer and production context; my current gap is repeatable, reviewed delivery.",
     notClaimed: [
       "Production backend engineer title",
       "Completed production code ownership",
@@ -611,7 +634,9 @@ export const roleLenses: RoleLens[] = [
     headline:
       "Own the path from customer ambiguity through implementation, deployment, production debugging, and measurable outcomes.",
     overview:
-      "FDE is the role where Jason's customer-facing, troubleshooting, integration, data, and builder strengths can converge. The page is intentionally a roadmap, not a claim that he already meets every engineering requirement.",
+      "FDE is where my customer-facing, troubleshooting, integration, data, and builder strengths can converge. This is a roadmap, not a current-readiness claim.",
+    contribution:
+      "My long-term value would be owning the translation from an ambiguous customer problem into a deployed technical result. I already bring discovery, troubleshooting, integration, and communication strengths. The work ahead is to make implementation, testing, deployment, and maintainability equally repeatable through finished independent builds and reviewed contributions. Measured customer outcomes would complete that delivery story. This is the path I am actively building toward.",
     demonstratedEvidence: [
       "Customer-facing technical problem ownership",
       "APIs, integrations, data flows, logs, and observability",
@@ -635,7 +660,7 @@ export const roleLenses: RoleLens[] = [
     nextProof:
       "Ship one independently deployed customer-problem simulation that includes discovery, architecture, implementation, observability, testing, and a measurable outcome.",
     recruiterTakeaway:
-      "Jason's unusual advantage is that the customer-facing and production-troubleshooting side of FDE is already strong; engineering delivery is the focused growth area.",
+      "My customer-facing and production-troubleshooting foundation is strong; engineering delivery is the focused growth area.",
     notClaimed: [
       "Current FDE title",
       "Production-scale software ownership",
@@ -659,7 +684,9 @@ export const roleLenses: RoleLens[] = [
     headline:
       "Build from Python, SQL, applied computer vision, and operational data toward rigorous modeling and evaluation.",
     overview:
-      "This page exists to show credible foundations and an evidence plan—not to market Jason as a job-ready data scientist today. The Nerf turret provides real applied computer-vision evidence, while the remaining data-science requirements are clearly labeled as gaps.",
+      "I have credible foundations and one applied computer-vision build, but I do not present myself as a job-ready data scientist today.",
+    contribution:
+      "The credible starting point is applied problem framing, Python, SQL, operational analytics, and a working computer-vision prototype. A serious move toward this field would require reproducible datasets, sound experiment design, baseline comparisons, model evaluation, and error analysis. Until that proof exists, this remains exploration rather than a recruiting focus.",
     demonstratedEvidence: [
       "Python and SQL experience",
       "OpenCV motion detection and object tracking prototype",
@@ -677,7 +704,7 @@ export const roleLenses: RoleLens[] = [
     nextProof:
       "Create one reproducible computer-vision or predictive-analysis case study with a public dataset, baseline, evaluation metrics, error analysis, and documented limitations.",
     recruiterTakeaway:
-      "Jason has credible technical foundations and one applied computer-vision build, but this remains an exploratory path until rigorous modeling evidence exists.",
+      "I have technical foundations and one applied computer-vision build; this remains exploratory until rigorous modeling evidence exists.",
     notClaimed: [
       "Data Scientist title",
       "Production machine-learning deployment",
@@ -697,106 +724,42 @@ export const roleLenses: RoleLens[] = [
 export const roadmap = [
   {
     phase: "01",
-    title: "Launch the truthful portfolio",
-    date: "Now",
-    status: "active",
+    title: "CareerOS public beta",
+    date: "Complete",
+    status: "complete",
     detail:
-      "Publish the multipage CareerOS foundation, featured personal projects, role lenses, and strict evidence boundaries.",
+      "The recruiter-first portfolio is deployed with responsive routes, canonical URLs, and public-safe evidence boundaries.",
   },
   {
     phase: "02",
-    title: "Recover and document project proof",
-    date: "Next",
-    status: "next",
+    title: "Own the Nerf Turret proof",
+    date: "Now",
+    status: "active",
     detail:
-      "Add original photos, diagrams, surviving code, and honest reconstruction notes for the Nerf turret and Rallye Control.",
+      "Recover owned media or publish a clearly labeled reconstruction and original architecture diagram.",
   },
   {
     phase: "03",
-    title: "Map before modifying",
-    date: "Days 1–30",
+    title: "Document Rallye Control",
+    date: "Next",
     status: "next",
     detail:
-      "Trace one approved backend request and data flow, locate tests, understand deployment boundaries, and record a public-safe learning artifact.",
+      "Add an owned subsystem diagram and one measured power-telemetry walkthrough.",
   },
   {
     phase: "04",
-    title: "Reproduce and test",
-    date: "Days 31–60",
+    title: "Add reviewed contact materials",
+    date: "Next",
     status: "planned",
     detail:
-      "Build the independent Python/MongoDB lab, reproduce one failure, write a testable hypothesis, and add a regression test.",
+      "Publish a resume and direct contact method only after both are reviewed for accuracy and privacy.",
   },
   {
     phase: "05",
-    title: "Contribute something small",
-    date: "Days 61–90",
+    title: "Build the backend bridge",
+    date: "Then",
     status: "planned",
     detail:
-      "Complete a small reviewed test, logging improvement, or narrow defect fix and publish only a sanitized transferable lesson.",
-  },
-  {
-    phase: "06",
-    title: "Add role-specific proof",
-    date: "2027",
-    status: "planned",
-    detail:
-      "Create one strong artifact for each active role lens instead of adding more unsupported role pages.",
+      "Complete the Python/MongoDB lab and a small reviewed contribution, moving from Application Engineering toward FDE delivery.",
   },
 ];
-
-export const journalEntries = [
-  {
-    title: "Why CareerOS uses evidence states instead of percentages",
-    date: "2026-08-06",
-    status: "Draft",
-    summary:
-      "A decision note explaining why Demonstrated, Practicing, Learning, and Planned are more trustworthy than a false-precision readiness score.",
-  },
-  {
-    title: "Reconstructing the Automatic Nerf Turret responsibly",
-    date: "Planned",
-    status: "Template",
-    summary:
-      "A build retrospective that will separate verified facts, missing artifacts, technical lessons, and what would be redesigned today.",
-  },
-  {
-    title: "Rallye Control subsystem evidence review",
-    date: "Planned",
-    status: "Template",
-    summary:
-      "A recurring build-journal entry that tracks each telemetry, edge, network, backend, and mobile subsystem without overstating completion.",
-  },
-];
-
-export const caseStudies = [
-  {
-    title: "Automatic Nerf Turret",
-    state: "Reconstruction planned",
-    summary:
-      "Computer vision, edge execution, state management, hardware integration, and end-to-end prototype validation.",
-    href: "/projects/automatic-nerf-turret",
-  },
-  {
-    title: "Rallye Control",
-    state: "Active build journal",
-    summary:
-      "Off-grid telemetry, edge services, local connectivity, dashboards, and a planned mobile control layer.",
-    href: "/projects/rallye-control",
-  },
-  {
-    title: "Python/MongoDB Debugging Lab",
-    state: "Next build",
-    summary:
-      "A fictional public-safe walkthrough from symptom and logs to code/data trace, test, fix, deployment, and validation.",
-    href: "/projects/python-mongodb-debugging-lab",
-  },
-];
-
-export const nextAction = {
-  title: "Ship the portfolio, then add proof—not more scope",
-  action:
-    "Deploy the multipage site with the two featured personal projects and honest role lenses. Then recover one real artifact or create one original diagram for each project before adding another major feature.",
-  why:
-    "This produces immediate recruiter value while keeping the site coherent, truthful, and grounded in evidence rather than an ever-expanding list of aspirations.",
-};

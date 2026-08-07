@@ -382,6 +382,11 @@ h3 {
   gap: 18px;
 }
 
+.featuredProjectGrid,
+.priorityRoleGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .projectCard,
 .roleLensCard,
 .capabilityCard,
@@ -471,6 +476,58 @@ h3 {
 .largeTags span {
   font-size: 0.82rem;
   padding: 8px 11px;
+}
+
+.evidenceLegend {
+  margin-top: 28px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.evidenceLegend > strong {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.evidenceLegend > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.evidenceLegend > div > span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.plannedProject {
+  margin-top: 18px;
+  border: 1px dashed rgba(157, 176, 191, 0.38);
+  border-radius: 14px;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: minmax(230px, 0.6fr) minmax(280px, 1fr) auto;
+  gap: 22px;
+  align-items: center;
+}
+
+.plannedProject h2 {
+  margin: 12px 0 0;
+}
+
+.plannedProject p {
+  margin: 0;
+}
+
+.plannedProject a {
+  color: var(--accent);
+  font-weight: 750;
 }
 
 .projectFooter {
@@ -591,6 +648,67 @@ h3 {
   margin-top: 32px;
 }
 
+.compactFocus {
+  min-height: 210px;
+}
+
+.compactFocus h3 {
+  margin-top: 22px;
+}
+
+.compactFocus p {
+  margin-bottom: 0;
+}
+
+.compactRoleLinks,
+.directionList,
+.compactProjectLinks {
+  display: grid;
+  gap: 10px;
+}
+
+.compactRoleLinks {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.compactRoleLinks a,
+.directionList a,
+.compactProjectLinks a {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px;
+  color: var(--text);
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.compactRoleLinks a:hover,
+.compactRoleLinks a:focus-visible,
+.directionList a:hover,
+.directionList a:focus-visible,
+.compactProjectLinks a:hover,
+.compactProjectLinks a:focus-visible {
+  border-color: rgba(103, 232, 193, 0.4);
+  color: var(--accent);
+}
+
+.directionList {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.directionList a {
+  display: grid;
+  gap: 8px;
+}
+
+.directionList small {
+  color: var(--muted);
+}
+
+.singleRole {
+  max-width: 600px;
+}
+
 .nextAction {
   border: 1px solid rgba(103, 232, 193, 0.24);
   background:
@@ -628,10 +746,47 @@ h3 {
   margin-inline: auto;
 }
 
+.contactAction {
+  grid-template-columns: 1fr;
+}
+
+.contactAction .heroActions {
+  margin-top: 22px;
+}
+
 .projectOverviewGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
+}
+
+.projectConnections {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+}
+
+.projectApproach > p {
+  max-width: 850px;
+  color: var(--text);
+  font-size: 1.08rem;
+}
+
+.projectApproach > .tags {
+  margin-top: 24px;
+}
+
+.nextProofLine {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.nextProofLine p {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.08rem;
 }
 
 .overviewCard h2 {
@@ -753,6 +908,34 @@ code {
   gap: 34px;
 }
 
+.compactProjectLinks {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.compactProjectLinks a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.stillBuilding > .cleanList {
+  max-width: 820px;
+}
+
+.stillBuilding > .nextProofLine {
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.stillBuilding > small {
+  display: block;
+  margin-top: 20px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
 .cleanList {
   margin: 0;
   padding-left: 20px;
@@ -769,6 +952,12 @@ code {
 .roleSummaryMain h2 {
   font-size: 2.2rem;
   margin: 12px 0 14px;
+}
+
+.roleContribution {
+  margin: 22px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
 }
 
 .recruiterTakeaway svg {
@@ -796,7 +985,8 @@ code {
   background: rgba(17, 31, 43, 0.78);
 }
 
-.roadmapItem.active {
+.roadmapItem.active,
+.roadmapItem.complete {
   border-color: rgba(103, 232, 193, 0.3);
 }
 
@@ -855,7 +1045,7 @@ code {
 }
 
 .contactGrid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .contactCard {
@@ -957,7 +1147,10 @@ code {
   }
 
   .projectOverviewGrid,
-  .contactGrid {
+  .contactGrid,
+  .featuredProjectGrid,
+  .priorityRoleGrid,
+  .directionList {
     grid-template-columns: 1fr;
   }
 
@@ -1018,6 +1211,15 @@ code {
   .contactGrid,
   .archetypeGrid,
   .footerGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .compactRoleLinks,
+  .compactProjectLinks,
+  .evidenceLegend > div,
+  .plannedProject,
+  .projectConnections,
+  .nextProofLine {
     grid-template-columns: 1fr;
   }
 

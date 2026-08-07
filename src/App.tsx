@@ -111,9 +111,9 @@ function resolveRoute(path: string) {
   }
   if (path === "/roles") {
     return {
-      title: "Role Lenses",
+      title: "Role Fit",
       description:
-        "Truthful recruiter views for Senior TSE, TAM, CSE, Data Analytics, Application Engineering, FDE, and exploratory Data Science.",
+        "Recruiter role fit for Senior TSE, TAM, CSE, Data Analytics, Application Engineering, FDE, and exploratory Data Science.",
       element: <RolesPage />,
     };
   }
@@ -140,7 +140,7 @@ function resolveRoute(path: string) {
     return {
       title: "Engineering Journal",
       description:
-        "A public-safe learning and engineering journal documenting how practice becomes evidence.",
+        "A reserved space for future public-safe engineering notes backed by completed work.",
       element: <JournalPage />,
     };
   }
@@ -148,7 +148,7 @@ function resolveRoute(path: string) {
     return {
       title: "Case Studies",
       description:
-        "Public-safe technical case studies across computer vision, IoT telemetry, and backend debugging.",
+        "A reserved space for future technical case studies with supporting artifacts.",
       element: <CaseStudiesPage />,
     };
   }
@@ -162,8 +162,8 @@ function resolveRoute(path: string) {
   }
   if (path === "/resume-contact") {
     return {
-      title: "Resume and Contact",
-      description: "Connect with Jason Stroup through LinkedIn, GitHub, and a reviewed resume.",
+      title: "Contact",
+      description: "Connect with Jason Stroup through LinkedIn and GitHub.",
       element: <ResumeContactPage />,
     };
   }

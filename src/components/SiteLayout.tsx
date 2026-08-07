@@ -10,9 +10,8 @@ type SiteLayoutProps = {
 const navItems = [
   { href: "/", label: "Home" },
   { href: "/projects", label: "Projects" },
-  { href: "/roles", label: "Role lenses" },
+  { href: "/roles", label: "Role Fit" },
   { href: "/roadmap", label: "Roadmap" },
-  { href: "/journal", label: "Journal" },
   { href: "/about", label: "About" },
 ];
 
@@ -71,7 +70,8 @@ export function SiteLayout({ currentPath, children }: SiteLayoutProps) {
             <a href={profile.github} target="_blank" rel="noreferrer">
               <Github size={17} /> GitHub
             </a>
-            <a href="/case-studies">Case studies</a>
+            <a href="/projects">Projects</a>
+            <a href="/roles">Role Fit</a>
             <a href="/roadmap">Roadmap</a>
             <a href="/resume-contact">
               Contact <ArrowUpRight size={17} />

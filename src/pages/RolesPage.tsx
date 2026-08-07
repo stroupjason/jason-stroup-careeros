@@ -1,46 +1,32 @@
 import { PageHero, RoleCard, SectionHeader } from "../components/UI";
 import { roleLenses } from "../data/site";
 
-const groups = ["Immediate", "Bridge", "Long-term", "Exploratory"] as const;
-
-const groupCopy = {
-  Immediate:
-    "Roles that can credibly use the strongest evidence already present today.",
-  Bridge:
-    "The engineering transition that requires focused proof through code, tests, review, and deployment.",
-  "Long-term":
-    "The role where customer engineering, delivery, data, and business value converge.",
-  Exploratory:
-    "A real area of interest with early evidence, but not a primary job-search claim today.",
-};
-
 export function RolesPage() {
+  const priorityRoles = roleLenses.filter((role) =>
+    ["senior-technical-support-engineer", "technical-account-manager", "customer-success-engineer"].includes(role.slug),
+  );
+  const analytics = roleLenses.find((role) => role.slug === "data-analytics")!;
+  const directions = roleLenses.filter((role) => ["application-engineer", "forward-deployed-engineer", "data-science"].includes(role.slug));
+
   return (
     <>
       <PageHero
-        eyebrow="Recruiter role lenses"
-        title="One professional identity. Different evidence ordering."
-        copy="The breadth is useful only when the site remains honest about priority and maturity. These pages do not present seven unrelated careers; they show how one hybrid technical background transfers."
+        eyebrow="Role Fit"
+        title="Where my experience fits now—and where it is growing."
+        copy="I lead with customer-facing technical depth, then show adjacent and longer-term paths without treating every role as equally mature."
       />
-      {groups.map((group) => {
-        const roles = roleLenses.filter((role) => role.group === group);
-        return (
-          <section className={group === "Bridge" ? "section band" : "section shell"} key={group}>
-            <div className={group === "Bridge" ? "shell" : undefined}>
-              <SectionHeader
-                kicker={`${group} lenses`}
-                title={group}
-                copy={groupCopy[group]}
-              />
-              <div className="roleGrid">
-                {roles.map((role) => (
-                  <RoleCard key={role.slug} role={role} />
-                ))}
-              </div>
-            </div>
-          </section>
-        );
-      })}
+      <section className="section shell sectionAfterHero">
+        <SectionHeader kicker="Strongest alignment" title="Customer-facing technical roles" copy="Senior TSE is the clearest fit; TAM and CSE are strong adjacent paths." />
+        <div className="roleGrid priorityRoleGrid">{priorityRoles.map((role) => <RoleCard key={role.slug} role={role} />)}</div>
+      </section>
+      <section className="section band"><div className="shell">
+        <SectionHeader kicker="Secondary strength" title="Data Analytics" copy="SQL, dashboards, product data, and operational context support a credible secondary lens." />
+        <div className="singleRole"><RoleCard role={analytics} /></div>
+      </div></section>
+      <section className="section shell">
+        <SectionHeader kicker="Where I’m heading" title="Engineering delivery, then forward deployment" copy="These paths are roadmaps, not current-role claims." />
+        <div className="directionList">{directions.map((role) => <a href={`/roles/${role.slug}`} key={role.slug}><span>{role.title}</span><small>{role.priority}</small></a>)}</div>
+      </section>
     </>
   );
 }

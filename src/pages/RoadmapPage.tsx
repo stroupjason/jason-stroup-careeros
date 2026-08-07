@@ -1,20 +1,18 @@
-import { Target } from "lucide-react";
 import { PageHero, SectionHeader } from "../components/UI";
-import { nextAction, roadmap } from "../data/site";
+import { roadmap } from "../data/site";
 
 export function RoadmapPage() {
   return (
     <>
       <PageHero
         eyebrow="Public roadmap"
-        title="Ship proof in the right order."
-        copy="The roadmap protects the immediate portfolio launch while keeping backend development and the long-term FDE path focused."
+        title="Build the next proof in the right order."
+        copy="CareerOS is live. The next priorities strengthen owned project evidence and backend delivery."
       />
       <section className="section shell sectionAfterHero">
         <SectionHeader
           kicker="Execution sequence"
-          title="Portfolio first. Evidence next. Platform later."
-          copy="A small deployed product and credible artifacts are more valuable than an elaborate Gantt chart or unfinished HR platform."
+          title="Public beta complete. Project proof next."
         />
         <div className="roadmap">
           {roadmap.map((item) => (
@@ -31,19 +29,6 @@ export function RoadmapPage() {
             </div>
           ))}
         </div>
-      </section>
-      <section className="section shell">
-        <article className="nextAction">
-          <div className="nextActionIcon">
-            <Target size={26} />
-          </div>
-          <div>
-            <span className="kicker">Current decision</span>
-            <h2>{nextAction.title}</h2>
-            <p>{nextAction.action}</p>
-            <small>{nextAction.why}</small>
-          </div>
-        </article>
       </section>
     </>
   );
