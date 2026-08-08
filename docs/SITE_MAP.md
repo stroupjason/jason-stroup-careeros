@@ -17,6 +17,7 @@
 ## Project pages
 
 - `/projects/careeros`
+- `/projects/careeros-analytics-integrations`
 - `/projects/automatic-nerf-turret`
 - `/projects/rallye-control`
 - `/projects/python-mongodb-debugging-lab`

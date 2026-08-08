@@ -1,4 +1,5 @@
 import { BookOpenCheck, Github, Linkedin, Newspaper, PenLine, type LucideIcon } from "lucide-react";
+import { trackPortfolioEvent } from "../analytics";
 import { PageHero, SectionHeader } from "../components/UI";
 import { profile, publicationProfiles } from "../data/site";
 
@@ -74,6 +75,14 @@ export function ResumeContactPage() {
               target={external ? "_blank" : undefined}
               rel={external ? "noopener noreferrer" : undefined}
               key={label}
+              onClick={() => {
+                if (external) {
+                  trackPortfolioEvent("External Profile Opened", {
+                    profile: label.toLowerCase() as "github" | "linkedin" | "medium",
+                    location: "contact",
+                  });
+                }
+              }}
             >
               <Icon size={22} aria-hidden="true" />
               <span>

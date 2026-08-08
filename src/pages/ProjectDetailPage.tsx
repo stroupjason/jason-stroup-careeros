@@ -1,6 +1,7 @@
 import { CheckCircle2, ImageOff } from "lucide-react";
+import { trackPortfolioEvent } from "../analytics";
 import { LinkButton, PageHero, SectionHeader, StateBadge } from "../components/UI";
-import type { Project } from "../data/site";
+import type { EvidenceState, InitiativePhaseStatus, Project } from "../data/site";
 
 const roleSlugs: Record<string, string> = {
   "Senior TSE": "senior-technical-support-engineer",
@@ -12,6 +13,13 @@ const roleSlugs: Record<string, string> = {
   "Data Science": "data-science",
 };
 
+const phaseEvidenceState: Record<InitiativePhaseStatus, EvidenceState> = {
+  Completed: "Demonstrated",
+  Active: "Practicing",
+  Next: "Learning",
+  Planned: "Planned",
+};
+
 export function ProjectDetailPage({ project }: { project: Project }) {
   return (
     <>
@@ -21,8 +29,22 @@ export function ProjectDetailPage({ project }: { project: Project }) {
         copy={project.summary}
         actions={
           <>
-            <LinkButton href="/projects" secondary>All projects</LinkButton>
-            {project.liveUrl ? <LinkButton href={project.liveUrl} external>View live beta</LinkButton> : null}
+            <LinkButton
+              href="/projects"
+              secondary
+              analytics={{ destination: "projects", location: "project-hero" }}
+            >
+              All projects
+            </LinkButton>
+            {project.liveUrl ? (
+              <LinkButton
+                href={project.liveUrl}
+                external
+                analytics={{ destination: "live-project", location: "project-hero" }}
+              >
+                View live beta
+              </LinkButton>
+            ) : null}
           </>
         }
       />
@@ -69,6 +91,65 @@ export function ProjectDetailPage({ project }: { project: Project }) {
           </div>
         </div>
       </section>
+
+      {project.detailSections ? (
+        <section className="section shell">
+          <SectionHeader
+            kicker="Implementation decisions"
+            title="Architecture, privacy, and verification"
+          />
+          <div className="projectDetailSections">
+            {project.detailSections.map((section) => (
+              <article key={section.title}>
+                <div className="projectDetailSectionHeading">
+                  <div>
+                    <span className="kicker">{section.kicker}</span>
+                    <h3>{section.title}</h3>
+                  </div>
+                  <StateBadge state={section.state} />
+                </div>
+                <p>{section.summary}</p>
+                <ul className="cleanList">
+                  {section.items.map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {project.initiative ? (
+        <section className="section band">
+          <div className="shell">
+            <SectionHeader
+              kicker="Implementation phases"
+              title="One initiative, five evidence gates"
+              copy={`Started ${project.initiative.started}. ${project.initiative.currentPhase} is the current phase.`}
+            />
+            <div className="initiativePhaseGrid">
+              {project.initiative.phases.map((phase) => (
+                <article className={`initiativePhase phase-${phase.status.toLowerCase()}`} key={phase.phase}>
+                  <div className="roadmapMeta">
+                    <span>Phase {phase.phase}</span>
+                    <StateBadge
+                      state={phaseEvidenceState[phase.status]}
+                      label={phase.status}
+                    />
+                  </div>
+                  <h3>{phase.title}</h3>
+                  <p>{phase.summary}</p>
+                  {phase.ticket ? <small>{phase.ticket}</small> : null}
+                  <ul className="cleanList">
+                    {phase.milestones.map((milestone) => (
+                      <li key={milestone}>{milestone}</li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <section className="section shell">
         <SectionHeader
@@ -123,13 +204,22 @@ export function ProjectDetailPage({ project }: { project: Project }) {
         </article>
         <article>
           <SectionHeader kicker="Role relevance" title="Where it fits" />
-            <div className="roleLinkList">
-              {project.roleLinks.map((role) => (
-                <a href={`/roles/${roleSlugs[role]}`} key={role}>
-                  {role}
-                </a>
-              ))}
-            </div>
+          <div className="roleLinkList">
+            {project.roleLinks.map((role) => (
+              <a
+                href={`/roles/${roleSlugs[role]}`}
+                key={role}
+                onClick={() =>
+                  trackPortfolioEvent("Role Lens Opened", {
+                    role: roleSlugs[role],
+                    location: "project",
+                  })
+                }
+              >
+                {role}
+              </a>
+            ))}
+          </div>
         </article>
       </section>
 

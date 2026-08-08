@@ -6,22 +6,26 @@ final values and assets.
 
 ## Canonical URL
 
-Set `VITE_SITE_URL` in the Vercel project to the approved origin without a
-trailing slash, for example `https://portfolio.example`. The application emits
-route-specific canonical and Open Graph URLs only when this value exists, so a
-preview deployment does not accidentally become canonical.
+The approved production origin is `https://www.jasonstroup.website`. It is the
+canonical source in the application so production and preview builds emit the
+same route-specific canonical and Open Graph URLs. The apex domain redirects to
+the `www` production domain.
 
 ## Sitemap
 
-After the domain is approved, generate `public/sitemap.xml` with an absolute
+After the beta `noindex` requirement is explicitly removed, generate
+`public/sitemap.xml` with an absolute
 `<loc>` for every route in `docs/SITE_MAP.md`. Add the resulting absolute URL to
 `public/robots.txt`:
 
 ```text
-Sitemap: https://approved.example/sitemap.xml
+Sitemap: https://www.jasonstroup.website/sitemap.xml
 ```
 
-Do not publish a sitemap containing a placeholder or preview hostname.
+Do not publish the sitemap while the current `noindex` controls remain, and do
+not publish one containing a preview hostname. Keep `docs/SITE_MAP.md`
+synchronized now so the analytics project route is included at recruiter
+launch.
 
 ## Sharing image
 

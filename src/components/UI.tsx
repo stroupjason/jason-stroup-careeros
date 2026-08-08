@@ -1,9 +1,16 @@
 import type { ReactNode } from "react";
 import { ArrowUpRight } from "lucide-react";
+import { trackPortfolioEvent } from "../analytics";
 import { evidenceStates, type EvidenceState, type Project, type RoleLens } from "../data/site";
 
-export function StateBadge({ state }: { state: EvidenceState }) {
-  return <span className={`stateBadge state-${state.toLowerCase()}`}>{state}</span>;
+export function StateBadge({
+  state,
+  label = state,
+}: {
+  state: EvidenceState;
+  label?: string;
+}) {
+  return <span className={`stateBadge state-${state.toLowerCase()}`}>{label}</span>;
 }
 
 export function PageHero({
@@ -47,7 +54,13 @@ export function SectionHeader({
   );
 }
 
-export function ProjectCard({ project }: { project: Project }) {
+export function ProjectCard({
+  project,
+  location = "projects",
+}: {
+  project: Project;
+  location?: "home" | "projects" | "role-lens";
+}) {
   return (
     <article className="projectCard">
       <div className="cardTop">
@@ -63,7 +76,15 @@ export function ProjectCard({ project }: { project: Project }) {
       </div>
       <div className="projectFooter">
         <small>{project.status}</small>
-        <a href={`/projects/${project.slug}`}>
+        <a
+          href={`/projects/${project.slug}`}
+          onClick={() =>
+            trackPortfolioEvent("Project Opened", {
+              project: project.slug,
+              location,
+            })
+          }
+        >
           View project <ArrowUpRight size={16} />
         </a>
       </div>
@@ -81,7 +102,15 @@ export function RoleCard({ role }: { role: RoleLens }) {
       <h3>{role.title}</h3>
       <p>{role.headline}</p>
       <small>{role.priority}</small>
-      <a href={`/roles/${role.slug}`}>
+      <a
+        href={`/roles/${role.slug}`}
+        onClick={() =>
+          trackPortfolioEvent("Role Lens Opened", {
+            role: role.slug,
+            location: "roles",
+          })
+        }
+      >
         View role fit <ArrowUpRight size={16} />
       </a>
     </article>
@@ -108,11 +137,16 @@ export function LinkButton({
   children,
   secondary = false,
   external = false,
+  analytics,
 }: {
   href: string;
   children: ReactNode;
   secondary?: boolean;
   external?: boolean;
+  analytics?: {
+    destination: "projects" | "roles" | "contact" | "live-project";
+    location: "home-hero" | "home-contact" | "project-hero" | "role-hero";
+  };
 }) {
   return (
     <a
@@ -120,6 +154,9 @@ export function LinkButton({
       href={href}
       target={external ? "_blank" : undefined}
       rel={external ? "noreferrer" : undefined}
+      onClick={() => {
+        if (analytics) trackPortfolioEvent("Primary CTA Selected", analytics);
+      }}
     >
       {children} <ArrowUpRight size={17} />
     </a>

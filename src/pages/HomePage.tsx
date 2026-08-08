@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { ArrowUpRight, BarChart3, Braces, Headphones, Users } from "lucide-react";
+import { trackPortfolioEvent } from "../analytics";
 import { profile, projects, roleLenses } from "../data/site";
 import { LinkButton, ProjectCard, SectionHeader } from "../components/UI";
 
@@ -31,8 +32,17 @@ export function HomePage() {
           {profile.location} · {profile.availability}
         </p>
         <div className="heroActions">
-          <LinkButton href="/projects">View projects</LinkButton>
-          <LinkButton href="/roles" secondary>
+          <LinkButton
+            href="/projects"
+            analytics={{ destination: "projects", location: "home-hero" }}
+          >
+            View projects
+          </LinkButton>
+          <LinkButton
+            href="/roles"
+            secondary
+            analytics={{ destination: "roles", location: "home-hero" }}
+          >
             Explore role fit
           </LinkButton>
         </div>
@@ -52,6 +62,12 @@ export function HomePage() {
                 className={`homeRoleSelectorCard${item.strong ? " strongFit" : ""}`}
                 href={`/roles/${role.slug}`}
                 key={role.slug}
+                onClick={() =>
+                  trackPortfolioEvent("Role Lens Opened", {
+                    role: role.slug,
+                    location: "home",
+                  })
+                }
               >
                 <span>{item.label}</span>
                 <small>{item.context}</small>
@@ -82,7 +98,7 @@ export function HomePage() {
         />
         <div className="projectGrid featuredProjectGrid">
           {featuredProjects.map((project) => (
-            <ProjectCard key={project.slug} project={project} />
+            <ProjectCard key={project.slug} project={project} location="home" />
           ))}
         </div>
       </section>
@@ -93,7 +109,14 @@ export function HomePage() {
             <span className="kicker">Let’s connect</span>
             <h2>See my work and connect.</h2>
             <p>Explore the evidence, then reach me through LinkedIn or review my public code on GitHub.</p>
-            <div className="heroActions"><LinkButton href="/resume-contact">Contact</LinkButton></div>
+            <div className="heroActions">
+              <LinkButton
+                href="/resume-contact"
+                analytics={{ destination: "contact", location: "home-contact" }}
+              >
+                Contact
+              </LinkButton>
+            </div>
           </div>
         </article>
       </section>

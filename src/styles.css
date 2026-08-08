@@ -445,6 +445,10 @@ h3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.projectCollectionGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .projectCard,
 .roleLensCard,
 .capabilityCard,
@@ -886,6 +890,73 @@ h3 {
   margin-top: 24px;
 }
 
+.projectDetailSections {
+  border-top: 1px solid var(--line);
+}
+
+.projectDetailSections > article {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.75fr) minmax(0, 1.25fr);
+  gap: 28px 48px;
+  padding: 30px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.projectDetailSectionHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.projectDetailSectionHeading h3 {
+  margin: 9px 0 0;
+  font-size: 1.45rem;
+}
+
+.projectDetailSections > article > p {
+  grid-column: 2;
+  margin: -18px 0 0;
+}
+
+.projectDetailSections .cleanList {
+  grid-column: 2;
+}
+
+.initiativePhaseGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.initiativePhase {
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 24px;
+  background: rgba(17, 31, 43, 0.78);
+}
+
+.initiativePhase.phase-completed,
+.initiativePhase.phase-active {
+  border-color: rgba(103, 232, 193, 0.3);
+}
+
+.initiativePhase h3 {
+  margin: 16px 0 8px;
+  font-size: 1.35rem;
+}
+
+.initiativePhase > small {
+  display: block;
+  margin: 16px 0;
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.initiativePhase .cleanList {
+  margin-top: 20px;
+}
+
 .nextProofLine {
   display: grid;
   grid-template-columns: 150px 1fr;
@@ -1113,6 +1184,92 @@ code {
 
 .roadmapItem p {
   margin-bottom: 0;
+}
+
+.initiativeList {
+  display: grid;
+  gap: 18px;
+}
+
+.initiativeCard {
+  border: 1px solid rgba(103, 232, 193, 0.3);
+  border-radius: 13px;
+  padding: 28px;
+  background: rgba(17, 31, 43, 0.78);
+}
+
+.initiativeCardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.initiativeCardHeader h2 {
+  margin: 10px 0 0;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+}
+
+.initiativeCard > p {
+  max-width: 850px;
+  margin: 18px 0 26px;
+}
+
+.initiativeMetrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.initiativeMetrics > span {
+  display: grid;
+  gap: 5px;
+  padding: 18px;
+  border-right: 1px solid var(--line);
+}
+
+.initiativeMetrics > span:first-child {
+  padding-left: 0;
+}
+
+.initiativeMetrics > span:last-child {
+  border-right: 0;
+}
+
+.initiativeMetrics small {
+  color: var(--muted);
+}
+
+.initiativeProgression {
+  margin: 24px 0;
+  border-top: 1px solid var(--line);
+}
+
+.initiativeProgression > div {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.initiativeProgression > div > span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.initiativeLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 24px;
+  color: var(--accent);
+  font-weight: 750;
+  text-decoration: none;
 }
 
 .journalCard,
@@ -1585,6 +1742,24 @@ code {
   font-size: 0.78rem;
 }
 
+.analyticsPreference {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.analyticsPreference input {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
 :focus-visible {
   outline: 3px solid rgba(103, 232, 193, 0.65);
   outline-offset: 3px;
@@ -1631,6 +1806,16 @@ code {
 
   .roleSummaryGrid {
     grid-template-columns: 1fr;
+  }
+
+  .projectDetailSections > article {
+    grid-template-columns: 1fr;
+  }
+
+  .projectDetailSections > article > p,
+  .projectDetailSections .cleanList {
+    grid-column: 1;
+    margin-top: 0;
   }
 
   .developingSkillGrid {
@@ -1745,8 +1930,33 @@ code {
   .directionList,
   .plannedProject,
   .projectConnections,
-  .nextProofLine {
+  .nextProofLine,
+  .initiativePhaseGrid,
+  .initiativeMetrics {
     grid-template-columns: 1fr;
+  }
+
+  .initiativeMetrics > span,
+  .initiativeMetrics > span:first-child {
+    padding: 14px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .initiativeMetrics > span:last-child {
+    border-bottom: 0;
+  }
+
+  .initiativeProgression > div {
+    grid-template-columns: 1fr auto;
+  }
+
+  .initiativeProgression > div > span {
+    grid-column: 1 / -1;
+  }
+
+  .initiativeCardHeader {
+    display: grid;
   }
 
   .signal {

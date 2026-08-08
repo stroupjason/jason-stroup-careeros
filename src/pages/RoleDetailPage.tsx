@@ -1,4 +1,5 @@
 import { CheckCircle2, Search } from "lucide-react";
+import { trackPortfolioEvent } from "../analytics";
 import { LinkButton, PageHero, SectionHeader, StateBadge } from "../components/UI";
 import { projects, type RoleLens } from "../data/site";
 
@@ -15,8 +16,19 @@ export function RoleDetailPage({ role }: { role: RoleLens }) {
         copy={role.headline}
         actions={
           <>
-            <LinkButton href="/roles" secondary>All role fit</LinkButton>
-            <LinkButton href="/projects">See supporting projects</LinkButton>
+            <LinkButton
+              href="/roles"
+              secondary
+              analytics={{ destination: "roles", location: "role-hero" }}
+            >
+              All role fit
+            </LinkButton>
+            <LinkButton
+              href="/projects"
+              analytics={{ destination: "projects", location: "role-hero" }}
+            >
+              See supporting projects
+            </LinkButton>
           </>
         }
       />
@@ -61,7 +73,16 @@ export function RoleDetailPage({ role }: { role: RoleLens }) {
         />
         <div className="compactProjectLinks">
           {relevantProjects.map((project) => (
-            <a href={`/projects/${project.slug}`} key={project.slug}>
+            <a
+              href={`/projects/${project.slug}`}
+              key={project.slug}
+              onClick={() =>
+                trackPortfolioEvent("Project Opened", {
+                  project: project.slug,
+                  location: "role-lens",
+                })
+              }
+            >
               <span>{project.shortTitle}</span><StateBadge state={project.evidenceState} />
             </a>
           ))}

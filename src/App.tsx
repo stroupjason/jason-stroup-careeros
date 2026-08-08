@@ -1,4 +1,9 @@
 import { useEffect } from "react";
+import { Analytics } from "@vercel/analytics/react";
+import {
+  captureCampaignAttribution,
+  filterAnalyticsEvent,
+} from "./analytics";
 import { SiteLayout } from "./components/SiteLayout";
 import { projects, roleLenses } from "./data/site";
 import { AboutPage } from "./pages/AboutPage";
@@ -19,6 +24,8 @@ function normalizePath(pathname: string) {
   if (pathname === "/") return "/";
   return pathname.replace(/\/+$/, "") || "/";
 }
+
+const productionSiteUrl = "https://www.jasonstroup.website";
 
 function setMeta(selector: string, attribute: "name" | "property", key: string, content: string) {
   let element = document.querySelector<HTMLMetaElement>(selector);
@@ -47,12 +54,10 @@ export function App() {
   const route = resolveRoute(path);
 
   useEffect(() => {
+    captureCampaignAttribution();
     const pageTitle = path === "/" ? route.title : `${route.title} | Jason Stroup CareerOS`;
-    const configuredSiteUrl = import.meta.env.VITE_SITE_URL?.replace(/\/$/, "");
-    const canonicalUrl = configuredSiteUrl
-      ? `${configuredSiteUrl}${path === "/" ? "/" : path}`
-      : undefined;
-    const imageUrl = `${configuredSiteUrl ?? window.location.origin}/og-careeros.png`;
+    const canonicalUrl = `${productionSiteUrl}${path === "/" ? "/" : path}`;
+    const imageUrl = `${productionSiteUrl}/og-careeros.png`;
 
     document.title = pageTitle;
     setMeta('meta[name="description"]', "name", "description", route.description);
@@ -65,11 +70,7 @@ export function App() {
     setMeta('meta[name="twitter:title"]', "name", "twitter:title", pageTitle);
     setMeta('meta[name="twitter:description"]', "name", "twitter:description", route.description);
     setMeta('meta[name="twitter:image"]', "name", "twitter:image", imageUrl);
-    if (canonicalUrl) {
-      setMeta('meta[property="og:url"]', "property", "og:url", canonicalUrl);
-    } else {
-      document.querySelector('meta[property="og:url"]')?.remove();
-    }
+    setMeta('meta[property="og:url"]', "property", "og:url", canonicalUrl);
     setCanonical(canonicalUrl);
     if (window.location.hash) {
       window.requestAnimationFrame(() => {
@@ -80,7 +81,12 @@ export function App() {
     }
   }, [path, route.description, route.title]);
 
-  return <SiteLayout currentPath={path}>{route.element}</SiteLayout>;
+  return (
+    <>
+      <SiteLayout currentPath={path}>{route.element}</SiteLayout>
+      <Analytics beforeSend={filterAnalyticsEvent} />
+    </>
+  );
 }
 
 function resolveRoute(path: string) {
@@ -96,7 +102,7 @@ function resolveRoute(path: string) {
     return {
       title: "Projects",
       description:
-        "CareerOS, Automatic Nerf Turret, Rallye Control solar trailer telemetry, and backend debugging projects.",
+        "CareerOS, privacy-conscious analytics and integrations, computer vision, edge telemetry, and backend debugging projects.",
       element: <ProjectsPage />,
     };
   }
@@ -142,7 +148,7 @@ function resolveRoute(path: string) {
     return {
       title: "Roadmap",
       description:
-        "Jason Stroup's public CareerOS execution roadmap from portfolio launch to backend evidence and forward deployment.",
+        "Jason Stroup's public CareerOS roadmap for analytics, integrations, owned project evidence, and software delivery.",
       element: <RoadmapPage />,
     };
   }

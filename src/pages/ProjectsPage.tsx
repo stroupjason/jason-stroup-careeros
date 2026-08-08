@@ -2,6 +2,9 @@ import { EvidenceLegend, PageHero, ProjectCard, SectionHeader, StateBadge } from
 import { projects } from "../data/site";
 
 export function ProjectsPage() {
+  const activeProjects = projects.filter((project) => project.evidenceState !== "Planned");
+  const plannedProjects = projects.filter((project) => project.evidenceState === "Planned");
+
   return (
     <>
       <PageHero
@@ -13,18 +16,20 @@ export function ProjectsPage() {
         <SectionHeader
           kicker="Featured work"
           title="Demonstrated and active"
-          copy="Three projects show product thinking, computer vision, edge systems, and technical delivery."
+          copy="Four projects show product thinking, analytics, integrations, computer vision, edge systems, and technical delivery."
         />
-        <div className="projectGrid featuredProjectGrid">
-          {projects.slice(0, 3).map((project) => (
+        <div className="projectGrid projectCollectionGrid">
+          {activeProjects.map((project) => (
             <ProjectCard key={project.slug} project={project} />
           ))}
         </div>
-        <article className="plannedProject">
-          <div><StateBadge state="Planned" /><h2>Python/MongoDB Debugging Lab</h2></div>
-          <p>A safe backend lab is specified but not built. It will demonstrate symptom-to-code tracing, tests, deployment, and validation.</p>
-          <a href="/projects/python-mongodb-debugging-lab">View planned proof</a>
-        </article>
+        {plannedProjects.map((project) => (
+          <article className="plannedProject" key={project.slug}>
+            <div><StateBadge state="Planned" /><h2>{project.title}</h2></div>
+            <p>{project.summary}</p>
+            <a href={`/projects/${project.slug}`}>View planned proof</a>
+          </article>
+        ))}
         <EvidenceLegend />
       </section>
     </>

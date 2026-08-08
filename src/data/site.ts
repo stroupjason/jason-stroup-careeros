@@ -16,6 +16,34 @@ export type ProjectMedia = {
   caption: string;
 };
 
+export type InitiativePhaseStatus = "Completed" | "Active" | "Next" | "Planned";
+
+export type InitiativePhase = {
+  phase: string;
+  title: string;
+  status: InitiativePhaseStatus;
+  summary: string;
+  ticket?: string;
+  milestones: string[];
+};
+
+export type ProjectInitiative = {
+  status: "Active";
+  started: string;
+  currentPhase: string;
+  summary: string;
+  relatedTickets: string[];
+  phases: InitiativePhase[];
+};
+
+export type ProjectDetailSection = {
+  kicker: string;
+  title: string;
+  state: EvidenceState;
+  summary: string;
+  items: string[];
+};
+
 export type Project = {
   slug: string;
   title: string;
@@ -34,9 +62,12 @@ export type Project = {
   unknowns: string[];
   proofNote: string;
   nextProof: string;
+  visibility?: "Public";
   liveUrl?: string;
   media?: ProjectMedia[];
   subsystems?: ProjectSubsystem[];
+  initiative?: ProjectInitiative;
+  detailSections?: ProjectDetailSection[];
 };
 
 export type RoleLens = {
@@ -604,7 +635,7 @@ export const projects: Project[] = [
       "FDE",
     ],
     verifiedFacts: [
-      "I built and deployed the public beta at jason-stroup-careeros.vercel.app.",
+      "I built and deployed the public beta at www.jasonstroup.website.",
       "The React/TypeScript site uses typed project and role data with direct-route support.",
       "I use named proof states instead of unsupported readiness percentages.",
       "The public product remains separate from private career evidence.",
@@ -616,7 +647,7 @@ export const projects: Project[] = [
     ],
     proofNote: "The live product is the primary artifact for this project.",
     nextProof: "Add a concise product decision note after the public beta produces real feedback.",
-    liveUrl: "https://jason-stroup-careeros.vercel.app",
+    liveUrl: "https://www.jasonstroup.website",
   },
   {
     slug: "automatic-nerf-turret",
@@ -757,6 +788,208 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: "careeros-analytics-integrations",
+    title: "CareerOS Analytics & Integrations",
+    shortTitle: "CareerOS Analytics",
+    type: "Platform & Integrations",
+    status: "Active",
+    evidenceState: "Practicing",
+    visibility: "Public",
+    summary:
+      "A privacy-conscious analytics and integration layer for CareerOS that measures portfolio engagement, preserves campaign attribution, supports operational decision-making, and creates a foundation for secure lead capture and future CRM workflows.",
+    problem:
+      "CareerOS needs enough trustworthy product signal to improve recruiter journeys and campaign decisions without collecting personal details, exposing private configuration, or installing every possible marketing tool.",
+    outcome:
+      "The production domain and Vercel analytics foundation are verified. The React instrumentation, typed event taxonomy, attribution controls, and production checks are the active phase; behavior analytics, inquiry capture, and CRM evaluation remain explicitly planned.",
+    approach:
+      "I translated practical portfolio questions into a small event taxonomy, integrated the framework-specific Vercel Analytics client, and limited campaign handling to allowlisted UTM fields. The client honors browser Do Not Track by default, provides a persistent anonymous-usage preference, removes arbitrary query data from analytics URLs, and keeps campaign attribution session-scoped. One phased initiative holds the implementation and future integration work so the public status stays accurate as evidence changes.",
+    stack: [
+      "Vercel",
+      "React",
+      "TypeScript",
+      "Web Analytics",
+      "Product Analytics",
+      "UTM Attribution",
+      "Privacy",
+      "Integrations",
+      "Google Sheets (Planned)",
+    ],
+    capabilities: [
+      "Event taxonomy design",
+      "Frontend instrumentation",
+      "Campaign attribution",
+      "Privacy-aware measurement",
+      "Observability",
+      "Integration architecture",
+      "Production verification",
+      "Operational documentation",
+    ],
+    roleLinks: [
+      "Senior TSE",
+      "TAM",
+      "CSE",
+      "Data Analytics",
+      "Application Engineer",
+      "FDE",
+    ],
+    verifiedFacts: [
+      "CareerOS runs on a Vercel Pro team with www.jasonstroup.website as the production custom domain.",
+      "Vercel Web Analytics is enabled for the production project.",
+      "The source includes the official React analytics integration and a typed, low-cardinality interaction taxonomy.",
+      "Campaign handling is limited to normalized UTM fields; arbitrary query parameters, URL fragments, and personal form data are excluded.",
+      "GA4, Microsoft Clarity, Search Console, inquiry capture, Google Sheets, HubSpot, and the LinkedIn Insight Tag are not presented as live.",
+    ],
+    unknowns: [
+      "Production event results in the correct Vercel dashboard remain the final PORT-005 completion gate.",
+      "Whether GA4 or Microsoft Clarity would add enough decision value to justify additional consent and performance cost.",
+      "The final secure inquiry workflow and whether a later CRM migration is warranted.",
+    ],
+    proofNote:
+      "The public route, source implementation, analytics runbook, and phased roadmap are the current artifacts; private visitor totals and administrator views stay private.",
+    nextProof:
+      "Verify production page-view and custom-event results in the correct Vercel dashboard, then complete PORT-005 and move discovery analytics to the next active phase.",
+    detailSections: [
+      {
+        kicker: "Privacy and security",
+        title: "Measure decisions without collecting identities",
+        state: "Demonstrated",
+        summary:
+          "The implementation uses Vercel's cookie-free Web Analytics foundation and adds client-side boundaries for this portfolio.",
+        items: [
+          "Honor browser Do Not Track unless a visitor explicitly chooses a local preference.",
+          "Offer a persistent anonymous-usage toggle without collecting an account or identity.",
+          "Strip arbitrary query parameters and fragments before analytics events are sent.",
+          "Keep future inquiry and Sheets credentials behind same-origin server endpoints rather than browser code.",
+        ],
+      },
+      {
+        kicker: "Events and attribution",
+        title: "A compact taxonomy tied to portfolio questions",
+        state: "Practicing",
+        summary:
+          "Automatic route views are paired with a typed set of meaningful interactions and session-scoped campaign context.",
+        items: [
+          "Track project opens, role-lens opens, primary calls to action, and public-profile visits.",
+          "Use fixed event names, controlled locations, and project or role slugs instead of free-form visitor data.",
+          "Normalize LinkedIn and other campaign UTMs, retain them for the browser session, and omit high-risk arbitrary parameters.",
+          "Reserve successful inquiry analytics for the later server-validated submission flow.",
+        ],
+      },
+      {
+        kicker: "Verification",
+        title: "Production evidence is the completion gate",
+        state: "Practicing",
+        summary:
+          "A package install, passing build, or deployment does not complete the analytics phase by itself.",
+        items: [
+          "Check direct routes, refresh behavior, desktop and mobile layouts, keyboard behavior, and application console output.",
+          "Confirm production requests reach the Vercel analytics endpoints on the canonical domain.",
+          "Confirm page views and typed custom events appear in the correct Vercel dashboard before closing PORT-005.",
+          "Keep private totals, visitor details, account identifiers, and administrator URLs out of the portfolio.",
+        ],
+      },
+      {
+        kicker: "Next integrations",
+        title: "Evaluate added tracking only when it earns its cost",
+        state: "Planned",
+        summary:
+          "Later tools remain evaluation or delivery milestones, not claims of active integrations.",
+        items: [
+          "Evaluate consent-gated GA4, Microsoft Clarity privacy masking, and Search Console verification.",
+          "Build a same-origin inquiry endpoint with Turnstile and a signed server-to-server Sheets workflow.",
+          "Evaluate HubSpot and the LinkedIn Insight Tag only when campaign reporting justifies the privacy, performance, and cost tradeoffs.",
+        ],
+      },
+    ],
+    initiative: {
+      status: "Active",
+      started: "August 7, 2026",
+      currentPhase: "Analytics implementation",
+      summary:
+        "Build a privacy-conscious measurement and integration foundation for CareerOS, then add discovery and conversion systems only after each layer is verified.",
+      relatedTickets: ["PORT-005", "PORT-006"],
+      phases: [
+        {
+          phase: "00",
+          title: "Foundation",
+          status: "Completed",
+          summary: "Production hosting, domain, and dashboard foundation are verified.",
+          milestones: [
+            "Vercel team upgraded to Pro",
+            "jasonstroup.website connected",
+            "Production custom domain established",
+            "Vercel Web Analytics enabled in the dashboard",
+          ],
+        },
+        {
+          phase: "01",
+          title: "Analytics implementation",
+          status: "Active",
+          ticket: "PORT-005",
+          summary:
+            "Implement privacy-conscious analytics and attribution, then verify both production requests and dashboard results.",
+          milestones: [
+            "Framework-specific Vercel Analytics integration",
+            "SPA page-view verification",
+            "Typed custom-event instrumentation",
+            "LinkedIn UTM strategy",
+            "Privacy and consent controls",
+            "Canonical-domain metadata",
+            "Analytics documentation",
+            "Production request and dashboard verification",
+          ],
+        },
+        {
+          phase: "02",
+          title: "Discovery and behavior analytics",
+          status: "Next",
+          summary:
+            "Evaluate deeper behavior and search discovery signals after the lightweight analytics layer is proven.",
+          milestones: [
+            "GA4 property and Measurement ID configuration",
+            "Microsoft Clarity configuration",
+            "Consent-gated loading",
+            "Clarity privacy masking",
+            "Google Search Console domain verification",
+            "Monthly analytics-review workflow",
+          ],
+        },
+        {
+          phase: "03",
+          title: "Secure inquiry capture",
+          status: "Planned",
+          ticket: "PORT-006",
+          summary:
+            "Create a secure conversion path with server-side validation and private lead storage.",
+          milestones: [
+            "Custom CareerOS inquiry form",
+            "Same-origin Vercel server endpoint",
+            "Cloudflare Turnstile",
+            "Signed Google Apps Script webhook",
+            "Private Google Sheets lead storage",
+            "Email notification",
+            "UTM attribution preservation",
+            "Privacy-safe successful-submission analytics",
+          ],
+        },
+        {
+          phase: "04",
+          title: "CRM and marketing evaluation",
+          status: "Planned",
+          summary:
+            "Evaluate added marketing infrastructure only when measured campaign needs justify it.",
+          milestones: [
+            "Evaluate HubSpot Free CRM migration",
+            "Evaluate LinkedIn Insight Tag",
+            "Assess whether campaign reporting justifies additional tracking",
+            "Review consent, privacy, performance, and cost",
+            "Preserve Google Sheets as an exportable migration source",
+          ],
+        },
+      ],
+    },
+  },
+  {
     slug: "python-mongodb-debugging-lab",
     title: "Python/MongoDB Debugging Lab",
     shortTitle: "Backend Debugging Lab",
@@ -815,7 +1048,11 @@ export const roleLenses: RoleLens[] = [
       "Customer communication in regulated and federal environments",
       "Runbooks, documentation, reproduction, and structured escalation packages",
     ],
-    relevantProjects: ["careeros", "python-mongodb-debugging-lab"],
+    relevantProjects: [
+      "careeros",
+      "careeros-analytics-integrations",
+      "python-mongodb-debugging-lab",
+    ],
     gaps: [
       "More public-safe examples of mentoring and technical leadership",
       "Measured operational improvements such as reduced diagnosis time or repeat incidents",
@@ -860,7 +1097,11 @@ export const roleLenses: RoleLens[] = [
       "Documentation, expectation-setting, and cross-functional coordination",
       "Analytics and adoption-oriented experience",
     ],
-    relevantProjects: ["careeros", "rallye-control"],
+    relevantProjects: [
+      "careeros",
+      "careeros-analytics-integrations",
+      "rallye-control",
+    ],
     gaps: [
       "A public-safe proactive account plan or success-plan example",
       "Executive business review and renewal-risk evidence",
@@ -908,6 +1149,7 @@ export const roleLenses: RoleLens[] = [
     ],
     relevantProjects: [
       "careeros",
+      "careeros-analytics-integrations",
       "automatic-nerf-turret",
       "rallye-control",
     ],
@@ -955,7 +1197,11 @@ export const roleLenses: RoleLens[] = [
       "Data storytelling tied to customer and support decisions",
       "Python and JSON/CSV transformation experience",
     ],
-    relevantProjects: ["careeros", "rallye-control"],
+    relevantProjects: [
+      "careeros",
+      "careeros-analytics-integrations",
+      "rallye-control",
+    ],
     gaps: [
       "A polished public analytics case study with a reproducible dataset",
       "More explicit statistical analysis and experiment-design evidence",
@@ -1005,6 +1251,7 @@ export const roleLenses: RoleLens[] = [
       "rallye-control",
       "python-mongodb-debugging-lab",
       "careeros",
+      "careeros-analytics-integrations",
     ],
     gaps: [
       "Reviewed production backend contributions",
@@ -1053,6 +1300,7 @@ export const roleLenses: RoleLens[] = [
     ],
     relevantProjects: [
       "careeros",
+      "careeros-analytics-integrations",
       "automatic-nerf-turret",
       "rallye-control",
       "python-mongodb-debugging-lab",
@@ -1107,6 +1355,7 @@ export const roleLenses: RoleLens[] = [
     ],
     relevantProjects: [
       "careeros",
+      "careeros-analytics-integrations",
       "automatic-nerf-turret",
       "rallye-control",
       "python-mongodb-debugging-lab",

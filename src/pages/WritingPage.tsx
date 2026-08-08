@@ -1,4 +1,5 @@
 import { ArrowUpRight } from "lucide-react";
+import { trackPortfolioEvent } from "../analytics";
 import { PageHero, SectionHeader } from "../components/UI";
 import { publicationProfiles, writingEntries, writingThemes } from "../data/site";
 
@@ -36,6 +37,12 @@ export function WritingPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Read ${entry.title} on ${entry.platform}`}
+                onClick={() =>
+                  trackPortfolioEvent("External Profile Opened", {
+                    profile: "published-writing",
+                    location: "writing",
+                  })
+                }
               >
                 <div className="writingMeta">
                   <span>{entry.platform}</span>
@@ -97,6 +104,12 @@ export function WritingPage() {
               target="_blank"
               rel="noopener noreferrer"
               key={profile.platform}
+              onClick={() =>
+                trackPortfolioEvent("External Profile Opened", {
+                  profile: profile.platform.toLowerCase() as "medium" | "linkedin",
+                  location: "writing",
+                })
+              }
             >
               <span>
                 <strong>{profile.platform}</strong>

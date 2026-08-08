@@ -6,7 +6,9 @@
 - PORT-002 Add final public email and reviewed resume
 - PORT-003 Add Open Graph image, sitemap, robots, and canonical URL
 - PORT-004 Deploy Vercel preview and production environments
-- PORT-005 Add lightweight privacy-respecting analytics
+- PORT-005 [Active] Add privacy-conscious analytics, attribution, and measurement under `CareerOS Analytics & Integrations`; complete only after production requests and dashboard results are verified
+- PORT-006 [Planned] Add a secure inquiry form and private Google Sheets lead-capture workflow under `CareerOS Analytics & Integrations`
+- Later milestone: evaluate HubSpot and the LinkedIn Insight Tag under `CareerOS Analytics & Integrations` when measured campaign needs justify added tracking
 
 ## EPIC 2 — Featured project evidence
 

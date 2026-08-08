@@ -38,6 +38,9 @@ professionals.
   Practicing, Learning, or Planned so proposed architecture is not presented as
   completed implementation.
 - **CareerOS** — the portfolio product itself.
+- **CareerOS Analytics & Integrations** — the active privacy-conscious product
+  analytics, campaign attribution, observability, and conversion-infrastructure
+  initiative for CareerOS.
 - **Python/MongoDB Debugging Lab** — the next public backend evidence build,
   clearly labeled as not yet completed.
 

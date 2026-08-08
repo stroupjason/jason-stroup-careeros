@@ -1,0 +1,157 @@
+import { track, type BeforeSendEvent } from "@vercel/analytics/react";
+
+const analyticsPreferenceKey = "careeros-analytics-preference-v1";
+const campaignAttributionKey = "careeros-campaign-attribution-v1";
+const analyticsPreferenceEvent = "careeros:analytics-preference";
+
+const campaignParameters = [
+  "utm_source",
+  "utm_medium",
+  "utm_campaign",
+  "utm_content",
+] as const;
+
+type CampaignParameter = (typeof campaignParameters)[number];
+type CampaignAttribution = Partial<Record<CampaignParameter, string>>;
+
+type PortfolioEventMap = {
+  "Project Opened": {
+    project: string;
+    location: "home" | "projects" | "role-lens" | "roadmap";
+  };
+  "Role Lens Opened": {
+    role: string;
+    location: "home" | "roles" | "project";
+  };
+  "Primary CTA Selected": {
+    destination: "projects" | "roles" | "contact" | "live-project";
+    location: "home-hero" | "home-contact" | "project-hero" | "role-hero";
+  };
+  "External Profile Opened": {
+    profile: "github" | "linkedin" | "medium" | "published-writing";
+    location: "footer" | "contact" | "writing";
+  };
+};
+
+function getStorage(name: "localStorage" | "sessionStorage") {
+  try {
+    const storage = window[name];
+    const key = "__careeros_storage_test__";
+    storage.setItem(key, key);
+    storage.removeItem(key);
+    return storage;
+  } catch {
+    return undefined;
+  }
+}
+
+function normalizeCampaignValue(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 64);
+}
+
+function readCampaignAttribution(): CampaignAttribution {
+  const storage = getStorage("sessionStorage");
+  if (!storage) return {};
+
+  try {
+    return JSON.parse(
+      storage.getItem(campaignAttributionKey) ?? "{}",
+    ) as CampaignAttribution;
+  } catch {
+    return {};
+  }
+}
+
+function analyticsProperties() {
+  const attribution = readCampaignAttribution();
+  return {
+    utm_source: attribution.utm_source,
+    utm_medium: attribution.utm_medium,
+    utm_campaign: attribution.utm_campaign,
+  };
+}
+
+export function captureCampaignAttribution(search = window.location.search) {
+  const storage = getStorage("sessionStorage");
+  if (!storage) return;
+
+  const parameters = new URLSearchParams(search);
+  const attribution = campaignParameters.reduce<CampaignAttribution>(
+    (result, parameter) => {
+      const value = parameters.get(parameter);
+      const normalizedValue = value ? normalizeCampaignValue(value) : "";
+      if (normalizedValue) result[parameter] = normalizedValue;
+      return result;
+    },
+    {},
+  );
+
+  if (Object.keys(attribution).length > 0) {
+    storage.setItem(
+      campaignAttributionKey,
+      JSON.stringify(attribution),
+    );
+  }
+}
+
+export function isAnalyticsEnabled() {
+  const storage = getStorage("localStorage");
+  if (!storage) {
+    return navigator.doNotTrack !== "1";
+  }
+
+  const preference = storage.getItem(analyticsPreferenceKey);
+  if (preference === "enabled") return true;
+  if (preference === "disabled") return false;
+  return navigator.doNotTrack !== "1";
+}
+
+export function setAnalyticsEnabled(enabled: boolean) {
+  const storage = getStorage("localStorage");
+  if (storage) {
+    storage.setItem(
+      analyticsPreferenceKey,
+      enabled ? "enabled" : "disabled",
+    );
+  }
+  window.dispatchEvent(new CustomEvent(analyticsPreferenceEvent));
+}
+
+export function subscribeToAnalyticsPreference(listener: () => void) {
+  window.addEventListener(analyticsPreferenceEvent, listener);
+  return () => window.removeEventListener(analyticsPreferenceEvent, listener);
+}
+
+export function filterAnalyticsEvent(event: BeforeSendEvent) {
+  if (!isAnalyticsEnabled()) return null;
+
+  try {
+    const url = new URL(event.url);
+    const allowedParameters = new URLSearchParams();
+
+    campaignParameters.forEach((parameter) => {
+      const value = url.searchParams.get(parameter);
+      const normalizedValue = value ? normalizeCampaignValue(value) : "";
+      if (normalizedValue) allowedParameters.set(parameter, normalizedValue);
+    });
+
+    url.search = allowedParameters.toString();
+    url.hash = "";
+    return { ...event, url: url.toString() };
+  } catch {
+    return null;
+  }
+}
+
+export function trackPortfolioEvent<EventName extends keyof PortfolioEventMap>(
+  name: EventName,
+  properties: PortfolioEventMap[EventName],
+) {
+  if (!isAnalyticsEnabled()) return;
+  track(name, { ...properties, ...analyticsProperties() });
+}

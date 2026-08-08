@@ -1,5 +1,11 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { ArrowUpRight, Github, Linkedin, Menu, X } from "lucide-react";
+import {
+  isAnalyticsEnabled,
+  setAnalyticsEnabled,
+  subscribeToAnalyticsPreference,
+  trackPortfolioEvent,
+} from "../analytics";
 import { profile } from "../data/site";
 
 type SiteLayoutProps = {
@@ -24,6 +30,7 @@ function isActive(currentPath: string, href: string) {
 
 export function SiteLayout({ currentPath, children }: SiteLayoutProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [anonymousAnalytics, setAnonymousAnalytics] = useState(isAnalyticsEnabled);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -39,6 +46,11 @@ export function SiteLayout({ currentPath, children }: SiteLayoutProps) {
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [menuOpen]);
+
+  useEffect(
+    () => subscribeToAnalyticsPreference(() => setAnonymousAnalytics(isAnalyticsEnabled())),
+    [],
+  );
 
   return (
     <div className="siteFrame">
@@ -92,10 +104,30 @@ export function SiteLayout({ currentPath, children }: SiteLayoutProps) {
             <p>{profile.coreIdentity}</p>
           </div>
           <div className="footerLinks">
-            <a href={profile.linkedin} target="_blank" rel="noreferrer">
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() =>
+                trackPortfolioEvent("External Profile Opened", {
+                  profile: "linkedin",
+                  location: "footer",
+                })
+              }
+            >
               <Linkedin size={17} /> LinkedIn
             </a>
-            <a href={profile.github} target="_blank" rel="noreferrer">
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() =>
+                trackPortfolioEvent("External Profile Opened", {
+                  profile: "github",
+                  location: "footer",
+                })
+              }
+            >
               <Github size={17} /> GitHub
             </a>
             <a href="/projects">Projects</a>
@@ -112,6 +144,17 @@ export function SiteLayout({ currentPath, children }: SiteLayoutProps) {
             Public-safe evidence only. No customer data, employer source code,
             internal architecture, or unsupported claims.
           </p>
+          <label className="analyticsPreference">
+            <input
+              type="checkbox"
+              checked={anonymousAnalytics}
+              onChange={(event) => {
+                setAnalyticsEnabled(event.currentTarget.checked);
+                setAnonymousAnalytics(event.currentTarget.checked);
+              }}
+            />
+            <span>Share anonymous usage</span>
+          </label>
         </div>
       </footer>
     </div>
