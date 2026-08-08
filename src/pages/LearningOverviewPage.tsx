@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { ArrowUpRight, Award, CheckCircle2, CircleDot, Clock3, ExternalLink, FileCheck2 } from "lucide-react";
+import { ArrowUpRight, Award, CheckCircle2, ExternalLink } from "lucide-react";
 import { trackPortfolioEvent } from "../analytics";
 import { useLearningAdmin } from "../admin/AdminContext";
+import { DeliveryPulse } from "../components/DeliveryIntelligence";
 import { CurrentLearningCourseCard, formatLearningDate } from "../components/LearningUI";
 import { LinkButton, PageHero, SectionHeader, StateBadge } from "../components/UI";
 import {
@@ -12,7 +13,6 @@ import {
   currentLearningSprint,
   getLearningTicket,
   getInitiativeProgress,
-  type DeliveryStatus,
 } from "../data/learning";
 import type { EvidenceState } from "../data/site";
 
@@ -28,7 +28,6 @@ export function LearningOverviewPage() {
   const publicTickets = admin.publicTickets;
   const publicCourses = admin.publicCourses;
   const publicEvidence = admin.publicEvidence;
-  const publicSessions = admin.publicSessions;
   const publicInitiatives = admin.publicInitiatives;
   const currentCourses = publicCourses.filter((course) => course.status === "In Progress");
   const completedCourses = publicCourses.filter((course) => course.status === "Completed");
@@ -49,10 +48,6 @@ export function LearningOverviewPage() {
     });
   }, []);
 
-  const statusCounts = publicTickets.reduce<Partial<Record<DeliveryStatus, number>>>((counts, ticket) => {
-    counts[ticket.deliveryStatus] = (counts[ticket.deliveryStatus] ?? 0) + 1;
-    return counts;
-  }, {});
   const capabilityProgression = Object.entries(capabilityLabels).map(([slug, label]) => {
     const relatedTickets = publicTickets.filter((ticket) => ticket.capabilitySlugs.includes(slug));
     const state = relatedTickets.reduce<EvidenceState>(
@@ -172,16 +167,11 @@ export function LearningOverviewPage() {
       <section className="section band">
         <div className="shell">
           <SectionHeader
-            kicker="Delivery health"
-            title="The work, without vanity metrics."
-            copy="Counts are derived from approved records. Hours appear only after sessions include verified start and end times."
+            kicker="Delivery Pulse"
+            title="A compact view of active learning delivery"
+            copy="Counts come from approved records. Missing dates stay unscheduled, and story points are never translated into hours."
           />
-          <div className="learningMetricGrid">
-            <div><CheckCircle2 size={20} aria-hidden="true" /><strong>{statusCounts.Done ?? 0}</strong><span>Tickets completed</span></div>
-            <div><CircleDot size={20} aria-hidden="true" /><strong>{statusCounts.Ready ?? 0}</strong><span>Ready to begin</span></div>
-            <div><Clock3 size={20} aria-hidden="true" /><strong>{publicSessions.length}</strong><span>Recorded sessions</span></div>
-            <div><FileCheck2 size={20} aria-hidden="true" /><strong>{publicEvidence.length}</strong><span>Approved artifacts</span></div>
-          </div>
+          <DeliveryPulse tickets={publicTickets} initiatives={publicInitiatives} nextAction={currentLearningSprint.highestValueNextAction} />
         </div>
       </section>
 

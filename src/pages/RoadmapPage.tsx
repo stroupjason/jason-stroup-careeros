@@ -1,6 +1,10 @@
 import { ArrowUpRight } from "lucide-react";
 import { trackPortfolioEvent } from "../analytics";
+import { useLearningAdmin } from "../admin/AdminContext";
+import { DeliveryMetricSummary, DeliveryTimelineView, EvidenceDeliveryMap } from "../components/DeliveryIntelligence";
 import { PageHero, SectionHeader, StateBadge } from "../components/UI";
+import { buildEvidenceDeliveryMap } from "../data/deliveryIntelligence";
+import { careerTrack } from "../data/learning";
 import {
   projects,
   roadmap,
@@ -16,16 +20,52 @@ const phaseEvidenceState: Record<InitiativePhaseStatus, EvidenceState> = {
 };
 
 export function RoadmapPage() {
+  const admin = useLearningAdmin();
   const initiativeProjects = projects.filter((project) => project.initiative);
+  const evidencePath = buildEvidenceDeliveryMap({
+    initiativeSlug: "healthcare-sql-customer-operations",
+    track: careerTrack,
+    initiatives: admin.publicInitiatives,
+    courses: admin.publicCourses,
+    tickets: admin.publicTickets,
+    sessions: admin.publicSessions,
+    evidence: admin.publicEvidence,
+  });
 
   return (
     <>
       <PageHero
-        eyebrow="Public roadmap"
+        eyebrow="Delivery Intelligence"
         title="Build the next proof in the right order."
-        copy="CareerOS is live. Active initiatives strengthen product measurement, owned project evidence, and software delivery."
+        copy="Portfolio work stays connected through truthful dates, delivery state, dependencies, and evidence. Missing schedule inputs remain visible instead of being guessed."
       />
       <section className="section shell sectionAfterHero">
+        <SectionHeader
+          kicker="Delivery flow"
+          title="Current work and verified outcomes"
+          copy="WIP, throughput, and cycle time use compatible ticket fields only. Cycle time is withheld when actual starts are unavailable."
+        />
+        <DeliveryMetricSummary tickets={admin.publicTickets} referenceAt={new Date().toISOString()} />
+      </section>
+      <section className="section band deliveryTimelineSection">
+        <div className="shell">
+          <SectionHeader
+            kicker="Portfolio timeline"
+            title="Planned windows, actual work, and unscheduled delivery"
+            copy="Board movement changes status and rank. Calendar dates change only through the authorized ticket editor."
+          />
+          <DeliveryTimelineView tickets={admin.publicTickets} initiatives={admin.publicInitiatives} />
+        </div>
+      </section>
+      <section className="section shell">
+        <SectionHeader
+          kicker="Evidence Delivery Map"
+          title="From active learning to credible proof"
+          copy="This selected path is derived from canonical course, ticket, progress, evidence, capability, and role relationships."
+        />
+        <EvidenceDeliveryMap nodes={evidencePath} />
+      </section>
+      <section className="section shell">
         <SectionHeader
           kicker="Active initiatives"
           title="Platform work with explicit evidence gates."

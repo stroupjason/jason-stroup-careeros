@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Filter, RotateCcw } from "lucide-react";
 import { trackPortfolioEvent } from "../analytics";
 import { useLearningAdmin } from "../admin/AdminContext";
+import { DeliveryTimelineView } from "../components/DeliveryIntelligence";
 import { formatLearningDate } from "../components/LearningUI";
 import { PageHero, SectionHeader } from "../components/UI";
 import {
@@ -20,6 +21,10 @@ export function LearningTimelinePage() {
     sessions: admin.publicSessions,
     evidence: admin.publicEvidence,
   });
+  const timelineTickets = admin.publicTickets.filter((ticket) =>
+    (!filters.initiative || ticket.initiativeSlug === filters.initiative)
+    && (!filters.capability || ticket.capabilitySlugs.includes(filters.capability))
+    && (!filters.role || ticket.roleLensSlugs.includes(filters.role)));
 
   useEffect(() => trackPortfolioEvent("Learning Timeline Viewed", {}), []);
 
@@ -42,6 +47,12 @@ export function LearningTimelinePage() {
           </div>
         </form>
         <p className="learningResultCount" aria-live="polite">{events.length} dated {events.length === 1 ? "event" : "events"}</p>
+      </section>
+      <section className="section band deliveryTimelineSection">
+        <div className="shell">
+          <SectionHeader kicker="Learning delivery" title="Schedule truth and current execution" copy="This scoped view uses the same date rules as the portfolio roadmap." />
+          <DeliveryTimelineView tickets={timelineTickets} initiatives={admin.publicInitiatives} />
+        </div>
       </section>
       <section className="section band">
         <div className="shell">

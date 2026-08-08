@@ -434,6 +434,48 @@ export const skills: Skill[] = [
     relatedRoleSlugs: ["application-engineer", "software-engineer"],
     visible: true,
   },
+  {
+    id: "supabase-auth-rls",
+    name: "Supabase Postgres, Auth, and RLS",
+    category: "APIs & Backend",
+    careerOsStatus: "Practicing",
+    evidenceSummary:
+      "CareerOS uses passwordless Auth, immutable membership authorization, private Postgres records, RLS-protected RPCs, explicit public projections, versioned migrations, and rollback scripts.",
+    evidenceSources: [
+      { type: "project", label: "CareerOS Learning admin backend", provider: "CareerOS", verified: true },
+    ],
+    relatedProjectSlugs: ["careeros-learning-delivery"],
+    relatedRoleSlugs: ["application-engineer", "software-engineer", "forward-deployed-engineer"],
+    visible: true,
+  },
+  {
+    id: "delivery-intelligence-visualization",
+    name: "Delivery analytics and accessible visualization",
+    category: "Data & Analytics",
+    careerOsStatus: "Practicing",
+    evidenceSummary:
+      "A deterministic CareerOS model derives WIP, bounded throughput, compatible cycle time, truthful schedule states, and canonical evidence relationships without inventing missing dates.",
+    evidenceSources: [
+      { type: "project", label: "CareerOS Delivery Intelligence", provider: "CareerOS", verified: true },
+    ],
+    relatedProjectSlugs: ["careeros-learning-delivery"],
+    relatedRoleSlugs: ["technical-account-manager", "application-engineer", "forward-deployed-engineer"],
+    visible: true,
+  },
+  {
+    id: "operational-incident-evidence",
+    name: "Operational incident analysis and evidence",
+    category: "Observability & Infrastructure",
+    careerOsStatus: "Practicing",
+    evidenceSummary:
+      "CareerOS records separate, sanitized root-cause narratives for authorization, managed email throttling, and a Postgres function defect while keeping raw diagnostics private.",
+    evidenceSources: [
+      { type: "project", label: "CareerOS classified Bug Log", provider: "CareerOS", verified: true },
+    ],
+    relatedProjectSlugs: ["careeros-learning-delivery"],
+    relatedRoleSlugs: ["senior-technical-support-engineer", "technical-account-manager", "application-engineer"],
+    visible: true,
+  },
 ];
 
 export const developingSkills: Skill[] = [
@@ -1012,7 +1054,7 @@ export const projects: Project[] = [
     problem:
       "Course lists and static skill sections show intent, but they do not explain how learning is planned, applied, reviewed, or converted into evidence a recruiter can inspect.",
     outcome:
-      "CareerOS now has a typed public workflow, a Jason-only durable authoring workspace, ticket detail routes, a dated evidence timeline, publication validation, and honest SQL and CU coursework records.",
+      "CareerOS now has a typed public workflow, a verified single-admin workspace, durable ticket controls, approved public projections, honest SQL and CU coursework records, and a Delivery Intelligence release in production review.",
     approach:
       "I separated delivery status, roadmap status, evidence maturity, and publication visibility so each concept can change without inflating the others. Supabase stores authorized private authoring records while an explicit allowlist projects approved public fields. Runtime validation and focused tests reject missing approval, stale writes, broken relationships, dependency cycles, incomplete Done tickets, and unverified course or evidence claims.",
     stack: [
@@ -1045,6 +1087,9 @@ export const projects: Project[] = [
       "The public data model separates delivery, roadmap, evidence, and visibility states.",
       "Every public learning record requires explicit human approval and a truth boundary.",
       "The public board is read-only; authenticated editing is enforced through an immutable admin membership and database policies.",
+      "Passwordless sign-in, the authorization helper, repaired seed functions, and authorized Admin mode were verified in production on August 8, 2026.",
+      "Separate canonical Bugs preserve the authorization, email-throttle, and database-function incidents without publishing raw diagnostics.",
+      "Delivery metrics and timeline states are deterministic and keep missing date windows explicitly unscheduled.",
       "Healthcare SQL seed tickets remain uncompleted and contain no course certificate, query result, or applied-project outcome.",
       "Focused tests cover identifiers, relationships, dependency cycles, publication rules, filters, routes, chronology, and seed truthfulness.",
     ],
@@ -1056,7 +1101,7 @@ export const projects: Project[] = [
     proofNote:
       "The typed source, validation tests, public routes, and setup documentation are the current artifacts. Private work notes and external board details remain outside the public site.",
     nextProof:
-      "Verify the Supabase migration and single-admin flow, then record the first real SQL work session before changing the healthcare initiative's evidence state.",
+      "Apply and verify the operations migration, complete anonymous and non-admin denial checks, then exercise one reversible SQL-002 mutation without inventing missing work facts.",
     liveUrl: "https://www.jasonstroup.website/learning",
     detailSections: [
       {
@@ -1115,7 +1160,7 @@ export const projects: Project[] = [
     initiative: {
       status: "Active",
       started: "August 7, 2026",
-      currentPhase: "Secure admin backend verification",
+      currentPhase: "Delivery Intelligence and operations verification",
       summary:
         "Extend the reliable public workflow with durable private authoring and a human-reviewed publishing path.",
       relatedTickets: ["PRODUCT-201–206", "PRODUCT-211–218"],
@@ -1139,8 +1184,8 @@ export const projects: Project[] = [
           title: "Secure Supabase authoring workspace",
           status: "Active",
           ticket: "PRODUCT-216",
-          summary: "Apply and verify the RLS migration, single-admin auth, durable records, audit history, and public projection.",
-          milestones: ["Approved free project reused", "Schema and policies reviewed", "Seed parity verified", "Admin workflow tested"],
+          summary: "Preserve the verified single-admin activation while completing denial, rollback, mutation, and persistence checks.",
+          milestones: ["Approved free project reused", "Single-admin access verified", "Seed repair released", "Remaining security matrix open"],
         },
         {
           phase: "04",
@@ -1159,10 +1204,10 @@ export const projects: Project[] = [
         },
         {
           phase: "06",
-          title: "Learning analytics and review cadence",
-          status: "Planned",
-          summary: "Use only low-cardinality public interactions and evaluate the weekly evidence review after real usage exists.",
-          milestones: ["Privacy-safe event review", "Weekly evidence review", "Next-action quality review", "Tracker usefulness retrospective"],
+          title: "Delivery Intelligence and operational evidence",
+          status: "Active",
+          summary: "Add canonical metrics, a truthful portfolio timeline, an evidence map, compact Learning pulse, and a classified Bug Log.",
+          milestones: ["Metric definitions", "Portfolio timeline", "Evidence Delivery Map", "Admin-only Bug Log", "Production verification"],
         },
       ],
     },

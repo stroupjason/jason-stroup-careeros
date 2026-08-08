@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { academicPrograms, academicSpecializations, careerTrack, getLearningTicket, learningCourses, learningTickets } from "../data/learning";
 
 const migration = readFileSync(new URL("../../supabase/migrations/20260808000100_learning_admin.sql", import.meta.url), "utf8");
+const operationsMigration = readFileSync(new URL("../../supabase/migrations/20260808000200_delivery_intelligence_operations.sql", import.meta.url), "utf8");
 const adminSource = readFileSync(new URL("./AdminContext.tsx", import.meta.url), "utf8");
 const supabaseSource = readFileSync(new URL("../lib/supabase.ts", import.meta.url), "utf8");
 
@@ -115,5 +116,48 @@ describe("CareerOS backend and CU coursework contract", () => {
     expect(migration).toContain("values (item->>'key', acceptance_index");
     expect(migration).not.toContain("item_index integer;");
     expect(migration).not.toContain("item_index integer := 0;");
+  });
+
+  it("reconciles Delivery Intelligence without duplicating the existing admin hierarchy", () => {
+    expect(getLearningTicket("PRODUCT-228")).toMatchObject({ issueType: "Epic", deliveryStatus: "In Progress" });
+    ["PRODUCT-229", "PRODUCT-230", "PRODUCT-231", "PRODUCT-232", "PRODUCT-233", "PRODUCT-234", "PRODUCT-235"].forEach((key) => {
+      expect(getLearningTicket(key)?.parentKey).toBe("PRODUCT-228");
+    });
+    expect(getLearningTicket("PRODUCT-234")?.deliveryStatus).toBe("Backlog");
+    expect(getLearningTicket("PRODUCT-239")).toMatchObject({ deliveryStatus: "Backlog", issueType: "Story" });
+    expect(getLearningTicket("PRODUCT-239")?.notClaimed).toContain("SFTP is unrelated");
+  });
+
+  it("tracks each resolved activation defect as one classified canonical Bug", () => {
+    const bugKeys = ["PRODUCT-236", "PRODUCT-237", "PRODUCT-238"];
+    const bugs = learningTickets.filter((ticket) => bugKeys.includes(ticket.key));
+    expect(bugs).toHaveLength(3);
+    bugs.forEach((bug) => {
+      expect(bug).toMatchObject({ issueType: "Bug", parentKey: "PRODUCT-220", deliveryStatus: "Done" });
+      expect(bug.bugClassification).toBeDefined();
+    });
+    expect(getLearningTicket("PRODUCT-237")?.bugClassification?.category).toBe("Authentication");
+    expect(getLearningTicket("PRODUCT-238")?.bugClassification?.category).toBe("Data");
+    expect(JSON.stringify(bugs)).not.toMatch(/@|project_ref|request.?id|ip address|raw log/i);
+  });
+
+  it("keeps operational RCA records private and membership-authorized", () => {
+    ["operational_incidents", "bug_records", "bug_observations"].forEach((table) => {
+      expect(operationsMigration).toContain(`alter table private.${table} enable row level security`);
+    });
+    expect(operationsMigration).toContain("using ((select private.is_learning_admin()))");
+    expect(operationsMigration).toContain("revoke all on private.operational_incidents, private.bug_records, private.bug_observations from public, anon, authenticated");
+    expect(operationsMigration).toContain("learning_admin_update_bug_record");
+    expect(operationsMigration).toContain("learning_admin_add_bug_observation");
+    expect(operationsMigration).toContain("insert into private.audit_events");
+    expect(operationsMigration).toContain("else public_data - 'bugClassification'");
+    expect(operationsMigration).not.toMatch(/service.role|management.api.token|database.password/i);
+  });
+
+  it("keeps an authorized session authorized when workspace loading reports an operational error", () => {
+    expect(adminSource).toMatch(/setAuthState\("admin"\);\s+try \{\s+await ensureSeeded\(\)/);
+    expect(adminSource).toContain("learning_admin_seed_operations");
+    expect(adminSource).toContain("learning_admin_operations_snapshot");
+    expect(adminSource).not.toMatch(/catch \(error\) \{\s+setAuthState\("unauthorized"\)/);
   });
 });

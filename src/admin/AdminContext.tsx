@@ -106,6 +106,58 @@ export type AdminAuditEvent = {
   reversible: boolean;
 };
 
+export type AdminBugRecord = {
+  bugKey: string;
+  category: LearningTicket["bugClassification"] extends infer Classification
+    ? Classification extends { category: infer Category } ? Category : never
+    : never;
+  severity: LearningTicket["bugClassification"] extends infer Classification
+    ? Classification extends { severity: infer Severity } ? Severity : never
+    : never;
+  incidentKey: string;
+  affectedFeatureKeys: string[];
+  reporterSource: string;
+  verificationState: "Candidate" | "Confirmed" | "Resolved" | "Verified" | "Duplicate";
+  privateDiagnosticNotes?: string;
+  publicDerivative: NonNullable<LearningTicket["bugClassification"]>;
+  publicDerivativeApproved: boolean;
+  revision: number;
+  updatedAt: string;
+};
+
+export type AdminOperationalIncident = {
+  incidentKey: string;
+  title: string;
+  status: "Open" | "Monitoring" | "Resolved";
+  severity: AdminBugRecord["severity"];
+  detectedOn: string;
+  resolvedOn?: string;
+  affectedService: string;
+  publicSymptom: string;
+  publicImpact: string;
+  publicRootCause: string;
+  publicResolution: string;
+  publicPrevention: string;
+  privateEvidenceReference?: string;
+  relatedTicketKey: string;
+  relatedProjectSlug: string;
+  capabilitySlugs: string[];
+  publicationApproved: boolean;
+  revision: number;
+  updatedAt: string;
+};
+
+export type AdminBugObservation = {
+  id: string;
+  bugKey: string;
+  observedAt: string;
+  observationType: "Symptom" | "Diagnostic" | "Hypothesis" | "Root cause" | "Fix" | "Verification" | "Reopen" | "Duplicate review";
+  privateNote: string;
+  publicSummary?: string;
+  publicApproved: boolean;
+  createdAt: string;
+};
+
 export type AdminEvidence = Omit<LearningEvidence, "approvedAt"> & {
   approvedAt?: string;
   revision: number;
@@ -150,6 +202,12 @@ type AdminLearningSnapshot = PublicLearningSnapshot & {
   adminSessions: AdminWorkSession[];
   adminEvidence: AdminEvidence[];
   auditEvents: AdminAuditEvent[];
+};
+
+type AdminOperationsSnapshot = {
+  bugRecords: AdminBugRecord[];
+  incidents: AdminOperationalIncident[];
+  observations: AdminBugObservation[];
 };
 
 type TicketPatchKey =
@@ -220,6 +278,9 @@ type AdminContextValue = {
   publicEvidence: LearningEvidence[];
   publicSessions: PublicWorkSession[];
   adminEvidence: AdminEvidence[];
+  bugRecords: AdminBugRecord[];
+  incidents: AdminOperationalIncident[];
+  bugObservations: AdminBugObservation[];
   busyAction?: string;
   notice?: string;
   requestMagicLink: (email: string) => Promise<void>;
@@ -237,6 +298,15 @@ type AdminContextValue = {
   setEvidencePublication: (evidence: AdminEvidence, publicApproved: boolean) => Promise<void>;
   archiveTicket: (ticket: AdminTicket, archive: boolean) => Promise<void>;
   undoLastMove: (ticketKey: string) => Promise<void>;
+  updateBugRecord: (record: AdminBugRecord, patch: {
+    category?: AdminBugRecord["category"];
+    severity?: AdminBugRecord["severity"];
+    affectedFeatureKeys?: string[];
+    verificationState?: AdminBugRecord["verificationState"];
+    privateDiagnosticNotes?: string;
+    publicDerivativeApproved?: boolean;
+  }) => Promise<void>;
+  addBugObservation: (bugKey: string, observation: Omit<AdminBugObservation, "id" | "bugKey" | "createdAt">) => Promise<void>;
   clearNotice: () => void;
 };
 
@@ -271,6 +341,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const [authState, setAuthState] = useState<AdminContextValue["authState"]>("loading");
   const [adminSnapshot, setAdminSnapshot] = useState<AdminLearningSnapshot | null>(null);
   const [publicSnapshot, setPublicSnapshot] = useState<PublicLearningSnapshot | null>(null);
+  const [operationsSnapshot, setOperationsSnapshot] = useState<AdminOperationsSnapshot | null>(null);
   const [busyAction, setBusyAction] = useState<string>();
   const [notice, setNotice] = useState<string>();
 
@@ -285,6 +356,13 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     const { data, error } = await supabase.rpc("learning_admin_snapshot");
     if (error) throw new Error(rpcErrorMessage(error));
     setAdminSnapshot(data as AdminLearningSnapshot);
+  }, []);
+
+  const loadOperationsSnapshot = useCallback(async () => {
+    if (!supabase) return;
+    const { data, error } = await supabase.rpc("learning_admin_operations_snapshot");
+    if (error) throw new Error(rpcErrorMessage(error));
+    setOperationsSnapshot(data as AdminOperationsSnapshot);
   }, []);
 
   const ensureSeeded = useCallback(async () => {
@@ -303,6 +381,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     });
     if (error) throw new Error(rpcErrorMessage(error));
     if (data?.baselineCount !== baselineTicketKeys.length) throw new Error("The durable ticket seed did not preserve the 22-ticket production baseline.");
+    const { error: operationsError } = await supabase.rpc("learning_admin_seed_operations", {
+      p_correlation_id: makeCorrelationId(),
+    });
+    if (operationsError) throw new Error(rpcErrorMessage(operationsError));
   }, []);
 
   const authorizeSession = useCallback(async (nextSession: Session | null) => {
@@ -310,6 +392,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     if (!supabase || !nextSession) {
       setAuthState("anonymous");
       setAdminSnapshot(null);
+      setOperationsSnapshot(null);
       return;
     }
     setAuthState("loading");
@@ -317,18 +400,17 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     if (error || data !== true) {
       setAuthState("unauthorized");
       setAdminSnapshot(null);
+      setOperationsSnapshot(null);
       return;
     }
+    setAuthState("admin");
     try {
       await ensureSeeded();
-      await loadAdminSnapshot();
-      await loadPublicSnapshot();
-      setAuthState("admin");
+      await Promise.all([loadAdminSnapshot(), loadOperationsSnapshot(), loadPublicSnapshot()]);
     } catch (error) {
-      setAuthState("unauthorized");
       setNotice(error instanceof Error ? error.message : "The admin workspace could not be loaded.");
     }
-  }, [ensureSeeded, loadAdminSnapshot, loadPublicSnapshot]);
+  }, [ensureSeeded, loadAdminSnapshot, loadOperationsSnapshot, loadPublicSnapshot]);
 
   useEffect(() => {
     if (!supabase) {
@@ -350,8 +432,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     try {
       const { error } = await supabase.rpc(rpcName, parameters);
       if (error) throw new Error(rpcErrorMessage(error));
-      await loadAdminSnapshot();
-      await loadPublicSnapshot();
+      await Promise.all([loadAdminSnapshot(), loadOperationsSnapshot(), loadPublicSnapshot()]);
       setNotice("Saved. The audit history and approved public projection are current.");
     } catch (error) {
       const message = error instanceof Error ? error.message : "The change could not be saved.";
@@ -360,7 +441,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     } finally {
       setBusyAction(undefined);
     }
-  }, [authState, loadAdminSnapshot, loadPublicSnapshot]);
+  }, [authState, loadAdminSnapshot, loadOperationsSnapshot, loadPublicSnapshot]);
 
   const value = useMemo<AdminContextValue>(() => ({
     configured: isSupabaseConfigured,
@@ -375,6 +456,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     publicEvidence: publicSnapshot?.projectionReady ? (publicSnapshot.evidence ?? learningEvidence) : learningEvidence,
     publicSessions: publicSnapshot?.projectionReady ? (publicSnapshot.sessions ?? staticPublicSessions) : staticPublicSessions,
     adminEvidence: adminSnapshot?.adminEvidence ?? [],
+    bugRecords: operationsSnapshot?.bugRecords ?? [],
+    incidents: operationsSnapshot?.incidents ?? [],
+    bugObservations: operationsSnapshot?.observations ?? [],
     busyAction,
     notice,
     requestMagicLink: async (email) => {
@@ -402,10 +486,13 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       if (supabase) await supabase.auth.signOut({ scope: "local" });
       setSession(null);
       setAdminSnapshot(null);
+      setOperationsSnapshot(null);
       setAuthState("anonymous");
       setNotice("Signed out.");
     },
-    refreshAdmin: loadAdminSnapshot,
+    refreshAdmin: async () => {
+      await Promise.all([loadAdminSnapshot(), loadOperationsSnapshot()]);
+    },
     createTicket: (ticket) => runMutation(`create-${ticket.key}`, "learning_admin_create_ticket", {
       p_ticket: ticket,
       p_correlation_id: makeCorrelationId(),
@@ -478,8 +565,19 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       p_key: ticketKey,
       p_correlation_id: makeCorrelationId(),
     }),
+    updateBugRecord: (record, patch) => runMutation(`bug-update-${record.bugKey}`, "learning_admin_update_bug_record", {
+      p_bug_key: record.bugKey,
+      p_patch: patch,
+      p_expected_revision: record.revision,
+      p_correlation_id: makeCorrelationId(),
+    }),
+    addBugObservation: (bugKey, observation) => runMutation(`bug-observation-${bugKey}`, "learning_admin_add_bug_observation", {
+      p_bug_key: bugKey,
+      p_observation: observation,
+      p_correlation_id: makeCorrelationId(),
+    }),
     clearNotice: () => setNotice(undefined),
-  }), [adminSnapshot, authState, busyAction, loadAdminSnapshot, notice, publicSnapshot, runMutation, session]);
+  }), [adminSnapshot, authState, busyAction, loadAdminSnapshot, loadOperationsSnapshot, notice, operationsSnapshot, publicSnapshot, runMutation, session]);
 
   return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>;
 }

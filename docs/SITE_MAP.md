@@ -9,10 +9,11 @@
 | `/skills` | Evidence-backed skills, current learning, and verified public profiles |
 | `/learning` | Current courses, delivery focus, initiatives, sprint, evidence, course history, and next action |
 | `/learning/board` | Read-only board of approved public tickets and filters |
-| `/learning/timeline` | Dated work-session, artifact, and publication chronology |
+| `/learning/timeline` | Learning-scoped delivery schedule plus dated approved chronology |
 | `/learning/tickets/:ticketKey` | Approved public ticket details and truth boundary |
 | `/roles` | Role priorities and recruiter views |
-| `/roadmap` | Public execution sequence |
+| `/roadmap` | Portfolio Delivery Intelligence timeline, metrics, evidence map, and execution sequence |
+| `/admin/operations/bugs` | Unadvertised, membership-protected Bug classification and RCA view |
 | `/journal` | Learning and engineering history |
 | `/case-studies` | Case-study pipeline |
 | `/about` | Professional narrative |

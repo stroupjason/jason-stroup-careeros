@@ -38,23 +38,39 @@ disabled unless they are deliberately added to Supabase's redirect allowlist.
 
 ## Migration
 
-Apply `supabase/migrations/20260808000100_learning_admin.sql` to the approved
-project. The migration is transactional and idempotent. After the auth user is
-created, add its UUID to `private.admin_memberships` through a one-time trusted
-dashboard operation. Do not put the UUID or email in the migration.
+Apply migrations in repository order to the approved project:
 
-The first authorized load invokes `learning_admin_seed`. Inserts use
-`ON CONFLICT DO NOTHING`, so later deployments verify the 22-ticket baseline
-without overwriting durable edits.
+1. `supabase/migrations/20260808000100_learning_admin.sql`
+2. `supabase/migrations/20260808000200_delivery_intelligence_operations.sql`
+
+Both migrations are transactional and idempotent. The existing confirmed Auth
+user is already mapped to exactly one active `private.admin_memberships` row.
+Preserve that user and immutable mapping; do not put its UUID or email in a
+migration.
+
+Each authorized load invokes the idempotent seed path. The historical
+`22-ticket` value is an explicit baseline-key subset, while the pre-Delivery
+Intelligence public projection contained 39 keys and the reviewed source
+projection now contains 51. Stable-key inserts use `ON CONFLICT DO NOTHING`, so
+new records can be added without overwriting durable edits or forcing a stale
+total. The operations seed derives three sanitized incident/RCA records from
+their canonical Bug tickets after those ticket keys exist.
+
+The unadvertised `/admin/operations/bugs` route reads only the membership-
+protected operations snapshot. Canonical board Bugs retain status and priority;
+the private tables add classification, incident context, diagnostic notes, and
+timestamped observations. Raw provider logs are not copied into public data.
 
 ## Rollback and recovery
 
 1. Keep the Vercel Supabase environment variables unset or remove them to make
    public pages use the checked-in static snapshot.
 2. Preserve a database backup before destructive rollback.
-3. Run `supabase/rollback/20260808000100_learning_admin.down.sql` only when the
+3. Roll back the operations layer first with
+   `supabase/rollback/20260808000200_delivery_intelligence_operations.down.sql`.
+4. Run `supabase/rollback/20260808000100_learning_admin.down.sql` only when the
    durable authoring records have been exported and losing them is intentional.
-4. Redeploy the last verified Git commit if the frontend also needs rollback.
+5. Redeploy the last verified Git commit if the frontend also needs rollback.
 
 ## Provider integrations
 

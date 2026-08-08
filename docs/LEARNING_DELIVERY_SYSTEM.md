@@ -116,12 +116,16 @@ private, employer, customer, patient, interview, or recruiter information.
 
 ## Public routes
 
-- `/learning`: overview, focus, sprint, initiatives, evidence, and progression
-- `/learning/board`: read-only status board and shareable filters
-- `/learning/timeline`: dated sessions, artifacts, and publication events
+- `/learning`: overview, focus, sprint, compact Delivery Pulse, initiatives, evidence, and progression
+- `/learning/board`: read-only status board, shareable filters, and canonical Bugs saved view
+- `/learning/timeline`: Learning-scoped schedule truth plus dated sessions, artifacts, and publication events
 - `/learning/tickets/:ticketKey`: public ticket detail and truth boundary
+- `/roadmap`: portfolio Delivery Intelligence metrics, timeline, evidence map, and execution sequence
 - `/projects/careeros-learning-delivery`: implementation case study
 - `/projects/healthcare-sql-customer-operations`: active planning record
+
+The unadvertised `/admin/operations/bugs` route is membership-protected and is
+not a public navigation destination.
 
 Unknown and private ticket keys use the established not-found experience.
 
@@ -154,6 +158,24 @@ keeps the public site useful when Supabase or analytics is unavailable.
 
 LinkedIn and Coursera progress remains human-verified. Provider API work is
 deferred until supported administrator access exists.
+
+## Delivery Intelligence boundary
+
+The project board remains the canonical operating core. `/roadmap` and
+`/learning/timeline` share deterministic date semantics: planned bars require a
+planned start and target, actual windows require an actual start, open work may
+remain open-ended, and completion-only records render as milestones. Missing
+windows remain explicitly Unscheduled.
+
+WIP, 30-day throughput, and median cycle time use compatible approved fields
+only. Cycle time is withheld when actual starts are unavailable. Course
+progress, ticket flow, project completion, evidence maturity, and role fit are
+not combined into a single score.
+
+Every accepted operational defect is one canonical board Bug. The private Bug
+Log adds controlled classification and RCA observations using the same stable
+key. Raw logs, provider metadata, credentials, account identifiers, and private
+screenshots remain outside public DTOs and analytics.
 
 ## Review cadence
 

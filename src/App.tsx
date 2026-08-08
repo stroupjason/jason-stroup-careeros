@@ -9,6 +9,7 @@ import { projects, roleLenses } from "./data/site";
 import { getLearningTicket } from "./data/learning";
 import { AboutPage } from "./pages/AboutPage";
 import { AdminLoginPage } from "./pages/AdminLoginPage";
+import { AdminOperationsBugsPage } from "./pages/AdminOperationsBugsPage";
 import { CaseStudiesPage } from "./pages/CaseStudiesPage";
 import { HomePage } from "./pages/HomePage";
 import { JournalPage } from "./pages/JournalPage";
@@ -77,6 +78,7 @@ export function App() {
     setMeta('meta[name="twitter:description"]', "name", "twitter:description", route.description);
     setMeta('meta[name="twitter:image"]', "name", "twitter:image", imageUrl);
     setMeta('meta[property="og:url"]', "property", "og:url", canonicalUrl);
+    setMeta('meta[name="robots"]', "name", "robots", path.startsWith("/admin/") ? "noindex, nofollow" : "index, follow");
     setCanonical(canonicalUrl);
     if (window.location.hash) {
       window.requestAnimationFrame(() => {
@@ -154,7 +156,7 @@ export function resolveRoute(path: string) {
     return {
       title: "Roadmap",
       description:
-        "Jason Stroup's public CareerOS roadmap for analytics, integrations, owned project evidence, and software delivery.",
+        "Jason Stroup's CareerOS Delivery Intelligence roadmap with truthful schedule states, flow metrics, evidence relationships, and unscheduled work.",
       element: <RoadmapPage />,
     };
   }
@@ -170,7 +172,7 @@ export function resolveRoute(path: string) {
     return {
       title: "Learning Work Board",
       description:
-        "A read-only, recruiter-safe board of Jason Stroup's approved learning and project-delivery tickets.",
+        "A read-only, recruiter-safe board of Jason Stroup's approved learning, project-delivery, and canonical Bug tickets.",
       element: <LearningBoardPage />,
     };
   }
@@ -178,7 +180,7 @@ export function resolveRoute(path: string) {
     return {
       title: "Learning Evidence Timeline",
       description:
-        "A dated public timeline of approved CareerOS work sessions, artifacts, milestones, and publication decisions.",
+        "A Learning-scoped delivery schedule and dated public timeline of approved CareerOS work, artifacts, milestones, and publication decisions.",
       element: <LearningTimelinePage />,
     };
   }
@@ -187,6 +189,13 @@ export function resolveRoute(path: string) {
       title: "CareerOS Admin Sign In",
       description: "Secure sign-in for the CareerOS learning administration workspace.",
       element: <AdminLoginPage />,
+    };
+  }
+  if (path === "/admin/operations/bugs") {
+    return {
+      title: "CareerOS Admin Bug Log",
+      description: "Private CareerOS operational Bug classification and incident review.",
+      element: <AdminOperationsBugsPage />,
     };
   }
   if (path.startsWith("/learning/tickets/")) {

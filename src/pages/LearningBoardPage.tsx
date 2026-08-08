@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Filter, RotateCcw } from "lucide-react";
+import { Bug as BugIcon, Filter, RotateCcw } from "lucide-react";
 import { trackPortfolioEvent } from "../analytics";
 import { useLearningAdmin, type AdminTicket } from "../admin/AdminContext";
 import { AdminLearningBoard } from "../components/AdminLearningBoard";
@@ -62,6 +62,7 @@ export function LearningBoardPage() {
           <div className="learningFilterActions">
             <button className="button primary" type="submit"><Filter size={17} aria-hidden="true" /> Apply filters</button>
             <a className="button secondary" href="/learning/board"><RotateCcw size={17} aria-hidden="true" /> Reset</a>
+            <a className="button secondary" href="/learning/board?type=Bug"><BugIcon size={17} aria-hidden="true" /> Bugs</a>
           </div>
         </form>
         <p className="learningResultCount" aria-live="polite">{filteredTickets.length} {adminMode ? "managed" : "public"} {filteredTickets.length === 1 ? "ticket" : "tickets"}</p>
@@ -71,6 +72,7 @@ export function LearningBoardPage() {
         <section className="section band learningBoardSection" aria-labelledby="board-heading">
           <div className="shell">
             <SectionHeader kicker="Admin board" title="Backlog through done" />
+            <div className="adminBoardTools"><a className="button secondary" href="/admin/operations/bugs"><BugIcon size={16} aria-hidden="true" /> Open private Bug Log</a></div>
             <h2 className="srOnly" id="board-heading">Learning delivery admin board</h2>
             <AdminLearningBoard tickets={filteredTickets as AdminTicket[]} allTickets={sourceTickets as AdminTicket[]} />
             {admin.notice ? <p className="adminNotice" role="status">{admin.notice}</p> : null}

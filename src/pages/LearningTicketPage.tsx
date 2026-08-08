@@ -58,6 +58,35 @@ export function LearningTicketPage({ ticket: fallbackTicket }: { ticket: Learnin
 
       {adminMode ? <AdminTicketPanel ticket={ticket as AdminTicket} /> : null}
 
+      {ticket.bugClassification ? (
+        <section className="section band bugRecordSection">
+          <div className="shell">
+            <SectionHeader kicker="Canonical Bug record" title="Sanitized diagnosis and verification" copy="Delivery state stays on this board ticket. Private observations and diagnostic references remain in the admin-only Bug Log." />
+            <div className="bugRecordSummary">
+              <dl>
+                <div><dt>Category</dt><dd>{ticket.bugClassification.category}</dd></div>
+                <div><dt>Severity</dt><dd>{ticket.bugClassification.severity}</dd></div>
+                <div><dt>Environment</dt><dd>{ticket.bugClassification.environment}</dd></div>
+                <div><dt>Detected</dt><dd><time dateTime={ticket.bugClassification.detectedOn}>{formatLearningDate(ticket.bugClassification.detectedOn)}</time></dd></div>
+                <div><dt>Resolved</dt><dd>{ticket.bugClassification.resolvedOn ? <time dateTime={ticket.bugClassification.resolvedOn}>{formatLearningDate(ticket.bugClassification.resolvedOn)}</time> : "Not resolved"}</dd></div>
+                <div><dt>Incident</dt><dd>{ticket.bugClassification.relatedIncidentKey}</dd></div>
+              </dl>
+              <div className="bugRecordNarrative">
+                <div><h3>Symptom</h3><p>{ticket.bugClassification.publicSymptom}</p></div>
+                <div><h3>Root cause</h3><p>{ticket.bugClassification.publicRootCause}</p></div>
+                <div><h3>Fix</h3><p>{ticket.bugClassification.publicFix}</p></div>
+                <div><h3>Verification</h3><p>{ticket.bugClassification.publicVerification}</p></div>
+                <div><h3>Prevention / follow-up</h3><p>{ticket.bugClassification.prevention}</p></div>
+              </div>
+              <div className="bugAffectedFeatures">
+                <h3>Affected feature work</h3>
+                {ticket.bugClassification.affectedFeatureKeys.map((key) => <a key={key} href={`/learning/tickets/${key}`}>{key}</a>)}
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       <section className="section band">
         <div className="shell ticketDefinitionGrid">
           <article>

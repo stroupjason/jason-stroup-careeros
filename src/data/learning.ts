@@ -11,10 +11,26 @@ export const deliveryStatuses = [
 
 export const visibilityStates = ["Private", "Public Draft", "Public"] as const;
 export const issueTypes = ["Epic", "Story", "Task", "Bug", "Spike"] as const;
+export const bugCategories = [
+  "Authentication",
+  "Authorization",
+  "Data",
+  "Integration",
+  "UI",
+  "Accessibility",
+  "Performance",
+  "Security/Privacy",
+  "Deployment",
+  "Observability",
+  "Content",
+] as const;
+export const bugSeverities = ["Critical", "High", "Moderate", "Low"] as const;
 
 export type DeliveryStatus = (typeof deliveryStatuses)[number];
 export type VisibilityState = (typeof visibilityStates)[number];
 export type IssueType = (typeof issueTypes)[number];
+export type BugCategory = (typeof bugCategories)[number];
+export type BugSeverity = (typeof bugSeverities)[number];
 export type Priority = "Highest" | "High" | "Medium" | "Low";
 export type EvidenceVerificationState = "Verified" | "Pending Review" | "Not Yet Created";
 
@@ -204,6 +220,22 @@ export type LearningTicket = {
   visibility: "Public";
   publicApproved: true;
   notClaimed: string;
+  bugClassification?: {
+    category: BugCategory;
+    severity: BugSeverity;
+    detectedOn: string;
+    resolvedOn?: string;
+    verifiedOn?: string;
+    affectedService: string;
+    environment: "Production" | "Preview" | "Development";
+    affectedFeatureKeys: string[];
+    relatedIncidentKey: string;
+    publicSymptom: string;
+    publicRootCause: string;
+    publicFix: string;
+    publicVerification: string;
+    prevention: string;
+  };
 };
 
 export type WorkSession = {
@@ -1014,6 +1046,260 @@ export const learningTickets = [
     notClaimed: "Verification is not complete until the deployed admin and persistence checks actually pass.",
   }),
   systemTicket({
+    key: "PRODUCT-228",
+    issueType: "Epic",
+    title: "CareerOS Delivery Intelligence & Operational Evidence",
+    publicSummary: "Connect canonical delivery dates, flow metrics, evidence relationships, and reviewed operational incidents without creating a second tracker.",
+    deliveryStatus: "In Progress",
+    evidenceState: "Practicing",
+    priority: "High",
+    dependencies: ["PRODUCT-220", "PRODUCT-224"],
+    definitionOfDone: "The roadmap, Learning drill-down, evidence map, Bug Log, and verification gate share canonical records and truthful metric definitions.",
+    acceptanceCriteria: ["One canonical ticket source", "Missing dates remain unscheduled", "Bug records use stable board keys", "Private diagnostics never enter public data"],
+    capabilitySlugs: ["delivery-modeling", "evidence-design", "privacy-review"],
+    evidenceIds: ["EVD-DI-SOURCE", "EVD-DI-TESTS"],
+    nextAction: "Complete production verification for the shared timeline and admin-only Bug Log migration.",
+    notClaimed: "This active epic does not claim a live log-ingestion pipeline, predictive analytics, or an overall CareerOS completion score.",
+  }),
+  systemTicket({
+    key: "PRODUCT-229",
+    issueType: "Story",
+    title: "Define canonical delivery metrics and truthful date semantics",
+    publicSummary: "Derive WIP, bounded throughput, and comparable cycle time while preserving planned, actual, completed, open-ended, and unscheduled states.",
+    deliveryStatus: "In Review",
+    evidenceState: "Practicing",
+    priority: "High",
+    parentKey: "PRODUCT-228",
+    dependencies: ["PRODUCT-220", "PRODUCT-222"],
+    definitionOfDone: "Metric definitions are deterministic, boundary-tested, and withhold values when required source fields are absent.",
+    acceptanceCriteria: ["WIP uses active delivery states", "Throughput uses verified completion dates", "Cycle time requires actual start and completion", "No readiness percentage"],
+    capabilitySlugs: ["delivery-modeling", "testing"],
+    evidenceIds: ["EVD-DI-SOURCE", "EVD-DI-TESTS"],
+    nextAction: "Verify the production values against the current approved ticket projection.",
+    notClaimed: "The metrics do not forecast completion, convert story points to hours, or measure career readiness.",
+  }),
+  systemTicket({
+    key: "PRODUCT-230",
+    issueType: "Story",
+    title: "Add a portfolio roadmap and Gantt-like delivery timeline",
+    publicSummary: "Show verified planned and actual windows, open-ended work, completion milestones, dependencies, and a first-class Unscheduled lane on the established roadmap.",
+    deliveryStatus: "In Review",
+    evidenceState: "Practicing",
+    priority: "High",
+    parentKey: "PRODUCT-228",
+    dependencies: ["PRODUCT-220", "PRODUCT-229"],
+    definitionOfDone: "Portfolio and Learning views reuse one timeline model and remain readable on desktop and narrow mobile without inventing dates.",
+    acceptanceCriteria: ["Planned and actual semantics differ", "Unscheduled items stay usable", "Mobile has a textual equivalent", "No direct calendar dragging"],
+    capabilitySlugs: ["delivery-modeling", "accessibility", "responsive-design"],
+    evidenceIds: ["EVD-DI-SOURCE", "EVD-DI-TESTS"],
+    nextAction: "Complete browser verification on the canonical roadmap and Learning timeline routes.",
+    notClaimed: "Timeline bar length is not effort, duration prediction, or a promised deadline.",
+  }),
+  systemTicket({
+    key: "PRODUCT-231",
+    issueType: "Story",
+    title: "Add an Evidence Delivery Map from work to demonstrated capability",
+    publicSummary: "Explain one selected canonical path from career track through initiative, course, ticket, activity, evidence, capability, and role fit.",
+    deliveryStatus: "In Review",
+    evidenceState: "Practicing",
+    priority: "Medium",
+    parentKey: "PRODUCT-228",
+    dependencies: ["PRODUCT-220", "PRODUCT-224"],
+    definitionOfDone: "The relationship map is data-driven, linkable, accessible as semantic content, and preserves the evidence boundary.",
+    acceptanceCriteria: ["Canonical relationships only", "Semantic ordered representation", "Missing evidence is explicit", "Role fit remains a lens"],
+    capabilitySlugs: ["evidence-design", "accessibility", "responsive-design"],
+    evidenceIds: ["EVD-DI-SOURCE", "EVD-DI-TESTS"],
+    nextAction: "Verify every public node link and the narrow-mobile stacked path.",
+    notClaimed: "Course participation does not automatically produce demonstrated capability or role readiness.",
+  }),
+  systemTicket({
+    key: "PRODUCT-232",
+    issueType: "Story",
+    title: "Add compact Delivery Pulse summaries to Learning",
+    publicSummary: "Provide active work, blocked-or-aging work, recent completions, the highest-value next action, and links to the canonical board and roadmap.",
+    deliveryStatus: "In Review",
+    evidenceState: "Practicing",
+    priority: "Medium",
+    parentKey: "PRODUCT-228",
+    dependencies: ["PRODUCT-229", "PRODUCT-230"],
+    definitionOfDone: "Learning uses a compact drill-down rather than a duplicate dashboard and exposes approved aggregates only.",
+    acceptanceCriteria: ["At most three summary counts", "Highest-value next action visible", "Canonical board and roadmap links", "No private alerts or notes"],
+    capabilitySlugs: ["delivery-modeling", "responsive-design"],
+    evidenceIds: ["EVD-DI-SOURCE", "EVD-DI-TESTS"],
+    nextAction: "Verify the compact pulse with current production data and no-backend fallback.",
+    notClaimed: "The pulse is not a comprehensive project dashboard or a readiness score.",
+  }),
+  systemTicket({
+    key: "PRODUCT-233",
+    issueType: "Story",
+    title: "Add a classified Bug Log linked to task-board bugs and affected feature work",
+    publicSummary: "Use canonical board Bugs as the delivery source while keeping reviewed RCA observations and private evidence references in an admin-only operational view.",
+    deliveryStatus: "In Progress",
+    evidenceState: "Practicing",
+    priority: "High",
+    parentKey: "PRODUCT-228",
+    dependencies: ["PRODUCT-220"],
+    definitionOfDone: "Accepted defects have one stable Bug key, controlled classification, typed relationships, audit history, and separately approved public-safe derivatives.",
+    acceptanceCriteria: ["One board Bug per defect", "Controlled category and severity", "Private diagnostic boundary", "Board Bugs saved view"],
+    capabilitySlugs: ["delivery-modeling", "root-cause-analysis", "privacy-review"],
+    evidenceIds: ["EVD-ADMIN-ACTIVATION"],
+    nextAction: "Apply and verify the admin-only operations migration, then test classification persistence and audit history.",
+    notClaimed: "No raw provider logs are public and no automated observation creates or resolves a Bug.",
+  }),
+  systemTicket({
+    key: "PRODUCT-234",
+    issueType: "Story",
+    title: "Evaluate an admin-only Supabase operational-health dashboard",
+    publicSummary: "Document a future server-side, bounded, redacted path from managed provider diagnostics to reviewed CareerOS incidents and Bugs.",
+    deliveryStatus: "Backlog",
+    evidenceState: "Planned",
+    priority: "Low",
+    parentKey: "PRODUCT-228",
+    dependencies: ["PRODUCT-233"],
+    definitionOfDone: "A reviewed architecture covers server-only credentials, query allowlists, redaction, retention, rate limits, cost, authorization, and rollback before implementation.",
+    acceptanceCriteria: ["No browser management token", "Bounded redacted queries", "Jason-only authorization", "Plan and retention limits documented"],
+    capabilitySlugs: ["privacy-review", "root-cause-analysis"],
+    evidenceIds: [],
+    nextAction: "Keep this in Backlog until a secure server execution boundary and real operational need are approved.",
+    notClaimed: "CareerOS does not operate a ClickHouse cluster, Grafana deployment, or live Supabase log client.",
+  }),
+  systemTicket({
+    key: "PRODUCT-235",
+    issueType: "Story",
+    title: "Verify visualization accessibility, privacy, performance, and responsive behavior",
+    publicSummary: "Exercise timeline, metric, evidence-map, Bug-filter, empty, dense, unscheduled, direct-route, and narrow-mobile states before release completion.",
+    deliveryStatus: "Ready",
+    evidenceState: "Planned",
+    priority: "High",
+    parentKey: "PRODUCT-228",
+    dependencies: ["PRODUCT-229", "PRODUCT-230", "PRODUCT-231", "PRODUCT-232", "PRODUCT-233"],
+    definitionOfDone: "Automated and browser checks pass with semantic equivalents, visible focus, reduced motion, no overflow, and no private-data exposure.",
+    acceptanceCriteria: ["Desktop and narrow mobile", "Keyboard and screen-reader equivalents", "Empty and all-unscheduled fixtures", "No application console errors"],
+    capabilitySlugs: ["testing", "accessibility", "responsive-design", "privacy-review"],
+    evidenceIds: [],
+    nextAction: "Run the full release matrix after the operations migration is applied.",
+    notClaimed: "The visualization release gate remains open until production browser verification completes.",
+  }),
+  systemTicket({
+    key: "PRODUCT-236",
+    issueType: "Bug",
+    title: "Restore immutable admin membership authorization",
+    publicSummary: "Resolved an authentication-versus-application-authorization mismatch by restoring the immutable single-admin membership mapping and verifying the authorization function.",
+    deliveryStatus: "Done",
+    evidenceState: "Practicing",
+    priority: "Highest",
+    parentKey: "PRODUCT-220",
+    dependencies: [],
+    completionDate: "2026-08-08",
+    definitionOfDone: "The existing confirmed identity maps to exactly one active private membership and the server-side authorization helper returns true.",
+    acceptanceCriteria: ["Existing identity preserved", "Exactly one active membership", "Immutable user identifier used", "No browser email allowlist"],
+    capabilitySlugs: ["privacy-review", "root-cause-analysis", "testing"],
+    evidenceIds: ["EVD-ADMIN-ACTIVATION"],
+    nextAction: "Retain sign-out, expiry, unauthorized deep-link, and non-admin denial as regression coverage under PRODUCT-227.",
+    notClaimed: "No identity, email address, membership row, or diagnostic query is published.",
+    bugClassification: {
+      category: "Authorization",
+      severity: "High",
+      detectedOn: "2026-08-08",
+      resolvedOn: "2026-08-08",
+      verifiedOn: "2026-08-08",
+      affectedService: "CareerOS admin authorization",
+      environment: "Production",
+      affectedFeatureKeys: ["PRODUCT-220", "PRODUCT-227", "PRODUCT-233"],
+      relatedIncidentKey: "OPS-INC-001",
+      publicSymptom: "A confirmed signed-in session could not enter the CareerOS admin workspace.",
+      publicRootCause: "The authenticated identity was not yet mapped to the private single-admin membership used by application authorization.",
+      publicFix: "The existing identity was preserved and its immutable identifier was mapped to exactly one active membership.",
+      publicVerification: "The authorization helper returned true and the same account later opened the live admin board.",
+      prevention: "Keep identity provisioning and application membership checks separate, explicit, and regression-tested.",
+    },
+  }),
+  systemTicket({
+    key: "PRODUCT-237",
+    issueType: "Bug",
+    title: "Restore admin magic-link delivery after provider throttling",
+    publicSummary: "Recovered passwordless delivery safely after the built-in provider's project email quota rejected a resend.",
+    deliveryStatus: "Done",
+    evidenceState: "Practicing",
+    priority: "High",
+    parentKey: "PRODUCT-220",
+    dependencies: [],
+    completionDate: "2026-08-08",
+    definitionOfDone: "The confirmed user and membership remain intact, the quota window clears, and one fresh link establishes an authorized session.",
+    acceptanceCriteria: ["Existing user preserved", "Project-wide throttle identified", "One deliberate retry after reset", "Authorized callback verified"],
+    capabilitySlugs: ["root-cause-analysis", "privacy-review", "testing"],
+    evidenceIds: ["EVD-ADMIN-ACTIVATION"],
+    nextAction: "Evaluate custom SMTP separately without presenting it as configured or free.",
+    notClaimed: "No raw Auth log, provider identifier, email address, request trace, or account metadata is published.",
+    bugClassification: {
+      category: "Authentication",
+      severity: "Moderate",
+      detectedOn: "2026-08-08",
+      resolvedOn: "2026-08-08",
+      verifiedOn: "2026-08-08",
+      affectedService: "Passwordless email delivery",
+      environment: "Production",
+      affectedFeatureKeys: ["PRODUCT-220", "PRODUCT-233", "PRODUCT-239"],
+      relatedIncidentKey: "OPS-INC-002",
+      publicSymptom: "A fresh passwordless sign-in message could not be sent.",
+      publicRootCause: "The managed built-in mail provider rejected the resend after its project-wide quota was reached.",
+      publicFix: "The existing identity and membership were preserved, retries stopped, and one fresh link was requested after the quota window reset.",
+      publicVerification: "The new link established a valid session and reached the authorized CareerOS workflow.",
+      prevention: "Use deliberate resend behavior and evaluate custom SMTP only after provider, DNS, security, rollback, and cost gates are approved.",
+    },
+  }),
+  systemTicket({
+    key: "PRODUCT-238",
+    issueType: "Bug",
+    title: "Resolve ambiguous acceptance-item index during admin seed",
+    publicSummary: "Corrected a post-authentication database failure in the first-login seed and ticket-creation acceptance-item paths.",
+    deliveryStatus: "Done",
+    evidenceState: "Practicing",
+    priority: "Highest",
+    parentKey: "PRODUCT-220",
+    dependencies: [],
+    completionDate: "2026-08-08",
+    definitionOfDone: "Both Postgres function paths insert acceptance criteria without an ambiguous-column failure and the authorized board opens successfully.",
+    acceptanceCriteria: ["Seed function corrected", "Ticket-creation function corrected", "Regression assertion passes", "Live stored functions and admin board verified"],
+    capabilitySlugs: ["root-cause-analysis", "testing", "delivery-modeling"],
+    evidenceIds: ["EVD-ADMIN-ACTIVATION"],
+    nextAction: "Keep the ON CONFLICT regression assertion in the backend contract suite.",
+    notClaimed: "The public record omits raw SQL, private identifiers, provider metadata, and database connection details.",
+    bugClassification: {
+      category: "Data",
+      severity: "High",
+      detectedOn: "2026-08-08",
+      resolvedOn: "2026-08-08",
+      verifiedOn: "2026-08-08",
+      affectedService: "Learning admin database functions",
+      environment: "Production",
+      affectedFeatureKeys: ["PRODUCT-220", "PRODUCT-222", "PRODUCT-233"],
+      relatedIncidentKey: "OPS-INC-003",
+      publicSymptom: "Authentication succeeded, but the first durable learning seed failed while inserting acceptance criteria.",
+      publicRootCause: "A PL/pgSQL local identifier shadowed a same-named table column in an ON CONFLICT target.",
+      publicFix: "The local identifier was renamed in both affected functions and a focused regression assertion was added.",
+      publicVerification: "Typecheck, 54 tests, the production build, live function-definition checks, and authorized admin-board access passed for release 941520a.",
+      prevention: "Keep parameter and local-variable names distinct from table columns and test both insertion paths.",
+    },
+  }),
+  systemTicket({
+    key: "PRODUCT-239",
+    issueType: "Story",
+    title: "Evaluate custom SMTP for passwordless reliability",
+    publicSummary: "Practice the SMTP delivery architecture and evaluate provider cost, DNS, credential, observability, test, and rollback requirements before changing production Auth email.",
+    deliveryStatus: "Backlog",
+    evidenceState: "Planned",
+    priority: "Low",
+    parentKey: "PRODUCT-228",
+    dependencies: ["PRODUCT-237"],
+    definitionOfDone: "A provider and cost are approved, DNS and credentials remain server-managed, delivery and rollback tests pass, and the production change is documented.",
+    acceptanceCriteria: ["SMTP provider and cost decision", "DNS and secret boundary", "Delivery and failure tests", "Rollback procedure"],
+    capabilitySlugs: ["privacy-review", "testing", "root-cause-analysis"],
+    evidenceIds: [],
+    nextAction: "Compare suitable low-volume SMTP providers and document the free-plan and DNS tradeoffs before configuration.",
+    notClaimed: "SMTP is not configured. SFTP is unrelated to passwordless email delivery and is not part of this work.",
+  }),
+  systemTicket({
     key: "PRODUCT-217",
     issueType: "Story",
     title: "Seed the healthcare SQL initiative",
@@ -1449,6 +1735,66 @@ export const learningEvidence = [
     approvedAt: implementationCompletedAt,
     notClaimed: "Passing tests does not prove every browser or assistive-technology combination.",
   },
+  {
+    id: "EVD-ADMIN-ACTIVATION",
+    type: "Test",
+    title: "Sanitized admin activation and database-repair verification",
+    dateCreated: "2026-08-08",
+    createdAt: "2026-08-08T11:56:56-06:00",
+    verificationState: "Verified",
+    evidenceStateSupported: "Practicing",
+    relatedTicketKeys: ["PRODUCT-220", "PRODUCT-227", "PRODUCT-233", "PRODUCT-236", "PRODUCT-237", "PRODUCT-238"],
+    relatedProjectSlug: "careeros-learning-delivery",
+    capabilitySlugs: ["testing", "privacy-review", "root-cause-analysis", "delivery-modeling"],
+    roleLensSlugs: systemRoles,
+    repositoryPath: "src/admin/backendContract.test.ts",
+    publicSummary: "Production verification preserved one confirmed identity and immutable admin membership, exercised passwordless access, corrected both affected Postgres function paths, and opened the authorized learning board.",
+    limitations: "Raw Auth logs, provider metadata, account identifiers, database diagnostics, and private screenshots remain outside the public artifact.",
+    visibility: "Public",
+    publicApproved: true,
+    approvedAt: "2026-08-08T11:56:56-06:00",
+    notClaimed: "This evidence does not complete the remaining non-admin denial, rollback, mutation-persistence, session-expiry, or advisor verification gates.",
+  },
+  {
+    id: "EVD-DI-SOURCE",
+    type: "Source code",
+    title: "Canonical Delivery Intelligence model and accessible views",
+    dateCreated: "2026-08-08",
+    createdAt: "2026-08-08T11:56:56-06:00",
+    verificationState: "Verified",
+    evidenceStateSupported: "Practicing",
+    relatedTicketKeys: ["PRODUCT-228", "PRODUCT-229", "PRODUCT-230", "PRODUCT-231", "PRODUCT-232"],
+    relatedProjectSlug: "careeros-learning-delivery",
+    capabilitySlugs: ["delivery-modeling", "evidence-design", "accessibility", "responsive-design"],
+    roleLensSlugs: systemRoles,
+    repositoryPath: "src/data/deliveryIntelligence.ts",
+    publicSummary: "A shared deterministic model powers portfolio and Learning timeline semantics, compact delivery metrics, explicit unscheduled work, and a canonical evidence relationship path.",
+    limitations: "The source is locally verified but remains in release review until production browser and persistence checks complete.",
+    visibility: "Public",
+    publicApproved: true,
+    approvedAt: "2026-08-08T11:56:56-06:00",
+    notClaimed: "The model does not forecast completion, infer missing dates, retrieve provider logs, or calculate career readiness.",
+  },
+  {
+    id: "EVD-DI-TESTS",
+    type: "Test",
+    title: "Delivery metric and timeline truth-boundary tests",
+    dateCreated: "2026-08-08",
+    createdAt: "2026-08-08T11:56:56-06:00",
+    verificationState: "Verified",
+    evidenceStateSupported: "Practicing",
+    relatedTicketKeys: ["PRODUCT-228", "PRODUCT-229", "PRODUCT-230", "PRODUCT-231", "PRODUCT-232", "PRODUCT-235"],
+    relatedProjectSlug: "careeros-learning-delivery",
+    capabilitySlugs: ["testing", "delivery-modeling", "privacy-review"],
+    roleLensSlugs: ["application-engineer", "forward-deployed-engineer"],
+    repositoryPath: "src/data/deliveryIntelligence.test.ts",
+    publicSummary: "Focused tests distinguish planned, actual, open-ended, completion-only, and unscheduled work and verify WIP, bounded throughput, aging, and compatible cycle-time inputs.",
+    limitations: "Automated model checks do not replace production browser, assistive-technology, or live-data review.",
+    visibility: "Public",
+    publicApproved: true,
+    approvedAt: "2026-08-08T11:56:56-06:00",
+    notClaimed: "Passing deterministic tests does not prove every visualization state or production persistence path.",
+  },
 ] satisfies LearningEvidence[];
 
 export const workSessions: WorkSession[] = [
@@ -1694,7 +2040,11 @@ export function validateLearningData(
     if (!issueTypes.includes(ticket.issueType)) errors.push(`${ticket.key} has an invalid issue type`);
     if (!initiativeSlugs.has(ticket.initiativeSlug)) errors.push(`${ticket.key} references an unknown initiative`);
     if (ticket.parentKey && !ticketByKey.has(ticket.parentKey)) errors.push(`${ticket.key} references unknown parent ${ticket.parentKey}`);
-    if (ticket.parentKey && ticketByKey.get(ticket.parentKey)?.issueType !== "Epic") errors.push(`${ticket.key} parent must be an Epic`);
+    if (ticket.parentKey) {
+      const parentType = ticketByKey.get(ticket.parentKey)?.issueType;
+      const validBugParent = ticket.issueType === "Bug" && parentType === "Story";
+      if (parentType !== "Epic" && !validBugParent) errors.push(`${ticket.key} parent must be an Epic, or a directly affected Story for Bugs`);
+    }
     ticket.dependencies.forEach((dependency) => {
       if (!ticketByKey.has(dependency) && !dependency.startsWith("PRODUCT-20")) errors.push(`${ticket.key} references unknown dependency ${dependency}`);
     });
@@ -1703,6 +2053,15 @@ export function validateLearningData(
     });
     if (ticket.deliveryStatus === "Done" && !ticket.completionDate) errors.push(`${ticket.key} is Done without a completion date`);
     if (ticket.deliveryStatus === "Done" && (!ticket.definitionOfDone.trim() || ticket.evidenceIds.length === 0)) errors.push(`${ticket.key} is Done without its public definition of done or evidence`);
+    if (ticket.issueType === "Bug" && !ticket.bugClassification) errors.push(`${ticket.key} is a Bug without controlled classification`);
+    if (ticket.issueType !== "Bug" && ticket.bugClassification) errors.push(`${ticket.key} has Bug classification but is not a Bug`);
+    if (ticket.bugClassification) {
+      if (!bugCategories.includes(ticket.bugClassification.category)) errors.push(`${ticket.key} has an invalid Bug category`);
+      if (!bugSeverities.includes(ticket.bugClassification.severity)) errors.push(`${ticket.key} has an invalid Bug severity`);
+      ticket.bugClassification.affectedFeatureKeys.forEach((key) => {
+        if (!ticketByKey.has(key)) errors.push(`${ticket.key} references unknown affected feature ${key}`);
+      });
+    }
     errors.push(...validatePublicationCandidate(ticket).map((error) => `${ticket.key}: ${error}`));
   });
 
