@@ -161,7 +161,7 @@ export function resolveRoute(path: string) {
     return {
       title: "Learning & Delivery",
       description:
-        "Jason Stroup's public Learning & Delivery workflow for planned work, approved evidence, capability progression, and truthful next actions.",
+        "Jason Stroup's current technical learning, delivery board, approved evidence, capability progression, and applied project relationships.",
       element: <LearningOverviewPage />,
     };
   }

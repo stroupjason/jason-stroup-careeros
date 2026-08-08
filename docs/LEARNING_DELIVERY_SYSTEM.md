@@ -48,6 +48,16 @@ The phase-one record types are:
 - `WorkSession`: the Five-Minute Evidence Capture record linked to one ticket
 - `LearningEvidence`: reviewed artifact, verification state, relationships,
   limitations, and publication approval
+- `LearningCourse`: provider metadata, ticket and project relationships,
+  evidence state, current focus, next action, and an append-only collection of
+  timestamped progress snapshots
+
+Course progress is selected from the newest verified snapshot. Newer candidate
+snapshots do not replace it. A snapshot records its source and whether its value
+was provider reported or derived; it is not automatically a work session,
+evidence artifact, completion claim, or capability-state change. LinkedIn
+Learning remains a human-approved import boundary documented in
+`docs/LINKEDIN_LEARNING_INTEGRATION.md`.
 
 ## Status vocabularies
 
@@ -113,13 +123,16 @@ private, employer, customer, patient, interview, or recruiter information.
 
 Unknown and private ticket keys use the established not-found experience.
 
-## Healthcare SQL seed
+## Healthcare SQL initiative
 
-The public seed begins with no completed SQL learning and no applied evidence.
-The immediate action is:
+The public record now includes the verified metadata for `SQL Essential
+Training` by Walter Shields and marks its related ticket `SQL-002` In Progress.
+No current percentage, completed module, certificate, study session, or applied
+SQL evidence is published without verification. The immediate action is:
 
-> Confirm the exact SQL course, record the current completion point, and start
-> SQL-001 so the tracker begins with real evidence rather than assumptions.
+> Verify the current SQL Essential Training progress, then complete the
+> remaining course work and record Jason's original concept summary before
+> closing SQL-002.
 
 The eventual case study must use a small, licensed synthetic or public dataset.
 It must not use PHI, PII, real patient data, employer data, interview materials,
@@ -159,4 +172,3 @@ Weekly:
 - approve or reject public derivatives
 - choose one highest-value next action
 - export private Jira data manually for backup when useful
-

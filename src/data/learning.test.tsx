@@ -3,18 +3,58 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { resolveRoute } from "../App";
 import { sanitizeLearningAnalyticsProperties } from "../analytics";
+import { CurrentLearningCourseCard, formatCourseDuration } from "../components/LearningUI";
 import {
+  completeLearningCourse,
   filterLearningTickets,
+  getCourseProgressPercentage,
+  getCurrentCourseProgress,
+  getLearningTicket,
   getLearningTimeline,
+  learningCourses,
   learningEvidence,
   learningInitiatives,
   learningTickets,
   parseBoardFilters,
+  recordCourseProgress,
+  validateCourseProgressSnapshot,
   validateLearningData,
   validatePublicationCandidate,
   workSessions,
+  type CourseProgressSnapshot,
+  type LearningCourse,
   type LearningTicket,
 } from "./learning";
+
+const verifiedProgress40: CourseProgressSnapshot = {
+  id: "TEST-PROGRESS-40",
+  observedAt: "2026-08-07T12:00:00-06:00",
+  source: "Manual",
+  verificationState: "Verified",
+  valueKind: "Provider reported",
+  percentage: 40,
+  totalDurationSeconds: 16_560,
+  completedDurationSeconds: 6_624,
+  relatedEvidenceIds: [],
+};
+
+const verifiedProgress60: CourseProgressSnapshot = {
+  ...verifiedProgress40,
+  id: "TEST-PROGRESS-60",
+  observedAt: "2026-08-07T14:00:00-06:00",
+  percentage: 60,
+  completedDurationSeconds: 9_936,
+};
+
+const newerCandidate90: CourseProgressSnapshot = {
+  ...verifiedProgress40,
+  id: "TEST-PROGRESS-CANDIDATE-90",
+  observedAt: "2026-08-07T15:00:00-06:00",
+  source: "User-provided screenshot",
+  verificationState: "Candidate",
+  percentage: 90,
+  completedDurationSeconds: 14_904,
+};
 
 describe("Learning & Delivery public data", () => {
   it("passes the complete public-data validator", () => {
@@ -27,12 +67,14 @@ describe("Learning & Delivery public data", () => {
       [...learningTickets, learningTickets[0]],
       [...workSessions, workSessions[0]],
       [...learningEvidence, learningEvidence[0]],
+      [...learningCourses, learningCourses[0]],
     );
     expect(errors).toEqual(expect.arrayContaining([
       expect.stringContaining("Duplicate initiative identifier"),
       expect.stringContaining("Duplicate ticket identifier"),
       expect.stringContaining("Duplicate session identifier"),
       expect.stringContaining("Duplicate evidence identifier"),
+      expect.stringContaining("Duplicate course identifier"),
     ]));
   });
 
@@ -83,6 +125,89 @@ describe("Learning & Delivery public data", () => {
     expect(learningTickets.some((ticket) => ticket.key === "SQL-011")).toBe(false);
   });
 
+  it("records the verified course metadata and preserves existing relationships", () => {
+    const course = learningCourses[0];
+    const ticket = getLearningTicket(course.relatedTicketKey)!;
+
+    expect(course.title).toBe("SQL Essential Training");
+    expect(course.provider).toBe("LinkedIn Learning");
+    expect(course.instructor).toBe("Walter Shields");
+    expect(course.providerUpdated).toBe("May 2024");
+    expect(course.status).toBe("In Progress");
+    expect(course.evidenceState).toBe("Learning");
+    expect(course.initiativeSlug).toBe("healthcare-sql-customer-operations");
+    expect(course.relatedProjectSlug).toBe("healthcare-sql-customer-operations");
+    expect(ticket.key).toBe("SQL-002");
+    expect(ticket.deliveryStatus).toBe("In Progress");
+    expect(course.progressSnapshots).toEqual([]);
+  });
+
+  it("rejects invalid course percentages, timestamps, and durations", () => {
+    expect(validateCourseProgressSnapshot({ ...verifiedProgress40, percentage: 101 }))
+      .toContain("TEST-PROGRESS-40 percentage must be between 0 and 100");
+    expect(validateCourseProgressSnapshot({ ...verifiedProgress40, observedAt: "not-a-date" }))
+      .toContain("TEST-PROGRESS-40 has an invalid observation timestamp");
+    expect(validateCourseProgressSnapshot({ ...verifiedProgress40, completedDurationSeconds: -1 }))
+      .toContain("TEST-PROGRESS-40 completed duration cannot be negative");
+    expect(validateCourseProgressSnapshot({ ...verifiedProgress40, completedDurationSeconds: 20_000 }))
+      .toContain("TEST-PROGRESS-40 completed duration cannot exceed total duration");
+  });
+
+  it("derives progress only from labeled duration inputs", () => {
+    const derived: CourseProgressSnapshot = {
+      id: "TEST-DERIVED-11",
+      observedAt: "2026-08-07T12:00:00-06:00",
+      source: "User-provided screenshot",
+      verificationState: "Candidate",
+      valueKind: "Derived",
+      totalDurationSeconds: 16_560,
+      remainingDurationSeconds: 14_742,
+      relatedEvidenceIds: [],
+    };
+    expect(validateCourseProgressSnapshot(derived)).toEqual([]);
+    expect(getCourseProgressPercentage(derived)).toBe(11);
+    expect(formatCourseDuration(derived.totalDurationSeconds!)).toBe("4h 36m");
+  });
+
+  it("selects the newest verified snapshot instead of a newer candidate", () => {
+    const course = {
+      ...learningCourses[0],
+      progressSnapshots: [verifiedProgress40, newerCandidate90, verifiedProgress60],
+    } as LearningCourse;
+    expect(getCurrentCourseProgress(course)?.id).toBe("TEST-PROGRESS-60");
+    expect(getCourseProgressPercentage(getCurrentCourseProgress(course)!)).toBe(60);
+    expect(validateLearningData(learningInitiatives, learningTickets, workSessions, learningEvidence, [course]))
+      .toContain("TEST-PROGRESS-CANDIDATE-90 is an unverified candidate and cannot enter public course data");
+  });
+
+  it("appends progress without replacing history or fabricating a work session", () => {
+    const course = { ...learningCourses[0], progressSnapshots: [verifiedProgress40] } as LearningCourse;
+    const sessionCount = workSessions.length;
+    const updated = recordCourseProgress(course, newerCandidate90);
+
+    expect(updated.progressSnapshots.map((snapshot) => snapshot.id)).toEqual([
+      "TEST-PROGRESS-40",
+      "TEST-PROGRESS-CANDIDATE-90",
+    ]);
+    expect(course.progressSnapshots).toHaveLength(1);
+    expect(workSessions).toHaveLength(sessionCount);
+  });
+
+  it("keeps course completion separate from ticket completion and SQL evidence maturity", () => {
+    const verified100 = { ...verifiedProgress60, id: "TEST-PROGRESS-100", percentage: 100, completedDurationSeconds: 16_560 };
+    const course = recordCourseProgress(learningCourses[0], verified100);
+    const completed = completeLearningCourse(course, "2026-08-07");
+
+    expect(completed.status).toBe("Completed");
+    expect(completed.progressSnapshots).toEqual(course.progressSnapshots);
+    expect(completed.relatedTicketKey).toBe(course.relatedTicketKey);
+    expect(completed.initiativeSlug).toBe(course.initiativeSlug);
+    expect(completed.relatedProjectSlug).toBe(course.relatedProjectSlug);
+    expect(completed.evidenceState).toBe("Learning");
+    expect(getLearningTicket("SQL-002")?.deliveryStatus).toBe("In Progress");
+    expect(getLearningTicket("SQL-002")?.acceptanceCriteria.length).toBeGreaterThan(1);
+  });
+
   it("parses, combines, and recovers URL filter state", () => {
     const filters = parseBoardFilters("?initiative=healthcare-sql-customer-operations&delivery=Ready&evidence=Learning&capability=sql&role=technical-account-manager&type=Spike");
     expect(filters).toEqual({
@@ -129,11 +254,55 @@ describe("Learning & Delivery public data", () => {
       note: "arbitrary work-session text",
       email: "person@example.com",
       issueType: "Story",
+      provider: "linkedin-learning",
+      course: "sql-essential-training-linkedin-learning",
+      ctaLocation: "current-learning",
+      percentage: "90",
+      completedDuration: "4h",
+      currentModule: "private free text",
     })).toEqual({
       initiative: "careeros-learning-delivery",
       delivery: "Done",
       issueType: "Story",
+      provider: "linkedin-learning",
+      course: "sql-essential-training-linkedin-learning",
+      ctaLocation: "current-learning",
     });
+  });
+
+  it("renders current learning without publishing an unverified percentage", () => {
+    const markup = renderToStaticMarkup(resolveRoute("/learning").element);
+    expect(markup).toContain("Currently Learning");
+    expect(markup).toContain("SQL Essential Training");
+    expect(markup).toContain("Walter Shields");
+    expect(markup).toContain("No verified current percentage is published");
+    expect(markup).not.toContain("<progress");
+    expect(markup).toContain('href="/learning/tickets/SQL-002"');
+    expect(markup).toContain('href="/projects/healthcare-sql-customer-operations"');
+    expect(markup).toContain("Completed Courses &amp; Credentials");
+  });
+
+  it("renders verified numeric progress as an accessible course progress element", () => {
+    const course = { ...learningCourses[0], progressSnapshots: [verifiedProgress60] } as LearningCourse;
+    const markup = renderToStaticMarkup(<CurrentLearningCourseCard course={course} />);
+    expect(markup).toContain('aria-label="Course progress for SQL Essential Training"');
+    expect(markup).toContain('value="60"');
+    expect(markup).toContain('max="100"');
+    expect(markup).not.toMatch(/proficiency progress|mastery progress/i);
+  });
+
+  it("keeps one Learning navigation item and no competing Education area", () => {
+    const layoutSource = readFileSync(new URL("../components/SiteLayout.tsx", import.meta.url), "utf8");
+    expect(layoutSource).toContain('{ href: "/learning", label: "Learning" }');
+    expect(layoutSource).not.toMatch(/label: "(?:Education|Currently Learning)"/);
+  });
+
+  it("keeps private LinkedIn state and the historical candidate out of public records", () => {
+    const publicCourseData = JSON.stringify(learningCourses);
+    expect(publicCourseData).not.toMatch(/password|cookie|accessToken|accountId|certificateId/);
+    expect(publicCourseData).not.toContain("11");
+    expect(publicCourseData).not.toContain("14_742");
+    expect(publicCourseData).not.toMatch(/linkedin\.com\/learning\/(?:me|my-learning|in-progress)/i);
   });
 
   it("renders native labeled board controls and textual status labels", () => {
@@ -150,6 +319,7 @@ describe("Learning & Delivery public data", () => {
     const css = readFileSync(new URL("../styles.css", import.meta.url), "utf8");
     const mobileBlock = css.slice(css.indexOf("@media (max-width: 720px)"), css.indexOf("@media (max-width: 420px)"));
     expect(mobileBlock).toContain(".kanbanBoard");
+    expect(mobileBlock).toContain(".courseProgressMeta");
     expect(mobileBlock).toContain("grid-template-columns: 1fr");
     expect(mobileBlock).toContain(".mobileNavToggle");
     expect(mobileBlock).toContain("display: inline-flex");

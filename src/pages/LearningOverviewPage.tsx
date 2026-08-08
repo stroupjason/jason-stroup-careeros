@@ -1,12 +1,14 @@
 import { useEffect } from "react";
-import { ArrowUpRight, CheckCircle2, CircleDot, Clock3, FileCheck2 } from "lucide-react";
+import { ArrowUpRight, Award, CheckCircle2, CircleDot, Clock3, ExternalLink, FileCheck2 } from "lucide-react";
 import { trackPortfolioEvent } from "../analytics";
-import { DeliveryBadge, formatLearningDate } from "../components/LearningUI";
+import { CurrentLearningCourseCard, formatLearningDate } from "../components/LearningUI";
 import { LinkButton, PageHero, SectionHeader, StateBadge } from "../components/UI";
 import {
   capabilityLabels,
   currentLearningSprint,
+  getLearningTicket,
   getInitiativeProgress,
+  learningCourses,
   learningEvidence,
   learningInitiatives,
   learningTickets,
@@ -22,8 +24,23 @@ const evidenceRank: Record<EvidenceState, number> = {
   Demonstrated: 3,
 };
 
+const currentCourses = learningCourses.filter((course) => course.status === "In Progress");
+const completedCourses = learningCourses.filter((course) => course.status === "Completed");
+
 export function LearningOverviewPage() {
-  useEffect(() => trackPortfolioEvent("Learning Overview Viewed", {}), []);
+  useEffect(() => {
+    trackPortfolioEvent("Learning Overview Viewed", {});
+    currentCourses.forEach((course) => {
+      const ticket = getLearningTicket(course.relatedTicketKey)!;
+      trackPortfolioEvent("Current Learning Viewed", {
+        provider: course.providerSlug,
+        course: course.slug,
+        evidence: course.evidenceState,
+        delivery: ticket.deliveryStatus,
+        initiative: course.initiativeSlug,
+      });
+    });
+  }, []);
 
   const statusCounts = learningTickets.reduce<Partial<Record<DeliveryStatus, number>>>((counts, ticket) => {
     counts[ticket.deliveryStatus] = (counts[ticket.deliveryStatus] ?? 0) + 1;
@@ -56,15 +73,40 @@ export function LearningOverviewPage() {
         }
       />
 
-      <section className="section shell sectionAfterHero">
+      <section className="section shell sectionAfterHero" id="currently-learning">
+        <SectionHeader
+          kicker="Currently Learning"
+          title="Course work connected to applied proof."
+          copy="Current progress is published only after a source and observation date are verified. Course completion and applied capability remain separate claims."
+        />
+        <div className="currentlyLearningList">
+          {currentCourses.map((course) => <CurrentLearningCourseCard course={course} key={course.id} />)}
+        </div>
+      </section>
+
+      <section className="section shell">
         <SectionHeader kicker="Current focus" title="Start with facts, then build the proof." />
         <div className="learningFocus">
           <div>
             <span className="kicker">Highest-value next action</span>
             <h2>{currentLearningSprint.highestValueNextAction}</h2>
-            <p>No healthcare SQL session, course completion, certificate, query result, or project outcome is recorded yet.</p>
+            <p>The course metadata and in-progress state are recorded. No numeric current progress, completion, certificate, SQL session, query result, or project outcome is published.</p>
           </div>
-          <a href="/learning/tickets/SQL-001">Open SQL-001 <ArrowUpRight size={17} aria-hidden="true" /></a>
+          <a href="/learning/tickets/SQL-002">Open SQL-002 <ArrowUpRight size={17} aria-hidden="true" /></a>
+        </div>
+      </section>
+
+      <section className="section band">
+        <div className="shell learningSprintLayout">
+          <div>
+            <span className="kicker">Current sprint</span>
+            <h2>{currentLearningSprint.title}</h2>
+            <p><time dateTime={currentLearningSprint.startDate}>{formatLearningDate(currentLearningSprint.startDate)}</time> to <time dateTime={currentLearningSprint.endDate}>{formatLearningDate(currentLearningSprint.endDate)}</time></p>
+            <p>These are candidates, not a promise that every seed ticket will be completed in one weekend.</p>
+          </div>
+          <ul className="cleanList learningSprintGoals">
+            {currentLearningSprint.goals.map((goal) => <li key={goal}>{goal}</li>)}
+          </ul>
         </div>
       </section>
 
@@ -116,20 +158,6 @@ export function LearningOverviewPage() {
         </div>
       </section>
 
-      <section className="section band">
-        <div className="shell learningSprintLayout">
-          <div>
-            <span className="kicker">Current sprint</span>
-            <h2>{currentLearningSprint.title}</h2>
-            <p><time dateTime={currentLearningSprint.startDate}>{formatLearningDate(currentLearningSprint.startDate)}</time> to <time dateTime={currentLearningSprint.endDate}>{formatLearningDate(currentLearningSprint.endDate)}</time></p>
-            <p>These are candidates, not a promise that every seed ticket will be completed in one weekend.</p>
-          </div>
-          <ul className="cleanList learningSprintGoals">
-            {currentLearningSprint.goals.map((goal) => <li key={goal}>{goal}</li>)}
-          </ul>
-        </div>
-      </section>
-
       <section className="section shell">
         <SectionHeader kicker="Recent evidence" title="Approved artifacts, with their limits attached." />
         <div className="learningEvidenceList">
@@ -142,6 +170,44 @@ export function LearningOverviewPage() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="section shell">
+        <SectionHeader
+          kicker="Completed Courses & Credentials"
+          title="Completion records keep their evidence boundaries."
+          copy="A completed course is listed separately from a professional certification and never substitutes for applied work."
+        />
+        {completedCourses.length === 0 ? (
+          <div className="completedLearningEmpty">
+            <Award size={22} aria-hidden="true" />
+            <div>
+              <h3>No verified completed courses or credentials are published yet.</h3>
+              <p>SQL Essential Training will move here only after completion is verified. Its delivery ticket can remain open until every definition-of-done requirement is met.</p>
+            </div>
+          </div>
+        ) : (
+          <div className="completedCourseList">
+            {completedCourses.map((course) => (
+              <article key={course.id}>
+                <div>
+                  <span className="kicker">{course.kind}</span>
+                  <h3>{course.title}</h3>
+                  <p>{course.provider} / {course.instructor}</p>
+                  <div className="tags">
+                    {course.capabilitySlugs.map((slug) => <span key={slug}>{capabilityLabels[slug as keyof typeof capabilityLabels]}</span>)}
+                  </div>
+                </div>
+                <StateBadge state={course.evidenceState} />
+                <dl>
+                  <div><dt>Completed</dt><dd>{course.completionDate ? <time dateTime={course.completionDate}>{formatLearningDate(course.completionDate)}</time> : "Not recorded"}</dd></div>
+                  <div><dt>Related work</dt><dd><a href={`/projects/${course.relatedProjectSlug}`}>Applied project</a></dd></div>
+                </dl>
+                {course.certificateUrl ? <a href={course.certificateUrl} target="_blank" rel="noreferrer">Certificate <ExternalLink size={15} aria-hidden="true" /></a> : null}
+              </article>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="section band">

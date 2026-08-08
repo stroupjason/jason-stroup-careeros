@@ -68,7 +68,7 @@ export function LearningTicketPage({ ticket }: { ticket: LearningTicket }) {
         <div className="ticketPlanGrid">
           <dl>
             <div><dt>Planned start</dt><dd><time dateTime={ticket.plannedStart}>{formatLearningDate(ticket.plannedStart)}</time></dd></div>
-            <div><dt>Actual start</dt><dd>{ticket.actualStart ? <time dateTime={ticket.actualStart}>{formatLearningDate(ticket.actualStart)}</time> : "Not started"}</dd></div>
+            <div><dt>Actual start</dt><dd>{ticket.actualStart ? <time dateTime={ticket.actualStart}>{formatLearningDate(ticket.actualStart)}</time> : "Not recorded"}</dd></div>
             <div><dt>Target</dt><dd>{ticket.targetDate ? <time dateTime={ticket.targetDate}>{formatLearningDate(ticket.targetDate)}</time> : "No verified target"}</dd></div>
             <div><dt>Completed</dt><dd>{ticket.completionDate ? <time dateTime={ticket.completionDate}>{formatLearningDate(ticket.completionDate)}</time> : "Not completed"}</dd></div>
             <div><dt>Estimate</dt><dd>{ticket.estimateHours ? `${ticket.estimateHours} hours` : "Not supplied"}</dd></div>

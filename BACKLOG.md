@@ -69,6 +69,7 @@
 - PRODUCT-216 [Ready] Set up private Jira authoring and evaluate a safe one-way export; depends on PRODUCT-204
 - PRODUCT-217 [Completed] Seed the healthcare SQL initiative; depends on PRODUCT-204
 - PRODUCT-218 [Completed] Verify accessibility, responsiveness, and tests; depends on PRODUCT-211 through PRODUCT-215
+- PRODUCT-219 [Completed] Add truthful current-course records, progress snapshots, relationships, and LinkedIn integration boundaries; depends on PRODUCT-211, PRODUCT-213, PRODUCT-217, and PRODUCT-218
 
 `PRODUCT-216` remains open until an authenticated private Jira board and a
 controlled, gitignored staging export are actually tested. Public CareerOS has

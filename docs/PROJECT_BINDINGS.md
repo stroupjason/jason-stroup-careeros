@@ -30,6 +30,7 @@ specific, approved, public-safe artifact only when the task requires it.
 | Rendered typed site content | `src/data/site.ts` |
 | Public Learning & Delivery records | `src/data/learning.ts` |
 | Learning workflow and publication rules | `docs/LEARNING_DELIVERY_SYSTEM.md` |
+| LinkedIn Learning progress boundary | `docs/LINKEDIN_LEARNING_INTEGRATION.md` |
 | Private Jira setup guidance | `docs/JIRA_LEARNING_SETUP.md` |
 | Private apprenticeship and raw work evidence | Outside the public repository |
 

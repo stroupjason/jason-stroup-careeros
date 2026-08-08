@@ -1,6 +1,14 @@
-import { AlertTriangle, ArrowUpRight, FileCheck2 } from "lucide-react";
-import type { LearningTicket } from "../data/learning";
-import { capabilityLabels, getLearningInitiative, learningRoleLabels } from "../data/learning";
+import { AlertTriangle, ArrowUpRight, BookOpenCheck, ExternalLink, FileCheck2, Route } from "lucide-react";
+import { trackPortfolioEvent } from "../analytics";
+import type { LearningCourse, LearningTicket } from "../data/learning";
+import {
+  capabilityLabels,
+  getCourseProgressPercentage,
+  getCurrentCourseProgress,
+  getLearningInitiative,
+  getLearningTicket,
+  learningRoleLabels,
+} from "../data/learning";
 import { StateBadge } from "./UI";
 
 export function DeliveryBadge({ status }: { status: LearningTicket["deliveryStatus"] }) {
@@ -45,6 +53,130 @@ export function TicketCard({ ticket }: { ticket: LearningTicket }) {
       </div>
     </article>
   );
+}
+
+export function CurrentLearningCourseCard({ course }: { course: LearningCourse }) {
+  const initiative = getLearningInitiative(course.initiativeSlug)!;
+  const ticket = getLearningTicket(course.relatedTicketKey)!;
+  const currentProgress = getCurrentCourseProgress(course);
+  const currentPercentage = currentProgress ? getCourseProgressPercentage(currentProgress) : undefined;
+
+  return (
+    <article className="currentLearningCourse">
+      <div className="currentLearningCourseHeading">
+        <div>
+          <span className="kicker">{course.provider} / {course.kind}</span>
+          <h2>{course.title}</h2>
+          <p>Instructor {course.instructor} / Updated {course.providerUpdated}</p>
+        </div>
+        <div className="currentLearningCourseStates" aria-label="Course states">
+          <DeliveryBadge status={ticket.deliveryStatus} />
+          <StateBadge state={course.evidenceState} />
+        </div>
+      </div>
+
+      <div className="courseProgressPanel">
+        <div className="courseProgressHeading">
+          <span>Course progress</span>
+          <strong>{currentPercentage === undefined ? course.status : `${currentPercentage}%`}</strong>
+        </div>
+        {currentPercentage === undefined ? (
+          <p className="courseProgressPending">No verified current percentage is published.</p>
+        ) : (
+          <progress
+            aria-label={`Course progress for ${course.title}`}
+            max={100}
+            value={currentPercentage}
+          >
+            {currentPercentage}%
+          </progress>
+        )}
+        <dl className="courseProgressMeta">
+          <div>
+            <dt>Progress verified</dt>
+            <dd>{currentProgress ? <time dateTime={currentProgress.observedAt}>{formatLearningDate(currentProgress.observedAt)}</time> : "Not yet"}</dd>
+          </div>
+          <div>
+            <dt>Course metadata</dt>
+            <dd><time dateTime={course.metadataVerifiedAt}>{formatLearningDate(course.metadataVerifiedAt)}</time></dd>
+          </div>
+          <div>
+            <dt>Evidence state</dt>
+            <dd>{course.evidenceState}</dd>
+          </div>
+          {currentProgress ? (
+            <div>
+              <dt>Progress source</dt>
+              <dd>{currentProgress.source}</dd>
+            </div>
+          ) : null}
+          {currentProgress ? (
+            <div>
+              <dt>Value basis</dt>
+              <dd>{currentProgress.valueKind}</dd>
+            </div>
+          ) : null}
+          {currentProgress?.totalDurationSeconds !== undefined ? (
+            <div>
+              <dt>Total duration</dt>
+              <dd>{formatCourseDuration(currentProgress.totalDurationSeconds)}</dd>
+            </div>
+          ) : null}
+        </dl>
+      </div>
+
+      <div className="courseLearningContext">
+        <div>
+          <span className="kicker">Current learning focus</span>
+          <p>{course.currentLearningFocus}</p>
+        </div>
+        <div>
+          <span className="kicker">Highest-value next action</span>
+          <p>{course.nextAction}</p>
+        </div>
+      </div>
+
+      <div className="courseApplicationNote">
+        <BookOpenCheck size={20} aria-hidden="true" />
+        <p>Course completion supports foundational SQL knowledge. The applied healthcare SQL investigation is the stronger evidence of capability.</p>
+      </div>
+
+      <div className="tags courseCapabilityTags" aria-label="Relevant capabilities">
+        {course.capabilitySlugs.map((slug) => (
+          <span key={slug}>{capabilityLabels[slug as keyof typeof capabilityLabels]}</span>
+        ))}
+      </div>
+
+      <div className="currentLearningCourseActions">
+        <a href={`/learning/tickets/${ticket.key}`}>{ticket.key}: View learning ticket <ArrowUpRight size={16} aria-hidden="true" /></a>
+        <a href={`/projects/${course.relatedProjectSlug}`}><Route size={16} aria-hidden="true" /> View applied project</a>
+        <a
+          href={course.publicUrl}
+          target="_blank"
+          rel="noreferrer"
+          onClick={() => trackPortfolioEvent("Learning Course Opened", {
+            provider: course.providerSlug,
+            course: course.slug,
+            evidence: course.evidenceState,
+            delivery: ticket.deliveryStatus,
+            initiative: initiative.slug,
+            ctaLocation: "current-learning",
+          })}
+        >
+          Open course page <ExternalLink size={16} aria-hidden="true" />
+        </a>
+      </div>
+    </article>
+  );
+}
+
+export function formatCourseDuration(totalSeconds: number) {
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return [hours ? `${hours}h` : "", minutes ? `${minutes}m` : "", seconds ? `${seconds}s` : ""]
+    .filter(Boolean)
+    .join(" ") || "0m";
 }
 
 export function formatLearningDate(date: string) {

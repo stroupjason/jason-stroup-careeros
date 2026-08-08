@@ -1779,6 +1779,225 @@ code {
   accent-color: var(--accent);
 }
 
+.currentlyLearningList {
+  display: grid;
+  gap: 18px;
+}
+
+.currentLearningCourse {
+  display: grid;
+  gap: 24px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(17, 31, 43, 0.72);
+}
+
+.currentLearningCourseHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: 28px;
+  align-items: flex-start;
+}
+
+.currentLearningCourseHeading h2 {
+  margin: 10px 0 8px;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1.04;
+  letter-spacing: 0;
+}
+
+.currentLearningCourseHeading p,
+.courseApplicationNote p,
+.courseLearningContext p,
+.completedLearningEmpty p,
+.completedCourseList p {
+  margin-bottom: 0;
+}
+
+.currentLearningCourseStates {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.courseProgressPanel {
+  display: grid;
+  gap: 16px;
+  padding-block: 22px;
+  border-block: 1px solid var(--line);
+}
+
+.courseProgressHeading {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: baseline;
+}
+
+.courseProgressHeading span,
+.courseProgressMeta dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.courseProgressHeading strong {
+  font-size: 1.15rem;
+}
+
+.courseProgressPanel progress {
+  width: 100%;
+  height: 10px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 5px;
+  background: var(--line);
+  accent-color: var(--accent);
+}
+
+.courseProgressPanel progress::-webkit-progress-bar {
+  background: var(--line);
+}
+
+.courseProgressPanel progress::-webkit-progress-value {
+  background: var(--accent);
+}
+
+.courseProgressPanel progress::-moz-progress-bar {
+  background: var(--accent);
+}
+
+.courseProgressPending {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 650;
+}
+
+.courseProgressMeta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin: 0;
+}
+
+.courseProgressMeta > div {
+  display: grid;
+  gap: 6px;
+}
+
+.courseProgressMeta dd {
+  margin: 0;
+  font-weight: 750;
+}
+
+.courseLearningContext {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.courseLearningContext > div {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.courseApplicationNote {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  color: var(--muted);
+}
+
+.courseApplicationNote svg {
+  flex: 0 0 auto;
+  color: var(--accent);
+}
+
+.courseCapabilityTags {
+  margin-top: -4px;
+}
+
+.currentLearningCourseActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 28px;
+}
+
+.currentLearningCourseActions a,
+.completedCourseList a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--accent);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.completedLearningEmpty {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding-block: 24px;
+  border-block: 1px solid var(--line);
+}
+
+.completedLearningEmpty svg {
+  flex: 0 0 auto;
+  color: var(--accent);
+}
+
+.completedLearningEmpty h3 {
+  margin: 0 0 8px;
+  letter-spacing: 0;
+}
+
+.completedCourseList {
+  display: grid;
+  gap: 1px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.completedCourseList article {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) auto minmax(260px, 0.8fr) auto;
+  gap: 24px;
+  align-items: start;
+  padding: 24px;
+  background: var(--bg);
+}
+
+.completedCourseList h3 {
+  margin: 8px 0;
+  letter-spacing: 0;
+}
+
+.completedCourseList dl {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.completedCourseList dl > div {
+  display: grid;
+  gap: 4px;
+}
+
+.completedCourseList dt {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.completedCourseList dd {
+  margin: 0;
+}
+
 .learningFocus {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -2665,6 +2884,9 @@ code {
   }
 
   .learningFocus,
+  .courseProgressMeta,
+  .courseLearningContext,
+  .completedCourseList article,
   .learningInitiativeGrid,
   .learningSprintLayout,
   .learningEvidenceList article,
@@ -2679,6 +2901,14 @@ code {
   .ticketTruthBoundary,
   .timelineFilters {
     grid-template-columns: 1fr;
+  }
+
+  .currentLearningCourseHeading {
+    flex-direction: column;
+  }
+
+  .currentLearningCourseStates {
+    justify-content: flex-start;
   }
 
   .learningMetricGrid {

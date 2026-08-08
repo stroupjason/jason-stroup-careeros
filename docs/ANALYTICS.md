@@ -35,13 +35,18 @@ or visitor-level data in the public repository.
 | `Learning Ticket Viewed` | delivery, evidence, issue type, initiative | Which kinds of approved tickets earn review? |
 | `Learning Timeline Viewed` | none | Is chronological evidence review useful? |
 | `Learning Evidence Opened` | evidence state and initiative | Which approved evidence links earn deeper review? |
+| `Current Learning Viewed` | provider, course, evidence state, delivery status, initiative | Is the current-course relationship being reached? |
+| `Learning Course Opened` | provider, course, evidence state, delivery status, initiative, fixed CTA location | Does a visitor choose to inspect the public provider page? |
 
 The event names and locations are TypeScript unions. Project and role values use
 public slugs. Event properties never include names entered by visitors, email
 addresses, message text, free-form search terms, or private account values.
 Learning event properties pass a runtime allowlist and cannot include ticket
 descriptions, work-session text, filenames, external issue keys, or private
-system values.
+system values. Course analytics never include percentage, completed or
+remaining duration, current module, notes, certificate identifiers, account
+details, authentication state, or arbitrary text. Analytics exceptions are
+contained so measurement cannot interrupt rendering or navigation.
 
 Vercel's React client records page views. It supports history-state navigation;
 CareerOS currently uses normal browser navigation between its Vite routes, so

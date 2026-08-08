@@ -18,6 +18,65 @@ export type IssueType = (typeof issueTypes)[number];
 export type Priority = "Highest" | "High" | "Medium" | "Low";
 export type EvidenceVerificationState = "Verified" | "Pending Review" | "Not Yet Created";
 
+export const courseStatuses = ["In Progress", "Completed"] as const;
+export const courseKinds = ["Course", "Professional certification"] as const;
+export const courseProgressSources = [
+  "Manual",
+  "User-provided screenshot",
+  "Browser-assisted verification",
+] as const;
+export const courseProgressVerificationStates = ["Verified", "Candidate"] as const;
+export const courseProgressValueKinds = ["Provider reported", "Derived"] as const;
+
+export type CourseStatus = (typeof courseStatuses)[number];
+export type CourseKind = (typeof courseKinds)[number];
+export type CourseProgressSource = (typeof courseProgressSources)[number];
+export type CourseProgressVerificationState = (typeof courseProgressVerificationStates)[number];
+export type CourseProgressValueKind = (typeof courseProgressValueKinds)[number];
+
+export type CourseProgressSnapshot = {
+  id: string;
+  observedAt: string;
+  source: CourseProgressSource;
+  verificationState: CourseProgressVerificationState;
+  valueKind: CourseProgressValueKind;
+  percentage?: number;
+  totalDurationSeconds?: number;
+  completedDurationSeconds?: number;
+  remainingDurationSeconds?: number;
+  relatedEvidenceIds: string[];
+  currentModule?: string;
+};
+
+export type LearningCourse = {
+  id: string;
+  slug: string;
+  title: string;
+  provider: string;
+  providerSlug: string;
+  instructor: string;
+  providerUpdated: string;
+  publicUrl: string;
+  kind: CourseKind;
+  status: CourseStatus;
+  evidenceState: EvidenceState;
+  metadataVerifiedAt: string;
+  relatedTicketKey: string;
+  initiativeSlug: string;
+  relatedProjectSlug: string;
+  capabilitySlugs: string[];
+  evidenceIds: string[];
+  progressSnapshots: CourseProgressSnapshot[];
+  currentLearningFocus: string;
+  nextAction: string;
+  publicSummary: string;
+  completionDate?: string;
+  certificateUrl?: string;
+  visibility: "Public";
+  publicApproved: true;
+  notClaimed: string;
+};
+
 export type LearningMilestone = {
   id: string;
   title: string;
@@ -171,9 +230,12 @@ export const capabilityLabels = {
   "responsive-design": "Responsive design",
   testing: "Testing",
   sql: "SQL",
+  "data-analysis": "Data analysis",
   "healthcare-data": "Healthcare data",
   "data-quality": "Data-quality investigation",
+  troubleshooting: "Troubleshooting",
   "root-cause-analysis": "Root-cause analysis",
+  "technical-account-management": "Technical account management",
   "technical-account-planning": "Technical account planning",
   "executive-communication": "Executive communication",
   "customer-risk-management": "Customer-risk management",
@@ -242,8 +304,8 @@ export const learningInitiatives = [
     targetDate: "2026-08-09",
     careerObjective: "Strengthen applied SQL, data-quality investigation, root-cause analysis, and customer communication evidence.",
     roleLensSlugs: sqlRoles,
-    currentPhase: "Preparation ready",
-    nextAction: "Confirm the exact SQL course, record the current completion point, and start SQL-001 so the tracker begins with real evidence rather than assumptions.",
+    currentPhase: "Foundational course in progress",
+    nextAction: "Verify current SQL Essential Training progress, finish only the remaining course work, and record the SQL baseline without treating course progress as proficiency.",
     publicSummary: "An applied SQL and technical-account-management case study using synthetic healthcare data to investigate data quality, explain customer impact, structure a root-cause analysis, and recommend a practical action plan.",
     milestones: [
       { id: "SQL-M1", title: "Baseline and learning focus recorded", status: "Active" },
@@ -256,6 +318,42 @@ export const learningInitiatives = [
     notClaimed: "No course completion, SQL proficiency certification, healthcare-domain expertise, real customer incident, or finished case study is claimed.",
   },
 ] satisfies LearningInitiative[];
+
+export const learningCourses: LearningCourse[] = [
+  {
+    id: "COURSE-SQL-ESSENTIAL-TRAINING",
+    slug: "sql-essential-training-linkedin-learning",
+    title: "SQL Essential Training",
+    provider: "LinkedIn Learning",
+    providerSlug: "linkedin-learning",
+    instructor: "Walter Shields",
+    providerUpdated: "May 2024",
+    publicUrl: "https://www.linkedin.com/learning/sql-essential-training-20685933",
+    kind: "Course",
+    status: "In Progress",
+    evidenceState: "Learning",
+    metadataVerifiedAt: "2026-08-07",
+    relatedTicketKey: "SQL-002",
+    initiativeSlug: "healthcare-sql-customer-operations",
+    relatedProjectSlug: "healthcare-sql-customer-operations",
+    capabilitySlugs: [
+      "sql",
+      "data-analysis",
+      "healthcare-data",
+      "troubleshooting",
+      "root-cause-analysis",
+      "technical-account-management",
+    ],
+    evidenceIds: [],
+    progressSnapshots: [],
+    currentLearningFocus: "Complete SQL Essential Training and identify concepts to apply in the synthetic healthcare SQL case study.",
+    nextAction: "Verify the current LinkedIn Learning progress with Jason, then complete the remaining course work and record an original concept summary.",
+    publicSummary: "Foundational SQL course work connected to an applied, synthetic-data investigation rather than presented as standalone proof of proficiency.",
+    visibility: "Public",
+    publicApproved: true,
+    notClaimed: "The current percentage, completed modules, completion date, certificate, SQL mastery, healthcare expertise, and applied project outcome are not yet verified.",
+  },
+];
 
 function systemTicket(
   ticket: Omit<LearningTicket, "createdAt" | "plannedStart" | "initiativeSlug" | "relatedProjectSlug" | "visibility" | "publicApproved" | "blockers" | "roleLensSlugs"> & {
@@ -415,6 +513,25 @@ export const learningTickets = [
     notClaimed: "No healthcare SQL learning event has been recorded yet.",
   }),
   systemTicket({
+    key: "PRODUCT-219",
+    issueType: "Story",
+    title: "Add truthful current-course progress tracking",
+    publicSummary: "Connect a verified course record to existing tickets, initiatives, projects, evidence states, and timestamped progress snapshots without adding a second learning tracker.",
+    deliveryStatus: "Done",
+    evidenceState: "Practicing",
+    priority: "High",
+    parentKey: "LDS-001",
+    dependencies: ["PRODUCT-211", "PRODUCT-213", "PRODUCT-217", "PRODUCT-218"],
+    actualStart: "2026-08-07T20:24:55-06:00",
+    completionDate: "2026-08-07T20:47:31-06:00",
+    definitionOfDone: "The current-course experience, snapshot validation, truth boundaries, analytics allowlist, integration decision, responsive behavior, and focused tests are implemented and verified.",
+    acceptanceCriteria: ["No unverified numeric progress is rendered", "Course progress remains separate from proficiency", "LinkedIn is not a browser runtime dependency", "Completed-course history remains available"],
+    capabilitySlugs: ["delivery-modeling", "evidence-design", "privacy-review", "testing", "accessibility", "responsive-design"],
+    evidenceIds: implementationEvidence,
+    nextAction: "Record a verified progress snapshot only after Jason confirms the visible provider value.",
+    notClaimed: "This work does not claim LinkedIn synchronization, course completion, SQL proficiency, or a completed healthcare case study.",
+  }),
+  systemTicket({
     key: "PRODUCT-216",
     issueType: "Spike",
     title: "Set up private Jira authoring and evaluate a safe export",
@@ -499,25 +616,25 @@ export const learningTickets = [
     acceptanceCriteria: ["Baseline is candid", "Questions connect query work to customer decisions", "No proficiency score is invented"],
     capabilitySlugs: ["sql", "data-quality", "technical-account-planning"],
     evidenceIds: [],
-    nextAction: "Confirm the exact course and current completion point, then record the real baseline session.",
+    nextAction: "Record the current SQL strengths, gaps, and project questions without assigning a proficiency score.",
     notClaimed: "This baseline is not a proficiency certification.",
   }),
   sqlTicket({
     key: "SQL-002",
     issueType: "Task",
     title: "Complete remaining LinkedIn Learning SQL course work",
-    publicSummary: "Verify the exact course and remaining modules before recording completion or any supporting artifact.",
-    deliveryStatus: "Ready",
+    publicSummary: "Continue SQL Essential Training by Walter Shields, then capture completion and original learning notes only when each requirement is verified.",
+    deliveryStatus: "In Progress",
     evidenceState: "Learning",
     priority: "High",
     parentKey: "SQL-000",
     dependencies: [],
-    definitionOfDone: "The verified remaining modules are completed, an available completion artifact is captured, key concepts are summarized, and applied follow-up tickets are linked.",
-    acceptanceCriteria: ["Exact course title is verified first", "Completion is not pre-marked", "Applied work remains a separate evidence gate"],
-    capabilitySlugs: ["sql"],
+    definitionOfDone: "Course completion is verified, an available completion page or certificate is captured, key concepts are summarized in Jason's own words, applied follow-up tickets are linked, and the actual completion date is recorded.",
+    acceptanceCriteria: ["Current progress is verified before a percentage is published", "Completion is not pre-marked", "Applied work remains a separate evidence gate", "A 100% progress value alone does not satisfy every completion requirement"],
+    capabilitySlugs: ["sql", "data-analysis", "healthcare-data", "troubleshooting", "root-cause-analysis", "technical-account-management"],
     evidenceIds: [],
-    nextAction: "Supply the exact course title and current completion point.",
-    notClaimed: "The course title, completion state, certificate, and learned modules are not yet verified.",
+    nextAction: "Verify the current provider progress, then finish the remaining course work and write an original concept summary.",
+    notClaimed: "The course is in progress, but its current percentage, completed modules, completion date, certificate, and learning outcomes are not yet verified.",
   }),
   sqlTicket({
     key: "SQL-003",
@@ -683,7 +800,7 @@ export const learningEvidence = [
     createdAt: "2026-08-07T18:59:26-06:00",
     verificationState: "Verified",
     evidenceStateSupported: "Practicing",
-    relatedTicketKeys: ["LDS-001", "PRODUCT-211", "PRODUCT-212", "PRODUCT-213", "PRODUCT-214", "PRODUCT-215", "PRODUCT-217"],
+    relatedTicketKeys: ["LDS-001", "PRODUCT-211", "PRODUCT-212", "PRODUCT-213", "PRODUCT-214", "PRODUCT-215", "PRODUCT-217", "PRODUCT-219"],
     relatedProjectSlug: "careeros-learning-delivery",
     capabilitySlugs: ["delivery-modeling", "evidence-design", "privacy-review"],
     roleLensSlugs: systemRoles,
@@ -703,12 +820,12 @@ export const learningEvidence = [
     createdAt: "2026-08-07T18:59:26-06:00",
     verificationState: "Verified",
     evidenceStateSupported: "Practicing",
-    relatedTicketKeys: ["LDS-001", "PRODUCT-211", "PRODUCT-212", "PRODUCT-213", "PRODUCT-215", "PRODUCT-218"],
+    relatedTicketKeys: ["LDS-001", "PRODUCT-211", "PRODUCT-212", "PRODUCT-213", "PRODUCT-215", "PRODUCT-218", "PRODUCT-219"],
     relatedProjectSlug: "careeros-learning-delivery",
     capabilitySlugs: ["testing", "privacy-review", "accessibility", "responsive-design"],
     roleLensSlugs: ["application-engineer", "forward-deployed-engineer"],
     repositoryPath: "src/data/learning.test.tsx",
-    publicSummary: "Focused automated checks cover identifiers, references, cycles, completion rules, publication approval, filters, routes, chronology, and truthful SQL seed states.",
+    publicSummary: "Focused automated checks cover identifiers, relationships, course progress, history, completion boundaries, analytics privacy, routes, chronology, and truthful SQL states.",
     limitations: "Automated checks are supplemented by browser review and do not replace human publication approval.",
     visibility: "Public",
     publicApproved: true,
@@ -745,7 +862,7 @@ export const currentLearningSprint = {
   endDate: "2026-08-09",
   candidateTicketKeys: ["SQL-001", "SQL-002", "SQL-004", "SQL-007", "SQL-010"],
   goals: [
-    "Confirm the exact SQL course and remaining modules",
+    "Verify the current SQL Essential Training progress and remaining modules",
     "Establish the SQL baseline",
     "Complete only the remaining course work that is realistically finished",
     "Select a synthetic dataset",
@@ -753,7 +870,7 @@ export const currentLearningSprint = {
     "Decide the minimum shareable deliverable",
     "Record the first Five-Minute Evidence Capture entry",
   ],
-  highestValueNextAction: "Confirm the exact SQL course, record the current completion point, and start SQL-001 so the tracker begins with real evidence rather than assumptions.",
+  highestValueNextAction: "Verify the current SQL Essential Training progress, then complete the remaining course work and record Jason's original concept summary before closing SQL-002.",
 } as const;
 
 const evidenceStates: EvidenceState[] = ["Demonstrated", "Practicing", "Learning", "Planned"];
@@ -762,13 +879,25 @@ const forbiddenPublicKeys = new Set([
   "jiraUrl",
   "jiraKey",
   "apiToken",
+  "accessToken",
+  "refreshToken",
   "accountEmail",
+  "accountId",
+  "authenticatedUrl",
+  "certificateId",
+  "cookie",
+  "cookies",
+  "password",
   "privateSourceReference",
   "privateNotes",
   "comments",
   "attachments",
 ]);
-const forbiddenPublicText = [/@[a-z0-9.-]+\.[a-z]{2,}/i, /https?:\/\/[^\s]*atlassian\.net/i];
+const forbiddenPublicText = [
+  /@[a-z0-9.-]+\.[a-z]{2,}/i,
+  /https?:\/\/[^\s]*atlassian\.net/i,
+  /linkedin\.com\/learning\/(?:me|my-learning|in-progress)(?:\/|\?|$)/i,
+];
 
 function duplicateValues(values: string[]) {
   const seen = new Set<string>();
@@ -807,11 +936,114 @@ export function validatePublicationCandidate(candidate: unknown) {
   return errors;
 }
 
+export function validateCourseProgressSnapshot(snapshot: CourseProgressSnapshot) {
+  const errors: string[] = [];
+  const observedAt = Date.parse(snapshot.observedAt);
+  if (!snapshot.observedAt.trim() || Number.isNaN(observedAt)) {
+    errors.push(`${snapshot.id} has an invalid observation timestamp`);
+  }
+
+  if (!courseProgressSources.includes(snapshot.source)) errors.push(`${snapshot.id} has an unsupported progress source`);
+  if (!courseProgressVerificationStates.includes(snapshot.verificationState)) errors.push(`${snapshot.id} has an invalid verification state`);
+  if (!courseProgressValueKinds.includes(snapshot.valueKind)) errors.push(`${snapshot.id} has an invalid progress value kind`);
+  if (
+    snapshot.percentage !== undefined
+    && (!Number.isFinite(snapshot.percentage) || snapshot.percentage < 0 || snapshot.percentage > 100)
+  ) {
+    errors.push(`${snapshot.id} percentage must be between 0 and 100`);
+  }
+
+  const durations = [
+    ["total", snapshot.totalDurationSeconds],
+    ["completed", snapshot.completedDurationSeconds],
+    ["remaining", snapshot.remainingDurationSeconds],
+  ] as const;
+  durations.forEach(([label, value]) => {
+    if (value !== undefined && (!Number.isFinite(value) || value < 0)) errors.push(`${snapshot.id} ${label} duration cannot be negative`);
+  });
+
+  if (snapshot.completedDurationSeconds !== undefined && snapshot.totalDurationSeconds === undefined) {
+    errors.push(`${snapshot.id} completed duration requires a total duration`);
+  }
+  if (snapshot.remainingDurationSeconds !== undefined && snapshot.totalDurationSeconds === undefined) {
+    errors.push(`${snapshot.id} remaining duration requires a total duration`);
+  }
+  if (
+    snapshot.completedDurationSeconds !== undefined
+    && snapshot.totalDurationSeconds !== undefined
+    && snapshot.completedDurationSeconds > snapshot.totalDurationSeconds
+  ) {
+    errors.push(`${snapshot.id} completed duration cannot exceed total duration`);
+  }
+  if (
+    snapshot.remainingDurationSeconds !== undefined
+    && snapshot.totalDurationSeconds !== undefined
+    && snapshot.remainingDurationSeconds > snapshot.totalDurationSeconds
+  ) {
+    errors.push(`${snapshot.id} remaining duration cannot exceed total duration`);
+  }
+  if (snapshot.valueKind === "Provider reported" && snapshot.percentage === undefined) {
+    errors.push(`${snapshot.id} provider-reported progress requires a percentage`);
+  }
+  if (
+    snapshot.valueKind === "Derived"
+    && (
+      snapshot.totalDurationSeconds === undefined
+      || (snapshot.completedDurationSeconds === undefined && snapshot.remainingDurationSeconds === undefined)
+    )
+  ) {
+    errors.push(`${snapshot.id} derived progress requires total and completed or remaining duration`);
+  }
+
+  return errors;
+}
+
+export function getCourseProgressPercentage(snapshot: CourseProgressSnapshot) {
+  if (snapshot.percentage !== undefined) return snapshot.percentage;
+  if (!snapshot.totalDurationSeconds) return undefined;
+  const completed = snapshot.completedDurationSeconds
+    ?? (snapshot.remainingDurationSeconds === undefined
+      ? undefined
+      : snapshot.totalDurationSeconds - snapshot.remainingDurationSeconds);
+  if (completed === undefined) return undefined;
+  return Math.round((completed / snapshot.totalDurationSeconds) * 100);
+}
+
+export function getCurrentCourseProgress(course: LearningCourse) {
+  return [...course.progressSnapshots]
+    .filter((snapshot) => snapshot.verificationState === "Verified")
+    .sort((a, b) => b.observedAt.localeCompare(a.observedAt) || b.id.localeCompare(a.id))[0];
+}
+
+export function recordCourseProgress(course: LearningCourse, snapshot: CourseProgressSnapshot): LearningCourse {
+  const errors = validateCourseProgressSnapshot(snapshot);
+  if (course.progressSnapshots.some((item) => item.id === snapshot.id)) errors.push(`Duplicate course progress identifier: ${snapshot.id}`);
+  if (errors.length > 0) throw new Error(errors.join("\n"));
+  return { ...course, progressSnapshots: [...course.progressSnapshots, snapshot] };
+}
+
+export function completeLearningCourse(course: LearningCourse, completionDate: string): LearningCourse {
+  const currentProgress = getCurrentCourseProgress(course);
+  if (Number.isNaN(Date.parse(completionDate))) throw new Error("Course completion requires a valid date");
+  if (!currentProgress || getCourseProgressPercentage(currentProgress) !== 100) {
+    throw new Error("Course completion requires a verified 100% progress snapshot");
+  }
+  return {
+    ...course,
+    status: "Completed",
+    completionDate,
+    progressSnapshots: [...course.progressSnapshots],
+    capabilitySlugs: [...course.capabilitySlugs],
+    evidenceIds: [...course.evidenceIds],
+  };
+}
+
 export function validateLearningData(
   initiatives: readonly LearningInitiative[] = learningInitiatives,
   tickets: readonly LearningTicket[] = learningTickets,
   sessions: readonly WorkSession[] = workSessions,
   evidence: readonly LearningEvidence[] = learningEvidence,
+  courses: readonly LearningCourse[] = learningCourses,
 ) {
   const errors: string[] = [];
   const identifierGroups = [
@@ -819,6 +1051,8 @@ export function validateLearningData(
     ["ticket", tickets.map((item) => item.key)],
     ["session", sessions.map((item) => item.id)],
     ["evidence", evidence.map((item) => item.id)],
+    ["course", courses.map((item) => item.id)],
+    ["course progress", courses.flatMap((course) => course.progressSnapshots.map((snapshot) => snapshot.id))],
   ] as const;
 
   identifierGroups.forEach(([label, identifiers]) => {
@@ -852,6 +1086,32 @@ export function validateLearningData(
     errors.push(...validatePublicationCandidate(ticket).map((error) => `${ticket.key}: ${error}`));
   });
 
+  courses.forEach((course) => {
+    if (!courseStatuses.includes(course.status)) errors.push(`${course.id} has an invalid course status`);
+    if (!courseKinds.includes(course.kind)) errors.push(`${course.id} has an invalid course kind`);
+    if (!evidenceStates.includes(course.evidenceState)) errors.push(`${course.id} has an invalid evidence state`);
+    if (!ticketByKey.has(course.relatedTicketKey)) errors.push(`${course.id} references unknown ticket ${course.relatedTicketKey}`);
+    if (!initiativeSlugs.has(course.initiativeSlug)) errors.push(`${course.id} references an unknown initiative`);
+    course.evidenceIds.forEach((id) => {
+      if (!evidenceIds.has(id)) errors.push(`${course.id} references unknown evidence ${id}`);
+    });
+    course.progressSnapshots.forEach((snapshot) => {
+      errors.push(...validateCourseProgressSnapshot(snapshot));
+      if (snapshot.verificationState !== "Verified") {
+        errors.push(`${snapshot.id} is an unverified candidate and cannot enter public course data`);
+      }
+      snapshot.relatedEvidenceIds.forEach((id) => {
+        if (!evidenceIds.has(id)) errors.push(`${snapshot.id} references unknown evidence ${id}`);
+      });
+    });
+    const currentProgress = getCurrentCourseProgress(course);
+    if (course.status === "Completed" && !course.completionDate) errors.push(`${course.id} is Completed without a completion date`);
+    if (course.status === "Completed" && (!currentProgress || getCourseProgressPercentage(currentProgress) !== 100)) {
+      errors.push(`${course.id} is Completed without verified 100% course progress`);
+    }
+    errors.push(...validatePublicationCandidate(course).map((error) => `${course.id}: ${error}`));
+  });
+
   const visitState = new Map<string, "visiting" | "visited">();
   function visit(key: string, trail: string[]) {
     if (visitState.get(key) === "visiting") {
@@ -883,11 +1143,13 @@ export function validateLearningData(
   });
 
   const sqlTickets = tickets.filter((ticket) => ticket.key.startsWith("SQL-"));
-  if (sqlTickets.some((ticket) => ticket.deliveryStatus === "Done" || ticket.evidenceState === "Demonstrated")) {
-    errors.push("Healthcare SQL seed must not claim completed or demonstrated work");
+  if (sqlTickets.some((ticket) => ticket.evidenceState === "Demonstrated")) {
+    errors.push("Healthcare SQL work must not claim Demonstrated without reviewed applied evidence");
   }
-  if (evidence.some((artifact) => artifact.relatedProjectSlug === "healthcare-sql-customer-operations")) {
-    errors.push("Healthcare SQL seed must not include unverified evidence");
+  if (evidence.some((artifact) =>
+    artifact.relatedProjectSlug === "healthcare-sql-customer-operations"
+    && artifact.evidenceStateSupported === "Demonstrated")) {
+    errors.push("Healthcare SQL evidence must not claim Demonstrated before reviewed applied work exists");
   }
 
   return errors;

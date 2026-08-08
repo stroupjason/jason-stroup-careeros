@@ -18,6 +18,8 @@ const learningEventNames = new Set([
   "Learning Ticket Viewed",
   "Learning Timeline Viewed",
   "Learning Evidence Opened",
+  "Current Learning Viewed",
+  "Learning Course Opened",
 ]);
 const learningPropertyAllowlist = new Set([
   "delivery",
@@ -26,6 +28,9 @@ const learningPropertyAllowlist = new Set([
   "initiative",
   "capability",
   "role",
+  "provider",
+  "course",
+  "ctaLocation",
 ]);
 
 type CampaignParameter = (typeof campaignParameters)[number];
@@ -68,6 +73,21 @@ type PortfolioEventMap = {
   "Learning Evidence Opened": {
     evidence: string;
     initiative: string;
+  };
+  "Current Learning Viewed": {
+    provider: string;
+    course: string;
+    evidence: string;
+    delivery: string;
+    initiative: string;
+  };
+  "Learning Course Opened": {
+    provider: string;
+    course: string;
+    evidence: string;
+    delivery: string;
+    initiative: string;
+    ctaLocation: "current-learning" | "completed-learning";
   };
 };
 
@@ -203,5 +223,9 @@ export function trackPortfolioEvent<EventName extends keyof PortfolioEventMap>(
   const eventProperties = learningEventNames.has(name)
     ? sanitizeLearningAnalyticsProperties(properties)
     : properties;
-  track(name, { ...eventProperties, ...analyticsProperties() });
+  try {
+    track(name, { ...eventProperties, ...analyticsProperties() });
+  } catch {
+    // Analytics is observational and must never interrupt the portfolio experience.
+  }
 }

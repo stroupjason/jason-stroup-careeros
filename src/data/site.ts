@@ -1181,29 +1181,30 @@ export const projects: Project[] = [
     problem:
       "Build evidence that connects SQL mechanics to customer judgment: data quality, hypothesis testing, impact communication, mitigation, durable remediation, and accountable follow-up.",
     outcome:
-      "The initiative, public-safe seed tickets, dependency order, completion gates, and next action are defined. No learning session, dataset, query, finding, certificate, or finished deliverable exists yet.",
+      "The initiative, public-safe seed tickets, dependency order, completion gates, and SQL Essential Training course record are defined. The course is in progress, with no verified numeric progress, completion, certificate, SQL session, query, finding, or finished deliverable published.",
     approach:
-      "The work will begin with a candid SQL baseline and verified course context. Dataset selection and licensing follow, using only a small synthetic or public sample. The applied phase will profile quality, investigate an explicitly fictional incident, produce a technical-account action plan, test reproducibility, and publish only after evidence and privacy review pass.",
+      "The work begins with SQL Essential Training and a candid SQL baseline. Dataset selection and licensing follow, using only a small synthetic or public sample. The applied phase will profile quality, investigate an explicitly fictional incident, produce a technical-account action plan, test reproducibility, and publish only after evidence and privacy review pass.",
     stack: ["SQL", "Synthetic healthcare data", "Data quality", "Root-cause analysis", "Technical account planning", "Reproducibility"],
     capabilities: ["SQL", "Healthcare data", "Data-quality investigation", "Root-cause analysis", "Customer-risk management", "Executive communication"],
     roleLinks: ["TAM", "Data Analytics", "CSE", "Senior TSE"],
     verifiedFacts: [
       "The public initiative and seed backlog exist.",
-      "SQL-001, SQL-002, and SQL-004 are ready; applied project work remains in the backlog.",
+      "SQL Essential Training by Walter Shields is recorded as an in-progress LinkedIn Learning course and linked to SQL-002.",
+      "SQL-002 is in progress; SQL-001 and SQL-004 are ready; applied project work remains in the backlog.",
       "The project requires synthetic or public data and explicitly excludes PHI, PII, employer data, and real customer information.",
-      "The highest-value next action is to verify the exact course context and record the real SQL baseline.",
+      "Course completion supports foundational knowledge, while reviewed applied SQL work is the stronger capability evidence.",
     ],
     unknowns: [
-      "Exact LinkedIn Learning course title and current completion point",
+      "Current verified course percentage, remaining modules, completion date, and certificate availability",
       "Final synthetic dataset, license, version, and sample size",
       "SQL environment and setup details",
       "Fictional incident scenario, queries, findings, and action plan",
       "Public repository, artifact links, and completion date",
     ],
     proofNote:
-      "Only the approved plan and ticket structure exist. There is no course certificate, SQL script, query output, case-study result, or shareable brief yet.",
+      "The course record and approved plan exist. There is no verified course completion, certificate, SQL script, query output, case-study result, or shareable brief yet.",
     nextProof:
-      "Confirm the exact SQL course, record the current completion point, and start SQL-001 so the tracker begins with real evidence rather than assumptions.",
+      "Verify current SQL Essential Training progress, finish only the remaining course work, and record original learning notes before closing SQL-002.",
   },
   {
     slug: "python-mongodb-debugging-lab",
