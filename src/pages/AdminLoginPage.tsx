@@ -1,17 +1,49 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
   Bug as BugIcon,
   ClipboardList,
+  Fingerprint,
   KeyRound,
   LogOut,
   ShieldCheck,
 } from "lucide-react";
 import { useLearningAdmin } from "../admin/AdminContext";
+import { adminReturnToStorageKey, resolveAdminReturnTo } from "../admin/adminAuth";
+import { AdminSecurityPanel } from "../components/AdminSecurityPanel";
 import { LinkButton, PageHero, SectionHeader } from "../components/UI";
+
+function magicLinkButtonLabel(seconds: number) {
+  if (seconds >= 60) return `Retry in ${Math.ceil(seconds / 60)}m`;
+  return `Retry in ${seconds}s`;
+}
 
 export function AdminLoginPage() {
   const admin = useLearningAdmin();
   const [email, setEmail] = useState("");
+  const [cooldownClock, setCooldownClock] = useState(() => Date.now());
+  const returnTo = useMemo(
+    () => resolveAdminReturnTo(window.location.search, window.sessionStorage),
+    [],
+  );
+
+  useEffect(() => {
+    if (admin.authState !== "admin") return;
+    const current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    if (returnTo === current || (returnTo === "/admin" && window.location.pathname === "/admin")) return;
+    window.sessionStorage.removeItem(adminReturnToStorageKey);
+    window.location.replace(returnTo);
+  }, [admin.authState, returnTo]);
+
+  useEffect(() => {
+    if (!admin.magicLinkCooldownUntil) return;
+    setCooldownClock(Date.now());
+    const timer = window.setInterval(() => setCooldownClock(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [admin.magicLinkCooldownUntil]);
+
+  const magicLinkCooldownSeconds = admin.magicLinkCooldownUntil
+    ? Math.max(0, Math.ceil((admin.magicLinkCooldownUntil - cooldownClock) / 1000))
+    : 0;
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -25,7 +57,7 @@ export function AdminLoginPage() {
         title={admin.authState === "admin" ? "CareerOS admin workspace" : "Secure CareerOS access"}
         copy={admin.authState === "admin"
           ? "Choose the private workspace you need, preview the public projection, or sign out when the session is complete."
-          : "Passwordless access is restricted to the pre-provisioned CareerOS administrator."}
+          : "Passkey-first access is restricted to the pre-provisioned CareerOS administrator, with email secure links retained for recovery."}
         actions={admin.authState === "admin" ? (
           <>
             <LinkButton href="/learning/board">
@@ -47,18 +79,21 @@ export function AdminLoginPage() {
             </div>
           </div>
         ) : admin.authState === "admin" ? (
-          <div className="adminLoginPanel">
-            <ShieldCheck size={24} aria-hidden="true" />
-            <div>
-              <SectionHeader kicker="Authorized" title="Admin mode is active." />
-              <p>
-                Use the learning board to create, edit, move, and review tickets. Use the private Bug Log
-                for classification, incident context, diagnostic observations, and sanitized RCA review.
-              </p>
-              <button className="button secondary" type="button" onClick={() => void admin.signOut()}>
-                <LogOut size={17} aria-hidden="true" /> Sign out
-              </button>
+          <div className="adminAuthorizedStack">
+            <div className="adminLoginPanel">
+              <ShieldCheck size={24} aria-hidden="true" />
+              <div>
+                <SectionHeader kicker="Authorized" title="Admin mode is active." />
+                <p>
+                  Use the learning board to create, edit, move, and review tickets. Use the private Bug Log
+                  for classification, incident context, diagnostic observations, and sanitized RCA review.
+                </p>
+                <button className="button secondary" type="button" onClick={() => void admin.signOut()}>
+                  <LogOut size={17} aria-hidden="true" /> Sign out
+                </button>
+              </div>
             </div>
+            <AdminSecurityPanel />
           </div>
         ) : admin.authState === "unauthorized" ? (
           <div className="adminLoginPanel">
@@ -75,40 +110,57 @@ export function AdminLoginPage() {
             </div>
           </div>
         ) : (
-          <form className="adminLoginPanel adminLoginForm" onSubmit={(event) => void submit(event)}>
-            <KeyRound size={24} aria-hidden="true" />
+          <div className="adminLoginPanel adminLoginForm">
+            <Fingerprint size={24} aria-hidden="true" />
             <div>
-              <SectionHeader kicker="Passwordless sign in" title="Request a secure link." />
+              <SectionHeader kicker="Passkey sign in" title="Use your registered passkey." />
               <p>
-                Enter the pre-provisioned administrator email. The email link returns to this site,
-                establishes the Supabase session, and then verifies the private admin membership.
+                A registered passkey can restore the Supabase session without entering an email address.
+                CareerOS still verifies the immutable administrator membership before opening the requested workspace.
               </p>
-              <label>
-                Email address
-                <input
-                  type="email"
-                  autoComplete="email"
-                  autoFocus
-                  required
-                  value={email}
-                  onChange={(event) => setEmail(event.currentTarget.value)}
-                />
-              </label>
               <button
                 className="button primary"
-                type="submit"
-                disabled={!admin.configured || admin.busyAction === "sign-in"}
+                type="button"
+                disabled={!admin.configured || !admin.passkeySupported || !admin.passkeyOriginReady || admin.busyAction === "passkey-sign-in"}
+                onClick={() => void admin.signInWithPasskey()}
               >
-                <KeyRound size={17} aria-hidden="true" />
-                {admin.busyAction === "sign-in" ? "Requesting..." : "Email secure link"}
+                <Fingerprint size={17} aria-hidden="true" />
+                {admin.busyAction === "passkey-sign-in" ? "Checking passkey..." : "Sign in with passkey"}
               </button>
-              <p>
-                This owner entry point is intentionally omitted from the public navigation. Bookmark
-                <strong> /admin</strong> for future access.
-              </p>
+              {!admin.passkeySupported ? <p role="status">This browser does not support passkeys. Use email recovery.</p> : null}
+              {admin.passkeySupported && !admin.passkeyOriginReady ? <p role="status">Passkey sign-in is available only at https://www.jasonstroup.website.</p> : null}
+
+              <details className="adminRecovery">
+                <summary>Email secure-link recovery</summary>
+                <form onSubmit={(event) => void submit(event)}>
+                  <p>
+                    Enter the pre-provisioned administrator email. The secure link establishes a session,
+                    then CareerOS verifies administrator membership before returning to the requested route.
+                  </p>
+                  <label>
+                    Email address
+                    <input
+                      type="email"
+                      autoComplete="email"
+                      required
+                      value={email}
+                      onChange={(event) => setEmail(event.currentTarget.value)}
+                    />
+                  </label>
+                  <button className="button secondary" type="submit" disabled={!admin.configured || admin.busyAction === "sign-in" || magicLinkCooldownSeconds > 0}>
+                    <KeyRound size={17} aria-hidden="true" />
+                    {admin.busyAction === "sign-in"
+                      ? "Requesting..."
+                      : magicLinkCooldownSeconds > 0
+                        ? magicLinkButtonLabel(magicLinkCooldownSeconds)
+                        : "Email secure link"}
+                  </button>
+                </form>
+              </details>
+              <p>This owner entry point is intentionally omitted from public navigation. Bookmark <strong>/admin</strong>.</p>
               {!admin.configured ? <p role="status">Authentication is not configured in this deployment.</p> : null}
             </div>
-          </form>
+          </div>
         )}
         {admin.notice ? <p className="adminNotice" role="status">{admin.notice}</p> : null}
       </section>

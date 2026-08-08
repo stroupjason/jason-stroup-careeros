@@ -132,7 +132,7 @@ export function AdminOperationsBugsPage() {
     return (
       <>
         <PageHero eyebrow="Private operations" title="Admin authorization required." copy="This route does not expose operational records without the existing CareerOS admin membership." />
-        <section className="section shell sectionAfterHero"><a className="button primary" href="/admin/login"><FileLock2 size={16} aria-hidden="true" /> Open secure sign in</a></section>
+        <section className="section shell sectionAfterHero"><a className="button primary" href="/admin?returnTo=%2Fadmin%2Foperations%2Fbugs"><FileLock2 size={16} aria-hidden="true" /> Open secure sign in</a></section>
       </>
     );
   }

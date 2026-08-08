@@ -23,6 +23,14 @@ import {
 } from "../data/learning";
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
 import type { TaskCoachFactors } from "./taskCoach";
+import {
+  isPasskeySupported,
+  isCanonicalPasskeyOrigin,
+  magicLinkNotice,
+  magicLinkRetrySeconds,
+  requirePasskeyResult,
+  type PasskeyRecord,
+} from "./adminAuth";
 
 const baselineTicketKeys = [
   "LDS-001",
@@ -269,6 +277,9 @@ type AdminContextValue = {
   configured: boolean;
   session: Session | null;
   authState: "loading" | "anonymous" | "unauthorized" | "admin";
+  passkeySupported: boolean;
+  passkeyOriginReady: boolean;
+  passkeys: PasskeyRecord[];
   adminTickets: AdminTicket[];
   sessions: AdminWorkSession[];
   auditEvents: AdminAuditEvent[];
@@ -283,7 +294,13 @@ type AdminContextValue = {
   bugObservations: AdminBugObservation[];
   busyAction?: string;
   notice?: string;
+  magicLinkCooldownUntil: number | null;
   requestMagicLink: (email: string) => Promise<void>;
+  signInWithPasskey: () => Promise<void>;
+  registerPasskey: () => Promise<void>;
+  listPasskeys: () => Promise<void>;
+  renamePasskey: (passkeyId: string, friendlyName: string) => Promise<void>;
+  deletePasskey: (passkeyId: string) => Promise<void>;
   signOut: () => Promise<void>;
   refreshAdmin: () => Promise<void>;
   createTicket: (ticket: NewAdminTicket) => Promise<void>;
@@ -342,8 +359,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const [adminSnapshot, setAdminSnapshot] = useState<AdminLearningSnapshot | null>(null);
   const [publicSnapshot, setPublicSnapshot] = useState<PublicLearningSnapshot | null>(null);
   const [operationsSnapshot, setOperationsSnapshot] = useState<AdminOperationsSnapshot | null>(null);
+  const [passkeys, setPasskeys] = useState<PasskeyRecord[]>([]);
   const [busyAction, setBusyAction] = useState<string>();
   const [notice, setNotice] = useState<string>();
+  const [magicLinkCooldownUntil, setMagicLinkCooldownUntil] = useState<number | null>(null);
 
   const loadPublicSnapshot = useCallback(async () => {
     if (!supabase) return;
@@ -363,6 +382,16 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     const { data, error } = await supabase.rpc("learning_admin_operations_snapshot");
     if (error) throw new Error(rpcErrorMessage(error));
     setOperationsSnapshot(data as AdminOperationsSnapshot);
+  }, []);
+
+  const loadPasskeys = useCallback(async () => {
+    const client = supabase;
+    if (!client) return;
+    const data = await requirePasskeyResult(
+      () => client.auth.passkey.list(),
+      "manage",
+    );
+    setPasskeys(data);
   }, []);
 
   const ensureSeeded = useCallback(async () => {
@@ -393,6 +422,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       setAuthState("anonymous");
       setAdminSnapshot(null);
       setOperationsSnapshot(null);
+      setPasskeys([]);
       return;
     }
     setAuthState("loading");
@@ -401,16 +431,17 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       setAuthState("unauthorized");
       setAdminSnapshot(null);
       setOperationsSnapshot(null);
+      setPasskeys([]);
       return;
     }
     setAuthState("admin");
     try {
       await ensureSeeded();
-      await Promise.all([loadAdminSnapshot(), loadOperationsSnapshot(), loadPublicSnapshot()]);
+      await Promise.all([loadAdminSnapshot(), loadOperationsSnapshot(), loadPublicSnapshot(), loadPasskeys()]);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "The admin workspace could not be loaded.");
     }
-  }, [ensureSeeded, loadAdminSnapshot, loadOperationsSnapshot, loadPublicSnapshot]);
+  }, [ensureSeeded, loadAdminSnapshot, loadOperationsSnapshot, loadPasskeys, loadPublicSnapshot]);
 
   useEffect(() => {
     if (!supabase) {
@@ -447,6 +478,12 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     configured: isSupabaseConfigured,
     session,
     authState,
+    passkeySupported: typeof window !== "undefined" && isPasskeySupported({
+      PublicKeyCredential: window.PublicKeyCredential,
+      credentials: window.navigator.credentials,
+    }),
+    passkeyOriginReady: typeof window !== "undefined" && isCanonicalPasskeyOrigin(window.location.origin),
+    passkeys,
     adminTickets: adminSnapshot?.adminTickets ?? [],
     sessions: adminSnapshot?.adminSessions ?? [],
     auditEvents: adminSnapshot?.auditEvents ?? [],
@@ -461,25 +498,138 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     bugObservations: operationsSnapshot?.observations ?? [],
     busyAction,
     notice,
+    magicLinkCooldownUntil,
     requestMagicLink: async (email) => {
-      if (!supabase) {
+      const client = supabase;
+      if (!client) {
         setNotice("Admin authentication is not configured in this deployment.");
         return;
       }
+      const cooldownSeconds = magicLinkCooldownUntil
+        ? Math.max(0, Math.ceil((magicLinkCooldownUntil - Date.now()) / 1000))
+        : 0;
+      if (cooldownSeconds > 0) {
+        setNotice(cooldownSeconds >= 5 * 60
+          ? "Supabase's email delivery limit is active. Wait before requesting another link, or use a registered passkey."
+          : `Email delivery is cooling down. Try again in ${cooldownSeconds} seconds.`);
+        return;
+      }
       setBusyAction("sign-in");
+      setNotice(undefined);
       try {
-        await supabase.auth.signInWithOtp({
+        const { error } = await client.auth.signInWithOtp({
           email: email.trim(),
           options: {
             shouldCreateUser: false,
             emailRedirectTo: `${window.location.origin}/admin/login`,
           },
         });
+        const retrySeconds = magicLinkRetrySeconds(error);
+        setMagicLinkCooldownUntil(Date.now() + retrySeconds * 1000);
+        setNotice(magicLinkNotice(error, retrySeconds));
       } catch {
-        // Keep transport failures neutral so the response cannot enumerate users.
+        setMagicLinkCooldownUntil(Date.now() + 15_000);
+        setNotice(magicLinkNotice({ message: "network request failed" }, 15));
       } finally {
         setBusyAction(undefined);
-        setNotice("If this address is authorized, a secure sign-in link is on its way.");
+      }
+    },
+    signInWithPasskey: async () => {
+      const client = supabase;
+      if (!client) {
+        setNotice("Admin authentication is not configured in this deployment.");
+        return;
+      }
+      if (!isPasskeySupported({ PublicKeyCredential: window.PublicKeyCredential, credentials: window.navigator.credentials })) {
+        setNotice("This browser does not support passkey sign-in. Use email recovery.");
+        return;
+      }
+      if (!isCanonicalPasskeyOrigin(window.location.origin)) {
+        setNotice("Passkey sign-in is available only at https://www.jasonstroup.website. Use email recovery here.");
+        return;
+      }
+      setBusyAction("passkey-sign-in");
+      setNotice(undefined);
+      try {
+        const data = await requirePasskeyResult(
+          () => client.auth.signInWithPasskey(),
+          "sign-in",
+        );
+        await authorizeSession(data.session);
+      } catch (error) {
+        setNotice(error instanceof Error ? error.message : "Passkey sign-in failed. Use email recovery.");
+      } finally {
+        setBusyAction(undefined);
+      }
+    },
+    registerPasskey: async () => {
+      const client = supabase;
+      if (!client || authState !== "admin") throw new Error("Admin authorization is required before registering a passkey.");
+      if (!isCanonicalPasskeyOrigin(window.location.origin)) {
+        setNotice("Register passkeys only at https://www.jasonstroup.website.");
+        return;
+      }
+      setBusyAction("passkey-register");
+      setNotice(undefined);
+      try {
+        await requirePasskeyResult(() => client.auth.registerPasskey(), "register");
+        await loadPasskeys();
+        setNotice("Passkey registered. It can now be used for CareerOS sign-in on the canonical production origin.");
+      } catch (error) {
+        setNotice(error instanceof Error ? error.message : "Passkey registration failed.");
+      } finally {
+        setBusyAction(undefined);
+      }
+    },
+    listPasskeys: async () => {
+      if (authState !== "admin") return;
+      setBusyAction("passkey-list");
+      try {
+        await loadPasskeys();
+      } catch (error) {
+        setNotice(error instanceof Error ? error.message : "Passkeys could not be loaded.");
+      } finally {
+        setBusyAction(undefined);
+      }
+    },
+    renamePasskey: async (passkeyId, friendlyName) => {
+      const client = supabase;
+      if (!client || authState !== "admin") throw new Error("Admin authorization is required.");
+      const name = friendlyName.trim();
+      if (!name || name.length > 120) {
+        setNotice("Passkey names must contain 1 to 120 characters.");
+        return;
+      }
+      setBusyAction(`passkey-rename-${passkeyId}`);
+      try {
+        await requirePasskeyResult(
+          () => client.auth.passkey.update({ passkeyId, friendlyName: name }),
+          "manage",
+        );
+        await loadPasskeys();
+        setNotice("Passkey name updated.");
+      } catch (error) {
+        setNotice(error instanceof Error ? error.message : "The passkey name could not be updated.");
+      } finally {
+        setBusyAction(undefined);
+      }
+    },
+    deletePasskey: async (passkeyId) => {
+      const client = supabase;
+      if (!client || authState !== "admin") throw new Error("Admin authorization is required.");
+      if (passkeys.length <= 1) {
+        setNotice("The only registered passkey cannot be removed here. Register a replacement first.");
+        return;
+      }
+      setBusyAction(`passkey-delete-${passkeyId}`);
+      try {
+        await requirePasskeyResult(() => client.auth.passkey.delete({ passkeyId }), "manage");
+        await loadPasskeys();
+        setNotice("Passkey removed. Other registered passkeys and email recovery remain available.");
+      } catch (error) {
+        setNotice(error instanceof Error ? error.message : "The passkey could not be removed.");
+      } finally {
+        setBusyAction(undefined);
       }
     },
     signOut: async () => {
@@ -487,6 +637,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       setSession(null);
       setAdminSnapshot(null);
       setOperationsSnapshot(null);
+      setPasskeys([]);
       setAuthState("anonymous");
       setNotice("Signed out.");
     },
@@ -577,7 +728,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       p_correlation_id: makeCorrelationId(),
     }),
     clearNotice: () => setNotice(undefined),
-  }), [adminSnapshot, authState, busyAction, loadAdminSnapshot, loadOperationsSnapshot, notice, operationsSnapshot, publicSnapshot, runMutation, session]);
+  }), [adminSnapshot, authState, authorizeSession, busyAction, loadAdminSnapshot, loadOperationsSnapshot, loadPasskeys, magicLinkCooldownUntil, notice, operationsSnapshot, passkeys, publicSnapshot, runMutation, session]);
 
   return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>;
 }

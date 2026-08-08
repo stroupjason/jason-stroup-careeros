@@ -5,7 +5,10 @@ import { academicPrograms, academicSpecializations, careerTrack, getLearningTick
 const migration = readFileSync(new URL("../../supabase/migrations/20260808000100_learning_admin.sql", import.meta.url), "utf8");
 const operationsMigration = readFileSync(new URL("../../supabase/migrations/20260808000200_delivery_intelligence_operations.sql", import.meta.url), "utf8");
 const adminSource = readFileSync(new URL("./AdminContext.tsx", import.meta.url), "utf8");
+const adminAuthSource = readFileSync(new URL("./adminAuth.ts", import.meta.url), "utf8");
 const supabaseSource = readFileSync(new URL("../lib/supabase.ts", import.meta.url), "utf8");
+const adminPageSource = readFileSync(new URL("../pages/AdminLoginPage.tsx", import.meta.url), "utf8");
+const bugPageSource = readFileSync(new URL("../pages/AdminOperationsBugsPage.tsx", import.meta.url), "utf8");
 
 describe("CareerOS backend and CU coursework contract", () => {
   it("preserves the exact 22-ticket production baseline while extending the backlog", () => {
@@ -87,8 +90,19 @@ describe("CareerOS backend and CU coursework contract", () => {
     expect(supabaseSource).toContain("VITE_SUPABASE_PUBLISHABLE_KEY");
     expect(supabaseSource).not.toMatch(/service.role|database.password|secret.key/i);
     expect(adminSource).toContain("shouldCreateUser: false");
-    expect(adminSource).toContain("If this address is authorized");
+    expect(adminAuthSource).toContain("If this address is authorized");
+    expect(adminAuthSource).toContain("over_email_send_rate_limit");
+    expect(adminSource).toContain("magicLinkRetrySeconds(error)");
     expect(adminSource).not.toMatch(/accountEmail|adminEmail/);
+  });
+
+  it("keeps passkey authentication behind immutable membership and email recovery", () => {
+    expect(supabaseSource).toContain("experimental: { passkey: true }");
+    expect(adminSource).toContain("signInWithPasskey");
+    expect(adminSource).toMatch(/signInWithPasskey\(\)[\s\S]*?authorizeSession\(data\.session\)/);
+    expect(adminSource).toContain('signOut({ scope: "local" })');
+    expect(adminPageSource).toContain("Email secure-link recovery");
+    expect(bugPageSource).toContain("returnTo=%2Fadmin%2Foperations%2Fbugs");
   });
 
   it("keeps provider API progress deferred and human confirmation explicit", () => {
@@ -131,6 +145,16 @@ describe("CareerOS backend and CU coursework contract", () => {
       issueType: "Story",
       relatedProjectSlug: "careeros",
     });
+  });
+
+  it("stages the PRODUCT-242 epic without claiming future work is complete", () => {
+    expect(getLearningTicket("PRODUCT-242")).toMatchObject({ issueType: "Epic", deliveryStatus: "In Progress", parentKey: "PRODUCT-216" });
+    expect(getLearningTicket("PRODUCT-243")).toMatchObject({ deliveryStatus: "In Review", parentKey: "PRODUCT-242" });
+    ["PRODUCT-244", "PRODUCT-245", "PRODUCT-246"].forEach((key) => {
+      expect(getLearningTicket(key)).toMatchObject({ deliveryStatus: "Ready", parentKey: "PRODUCT-242" });
+    });
+    expect(getLearningTicket("PRODUCT-247")).toMatchObject({ issueType: "Spike", deliveryStatus: "Backlog" });
+    expect(getLearningTicket("PRODUCT-248")).toMatchObject({ issueType: "Story", deliveryStatus: "Backlog" });
   });
 
   it("tracks each resolved activation defect as one classified canonical Bug", () => {
