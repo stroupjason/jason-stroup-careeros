@@ -122,6 +122,18 @@ export function CurrentLearningCourseCard({ course }: { course: LearningCourse }
               <dd>{formatCourseDuration(currentProgress.totalDurationSeconds)}</dd>
             </div>
           ) : null}
+          {currentProgress?.completedDurationSeconds !== undefined ? (
+            <div>
+              <dt>Completed</dt>
+              <dd>{formatCourseDuration(currentProgress.completedDurationSeconds)}</dd>
+            </div>
+          ) : null}
+          {currentProgress?.remainingDurationSeconds !== undefined ? (
+            <div>
+              <dt>Remaining</dt>
+              <dd>{formatCourseDuration(currentProgress.remainingDurationSeconds)}</dd>
+            </div>
+          ) : null}
         </dl>
       </div>
 

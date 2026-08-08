@@ -305,7 +305,7 @@ export const learningInitiatives = [
     careerObjective: "Strengthen applied SQL, data-quality investigation, root-cause analysis, and customer communication evidence.",
     roleLensSlugs: sqlRoles,
     currentPhase: "Foundational course in progress",
-    nextAction: "Verify current SQL Essential Training progress, finish only the remaining course work, and record the SQL baseline without treating course progress as proficiency.",
+    nextAction: "Complete the remaining SQL Essential Training course work and record the SQL baseline without treating course progress as proficiency.",
     publicSummary: "An applied SQL and technical-account-management case study using synthetic healthcare data to investigate data quality, explain customer impact, structure a root-cause analysis, and recommend a practical action plan.",
     milestones: [
       { id: "SQL-M1", title: "Baseline and learning focus recorded", status: "Active" },
@@ -345,13 +345,25 @@ export const learningCourses: LearningCourse[] = [
       "technical-account-management",
     ],
     evidenceIds: [],
-    progressSnapshots: [],
+    progressSnapshots: [
+      {
+        id: "PROGRESS-SQL-ESSENTIAL-2026-08-07-184510",
+        observedAt: "2026-08-07T18:45:10-06:00",
+        source: "User-provided screenshot",
+        verificationState: "Verified",
+        valueKind: "Derived",
+        totalDurationSeconds: 16_560,
+        completedDurationSeconds: 1_818,
+        remainingDurationSeconds: 14_742,
+        relatedEvidenceIds: [],
+      },
+    ],
     currentLearningFocus: "Complete SQL Essential Training and identify concepts to apply in the synthetic healthcare SQL case study.",
-    nextAction: "Verify the current LinkedIn Learning progress with Jason, then complete the remaining course work and record an original concept summary.",
+    nextAction: "Complete the remaining course work and record an original concept summary.",
     publicSummary: "Foundational SQL course work connected to an applied, synthetic-data investigation rather than presented as standalone proof of proficiency.",
     visibility: "Public",
     publicApproved: true,
-    notClaimed: "The current percentage, completed modules, completion date, certificate, SQL mastery, healthcare expertise, and applied project outcome are not yet verified.",
+    notClaimed: "Completed modules, completion date, certificate, SQL mastery, healthcare expertise, and applied project outcome are not yet verified.",
   },
 ];
 
@@ -633,8 +645,8 @@ export const learningTickets = [
     acceptanceCriteria: ["Current progress is verified before a percentage is published", "Completion is not pre-marked", "Applied work remains a separate evidence gate", "A 100% progress value alone does not satisfy every completion requirement"],
     capabilitySlugs: ["sql", "data-analysis", "healthcare-data", "troubleshooting", "root-cause-analysis", "technical-account-management"],
     evidenceIds: [],
-    nextAction: "Verify the current provider progress, then finish the remaining course work and write an original concept summary.",
-    notClaimed: "The course is in progress, but its current percentage, completed modules, completion date, certificate, and learning outcomes are not yet verified.",
+    nextAction: "Finish the remaining course work and write an original concept summary.",
+    notClaimed: "The course is in progress, but its completed modules, completion date, certificate, and learning outcomes are not yet verified.",
   }),
   sqlTicket({
     key: "SQL-003",
@@ -862,7 +874,7 @@ export const currentLearningSprint = {
   endDate: "2026-08-09",
   candidateTicketKeys: ["SQL-001", "SQL-002", "SQL-004", "SQL-007", "SQL-010"],
   goals: [
-    "Verify the current SQL Essential Training progress and remaining modules",
+    "Use the verified SQL Essential Training progress to scope the remaining course work",
     "Establish the SQL baseline",
     "Complete only the remaining course work that is realistically finished",
     "Select a synthetic dataset",
@@ -870,7 +882,7 @@ export const currentLearningSprint = {
     "Decide the minimum shareable deliverable",
     "Record the first Five-Minute Evidence Capture entry",
   ],
-  highestValueNextAction: "Verify the current SQL Essential Training progress, then complete the remaining course work and record Jason's original concept summary before closing SQL-002.",
+  highestValueNextAction: "Complete the remaining SQL Essential Training course work, then record Jason's original concept summary before closing SQL-002.",
 } as const;
 
 const evidenceStates: EvidenceState[] = ["Demonstrated", "Practicing", "Learning", "Planned"];

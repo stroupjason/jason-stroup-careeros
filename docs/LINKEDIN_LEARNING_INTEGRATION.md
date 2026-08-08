@@ -50,11 +50,12 @@ Official sources checked August 7, 2026:
 LinkedIn Learning course related to `SQL-002` and the Healthcare Customer
 Operations SQL Case Study.
 
-No numeric current progress is public. An earlier screenshot-derived value of
-approximately 11 percent was described as historical and conflicts with a later
-description that the course is nearly finished. It remains an unverified
-candidate outside the public client record until Jason confirms a current
-provider value and observation time.
+A user-provided screenshot observed August 7, 2026 at 6:45:10 PM MDT verifies
+the provider-displayed total duration of 4 hours 36 minutes and remaining time
+of 4 hours 5 minutes 42 seconds. CareerOS derives 30 minutes 18 seconds
+completed and rounds that ratio to 11 percent. The source is labeled
+`User-provided screenshot` and the value basis is labeled `Derived`; the
+screenshot itself is not committed or published.
 
 A progress snapshot is not a work session and does not prove comprehension.
 Course completion can support a course-completion record, but it does not make

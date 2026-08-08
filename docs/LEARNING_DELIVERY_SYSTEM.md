@@ -125,14 +125,14 @@ Unknown and private ticket keys use the established not-found experience.
 
 ## Healthcare SQL initiative
 
-The public record now includes the verified metadata for `SQL Essential
-Training` by Walter Shields and marks its related ticket `SQL-002` In Progress.
-No current percentage, completed module, certificate, study session, or applied
-SQL evidence is published without verification. The immediate action is:
+The public record now includes verified metadata and a reviewed, duration-based
+progress snapshot for `SQL Essential Training` by Walter Shields. Its related
+ticket `SQL-002` remains In Progress. No completed module, certificate, study
+session, or applied SQL evidence is published without verification. The
+immediate action is:
 
-> Verify the current SQL Essential Training progress, then complete the
-> remaining course work and record Jason's original concept summary before
-> closing SQL-002.
+> Complete the remaining SQL Essential Training course work, then record
+> Jason's original concept summary before closing SQL-002.
 
 The eventual case study must use a small, licensed synthetic or public dataset.
 It must not use PHI, PII, real patient data, employer data, interview materials,

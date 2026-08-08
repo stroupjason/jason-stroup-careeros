@@ -139,7 +139,16 @@ describe("Learning & Delivery public data", () => {
     expect(course.relatedProjectSlug).toBe("healthcare-sql-customer-operations");
     expect(ticket.key).toBe("SQL-002");
     expect(ticket.deliveryStatus).toBe("In Progress");
-    expect(course.progressSnapshots).toEqual([]);
+    expect(course.progressSnapshots).toEqual([expect.objectContaining({
+      observedAt: "2026-08-07T18:45:10-06:00",
+      source: "User-provided screenshot",
+      verificationState: "Verified",
+      valueKind: "Derived",
+      totalDurationSeconds: 16_560,
+      completedDurationSeconds: 1_818,
+      remainingDurationSeconds: 14_742,
+    })]);
+    expect(getCourseProgressPercentage(getCurrentCourseProgress(course)!)).toBe(11);
   });
 
   it("rejects invalid course percentages, timestamps, and durations", () => {
@@ -194,7 +203,13 @@ describe("Learning & Delivery public data", () => {
   });
 
   it("keeps course completion separate from ticket completion and SQL evidence maturity", () => {
-    const verified100 = { ...verifiedProgress60, id: "TEST-PROGRESS-100", percentage: 100, completedDurationSeconds: 16_560 };
+    const verified100 = {
+      ...verifiedProgress60,
+      id: "TEST-PROGRESS-100",
+      observedAt: "2026-08-07T19:00:00-06:00",
+      percentage: 100,
+      completedDurationSeconds: 16_560,
+    };
     const course = recordCourseProgress(learningCourses[0], verified100);
     const completed = completeLearningCourse(course, "2026-08-07");
 
@@ -270,13 +285,18 @@ describe("Learning & Delivery public data", () => {
     });
   });
 
-  it("renders current learning without publishing an unverified percentage", () => {
+  it("renders the verified current learning snapshot", () => {
     const markup = renderToStaticMarkup(resolveRoute("/learning").element);
     expect(markup).toContain("Currently Learning");
     expect(markup).toContain("SQL Essential Training");
     expect(markup).toContain("Walter Shields");
-    expect(markup).toContain("No verified current percentage is published");
-    expect(markup).not.toContain("<progress");
+    expect(markup).toContain('aria-label="Course progress for SQL Essential Training"');
+    expect(markup).toContain('value="11"');
+    expect(markup).toContain('max="100"');
+    expect(markup).toContain("30m 18s");
+    expect(markup).toContain("4h 5m 42s");
+    expect(markup).toContain("User-provided screenshot");
+    expect(markup).toContain("Derived");
     expect(markup).toContain('href="/learning/tickets/SQL-002"');
     expect(markup).toContain('href="/projects/healthcare-sql-customer-operations"');
     expect(markup).toContain("Completed Courses &amp; Credentials");
@@ -297,11 +317,9 @@ describe("Learning & Delivery public data", () => {
     expect(layoutSource).not.toMatch(/label: "(?:Education|Currently Learning)"/);
   });
 
-  it("keeps private LinkedIn state and the historical candidate out of public records", () => {
+  it("keeps private LinkedIn state out of public records", () => {
     const publicCourseData = JSON.stringify(learningCourses);
     expect(publicCourseData).not.toMatch(/password|cookie|accessToken|accountId|certificateId/);
-    expect(publicCourseData).not.toContain("11");
-    expect(publicCourseData).not.toContain("14_742");
     expect(publicCourseData).not.toMatch(/linkedin\.com\/learning\/(?:me|my-learning|in-progress)/i);
   });
 

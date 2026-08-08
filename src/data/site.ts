@@ -1181,7 +1181,7 @@ export const projects: Project[] = [
     problem:
       "Build evidence that connects SQL mechanics to customer judgment: data quality, hypothesis testing, impact communication, mitigation, durable remediation, and accountable follow-up.",
     outcome:
-      "The initiative, public-safe seed tickets, dependency order, completion gates, and SQL Essential Training course record are defined. The course is in progress, with no verified numeric progress, completion, certificate, SQL session, query, finding, or finished deliverable published.",
+      "The initiative, public-safe seed tickets, dependency order, completion gates, and SQL Essential Training course record are defined. A screenshot-supported snapshot verifies 30 minutes 18 seconds completed out of 4 hours 36 minutes, which derives to 11 percent progress. No completion, certificate, SQL session, query, finding, or finished deliverable is claimed.",
     approach:
       "The work begins with SQL Essential Training and a candid SQL baseline. Dataset selection and licensing follow, using only a small synthetic or public sample. The applied phase will profile quality, investigate an explicitly fictional incident, produce a technical-account action plan, test reproducibility, and publish only after evidence and privacy review pass.",
     stack: ["SQL", "Synthetic healthcare data", "Data quality", "Root-cause analysis", "Technical account planning", "Reproducibility"],
@@ -1190,12 +1190,13 @@ export const projects: Project[] = [
     verifiedFacts: [
       "The public initiative and seed backlog exist.",
       "SQL Essential Training by Walter Shields is recorded as an in-progress LinkedIn Learning course and linked to SQL-002.",
+      "A user-provided screenshot observed August 7, 2026 verifies a duration-derived 11 percent progress snapshot.",
       "SQL-002 is in progress; SQL-001 and SQL-004 are ready; applied project work remains in the backlog.",
       "The project requires synthetic or public data and explicitly excludes PHI, PII, employer data, and real customer information.",
       "Course completion supports foundational knowledge, while reviewed applied SQL work is the stronger capability evidence.",
     ],
     unknowns: [
-      "Current verified course percentage, remaining modules, completion date, and certificate availability",
+      "Remaining modules, completion date, and certificate availability",
       "Final synthetic dataset, license, version, and sample size",
       "SQL environment and setup details",
       "Fictional incident scenario, queries, findings, and action plan",
@@ -1204,7 +1205,7 @@ export const projects: Project[] = [
     proofNote:
       "The course record and approved plan exist. There is no verified course completion, certificate, SQL script, query output, case-study result, or shareable brief yet.",
     nextProof:
-      "Verify current SQL Essential Training progress, finish only the remaining course work, and record original learning notes before closing SQL-002.",
+      "Finish only the remaining SQL Essential Training course work and record original learning notes before closing SQL-002.",
   },
   {
     slug: "python-mongodb-debugging-lab",

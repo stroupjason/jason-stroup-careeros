@@ -90,7 +90,7 @@ export function LearningOverviewPage() {
           <div>
             <span className="kicker">Highest-value next action</span>
             <h2>{currentLearningSprint.highestValueNextAction}</h2>
-            <p>The course metadata and in-progress state are recorded. No numeric current progress, completion, certificate, SQL session, query result, or project outcome is published.</p>
+            <p>A screenshot-supported progress snapshot is verified and published as a duration-derived value. No completion, certificate, SQL session, query result, or project outcome is claimed.</p>
           </div>
           <a href="/learning/tickets/SQL-002">Open SQL-002 <ArrowUpRight size={17} aria-hidden="true" /></a>
         </div>
