@@ -5,6 +5,7 @@ import { academicPrograms, academicSpecializations, careerTrack, getLearningTick
 const migration = readFileSync(new URL("../../supabase/migrations/20260808000100_learning_admin.sql", import.meta.url), "utf8");
 const operationsMigration = readFileSync(new URL("../../supabase/migrations/20260808000200_delivery_intelligence_operations.sql", import.meta.url), "utf8");
 const adminSource = readFileSync(new URL("./AdminContext.tsx", import.meta.url), "utf8");
+const adminAuthSource = readFileSync(new URL("./adminAuth.ts", import.meta.url), "utf8");
 const supabaseSource = readFileSync(new URL("../lib/supabase.ts", import.meta.url), "utf8");
 const adminPageSource = readFileSync(new URL("../pages/AdminLoginPage.tsx", import.meta.url), "utf8");
 const bugPageSource = readFileSync(new URL("../pages/AdminOperationsBugsPage.tsx", import.meta.url), "utf8");
@@ -89,7 +90,9 @@ describe("CareerOS backend and CU coursework contract", () => {
     expect(supabaseSource).toContain("VITE_SUPABASE_PUBLISHABLE_KEY");
     expect(supabaseSource).not.toMatch(/service.role|database.password|secret.key/i);
     expect(adminSource).toContain("shouldCreateUser: false");
-    expect(adminSource).toContain("If this address is authorized");
+    expect(adminAuthSource).toContain("If this address is authorized");
+    expect(adminAuthSource).toContain("over_email_send_rate_limit");
+    expect(adminSource).toContain("magicLinkRetrySeconds(error)");
     expect(adminSource).not.toMatch(/accountEmail|adminEmail/);
   });
 

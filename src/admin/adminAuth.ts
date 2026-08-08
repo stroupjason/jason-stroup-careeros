@@ -9,6 +9,7 @@ export type AdminAuthError = {
   code?: string;
   message?: string;
   name?: string;
+  status?: number;
   cause?: { name?: string };
 };
 
@@ -70,6 +71,27 @@ export function passkeyErrorMessage(error: AdminAuthError | null | undefined, ac
   if (error?.code === "too_many_passkeys") return "This account has reached the passkey limit. Review existing credentials first.";
   if (action === "manage") return "The passkey change could not be saved. Your existing credentials were not changed.";
   return `Passkey ${action === "sign-in" ? "sign-in" : "registration"} failed. Use email recovery if the problem continues.`;
+}
+
+export function magicLinkRetrySeconds(error: AdminAuthError | null | undefined) {
+  if (!error) return 30;
+  if (/30 seconds/i.test(error.message ?? "")) return 30;
+  if (error.code === "over_email_send_rate_limit" || /email rate limit exceeded/i.test(error.message ?? "")) return 60 * 60;
+  if (error.status === 429) return 60;
+  return 15;
+}
+
+export function magicLinkNotice(error: AdminAuthError | null | undefined, retrySeconds: number) {
+  if (!error) {
+    return "If this address is authorized, a secure sign-in link is on its way. Another request will be available shortly.";
+  }
+  if (retrySeconds >= 60 * 60) {
+    return "Supabase's email delivery limit has been reached. Wait up to one hour before requesting another link, or use a registered passkey.";
+  }
+  if (error.status === 429 || error.code === "over_email_send_rate_limit") {
+    return `Email delivery is cooling down. Try again in ${retrySeconds} seconds, or use a registered passkey.`;
+  }
+  return "The secure sign-in request could not be completed. Check the connection, wait briefly, and try again.";
 }
 
 export async function requirePasskeyResult<T>(

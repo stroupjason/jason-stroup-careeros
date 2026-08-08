@@ -26,6 +26,8 @@ import type { TaskCoachFactors } from "./taskCoach";
 import {
   isPasskeySupported,
   isCanonicalPasskeyOrigin,
+  magicLinkNotice,
+  magicLinkRetrySeconds,
   requirePasskeyResult,
   type PasskeyRecord,
 } from "./adminAuth";
@@ -292,6 +294,7 @@ type AdminContextValue = {
   bugObservations: AdminBugObservation[];
   busyAction?: string;
   notice?: string;
+  magicLinkCooldownUntil: number | null;
   requestMagicLink: (email: string) => Promise<void>;
   signInWithPasskey: () => Promise<void>;
   registerPasskey: () => Promise<void>;
@@ -359,6 +362,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const [passkeys, setPasskeys] = useState<PasskeyRecord[]>([]);
   const [busyAction, setBusyAction] = useState<string>();
   const [notice, setNotice] = useState<string>();
+  const [magicLinkCooldownUntil, setMagicLinkCooldownUntil] = useState<number | null>(null);
 
   const loadPublicSnapshot = useCallback(async () => {
     if (!supabase) return;
@@ -494,25 +498,40 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     bugObservations: operationsSnapshot?.observations ?? [],
     busyAction,
     notice,
+    magicLinkCooldownUntil,
     requestMagicLink: async (email) => {
-      if (!supabase) {
+      const client = supabase;
+      if (!client) {
         setNotice("Admin authentication is not configured in this deployment.");
         return;
       }
+      const cooldownSeconds = magicLinkCooldownUntil
+        ? Math.max(0, Math.ceil((magicLinkCooldownUntil - Date.now()) / 1000))
+        : 0;
+      if (cooldownSeconds > 0) {
+        setNotice(cooldownSeconds >= 5 * 60
+          ? "Supabase's email delivery limit is active. Wait before requesting another link, or use a registered passkey."
+          : `Email delivery is cooling down. Try again in ${cooldownSeconds} seconds.`);
+        return;
+      }
       setBusyAction("sign-in");
+      setNotice(undefined);
       try {
-        await supabase.auth.signInWithOtp({
+        const { error } = await client.auth.signInWithOtp({
           email: email.trim(),
           options: {
             shouldCreateUser: false,
             emailRedirectTo: `${window.location.origin}/admin/login`,
           },
         });
+        const retrySeconds = magicLinkRetrySeconds(error);
+        setMagicLinkCooldownUntil(Date.now() + retrySeconds * 1000);
+        setNotice(magicLinkNotice(error, retrySeconds));
       } catch {
-        // Keep transport failures neutral so the response cannot enumerate users.
+        setMagicLinkCooldownUntil(Date.now() + 15_000);
+        setNotice(magicLinkNotice({ message: "network request failed" }, 15));
       } finally {
         setBusyAction(undefined);
-        setNotice("If this address is authorized, a secure sign-in link is on its way.");
       }
     },
     signInWithPasskey: async () => {
@@ -709,7 +728,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       p_correlation_id: makeCorrelationId(),
     }),
     clearNotice: () => setNotice(undefined),
-  }), [adminSnapshot, authState, authorizeSession, busyAction, loadAdminSnapshot, loadOperationsSnapshot, loadPasskeys, notice, operationsSnapshot, passkeys, publicSnapshot, runMutation, session]);
+  }), [adminSnapshot, authState, authorizeSession, busyAction, loadAdminSnapshot, loadOperationsSnapshot, loadPasskeys, magicLinkCooldownUntil, notice, operationsSnapshot, passkeys, publicSnapshot, runMutation, session]);
 
   return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>;
 }

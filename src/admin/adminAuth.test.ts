@@ -3,6 +3,8 @@ import {
   adminReturnToStorageKey,
   isPasskeySupported,
   isCanonicalPasskeyOrigin,
+  magicLinkNotice,
+  magicLinkRetrySeconds,
   passkeyErrorMessage,
   requirePasskeyResult,
   resolveAdminReturnTo,
@@ -64,5 +66,16 @@ describe("CareerOS admin authentication helpers", () => {
     expect(passkeyErrorMessage({ cause: { name: "NotAllowedError" } }, "sign-in")).toContain("cancelled");
     const cancelled = vi.fn().mockResolvedValue({ data: null, error: { cause: { name: "NotAllowedError" } } });
     await expect(requirePasskeyResult(cancelled, "sign-in")).rejects.toThrow("was cancelled");
+  });
+
+  it("separates the short email cooldown from the hourly project limit", () => {
+    const shortLimit = { code: "over_email_send_rate_limit", status: 429, message: "For security purposes, you can only request this after 30 seconds." };
+    expect(magicLinkRetrySeconds(shortLimit)).toBe(30);
+    expect(magicLinkNotice(shortLimit, 30)).toContain("30 seconds");
+
+    const hourlyLimit = { code: "over_email_send_rate_limit", status: 429, message: "email rate limit exceeded" };
+    expect(magicLinkRetrySeconds(hourlyLimit)).toBe(3600);
+    expect(magicLinkNotice(hourlyLimit, 3600)).toContain("up to one hour");
+    expect(magicLinkNotice(null, 30)).toContain("If this address is authorized");
   });
 });

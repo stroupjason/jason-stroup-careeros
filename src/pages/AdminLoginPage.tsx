@@ -12,9 +12,15 @@ import { adminReturnToStorageKey, resolveAdminReturnTo } from "../admin/adminAut
 import { AdminSecurityPanel } from "../components/AdminSecurityPanel";
 import { LinkButton, PageHero, SectionHeader } from "../components/UI";
 
+function magicLinkButtonLabel(seconds: number) {
+  if (seconds >= 60) return `Retry in ${Math.ceil(seconds / 60)}m`;
+  return `Retry in ${seconds}s`;
+}
+
 export function AdminLoginPage() {
   const admin = useLearningAdmin();
   const [email, setEmail] = useState("");
+  const [cooldownClock, setCooldownClock] = useState(() => Date.now());
   const returnTo = useMemo(
     () => resolveAdminReturnTo(window.location.search, window.sessionStorage),
     [],
@@ -27,6 +33,17 @@ export function AdminLoginPage() {
     window.sessionStorage.removeItem(adminReturnToStorageKey);
     window.location.replace(returnTo);
   }, [admin.authState, returnTo]);
+
+  useEffect(() => {
+    if (!admin.magicLinkCooldownUntil) return;
+    setCooldownClock(Date.now());
+    const timer = window.setInterval(() => setCooldownClock(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [admin.magicLinkCooldownUntil]);
+
+  const magicLinkCooldownSeconds = admin.magicLinkCooldownUntil
+    ? Math.max(0, Math.ceil((admin.magicLinkCooldownUntil - cooldownClock) / 1000))
+    : 0;
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -130,9 +147,13 @@ export function AdminLoginPage() {
                       onChange={(event) => setEmail(event.currentTarget.value)}
                     />
                   </label>
-                  <button className="button secondary" type="submit" disabled={!admin.configured || admin.busyAction === "sign-in"}>
+                  <button className="button secondary" type="submit" disabled={!admin.configured || admin.busyAction === "sign-in" || magicLinkCooldownSeconds > 0}>
                     <KeyRound size={17} aria-hidden="true" />
-                    {admin.busyAction === "sign-in" ? "Requesting..." : "Email secure link"}
+                    {admin.busyAction === "sign-in"
+                      ? "Requesting..."
+                      : magicLinkCooldownSeconds > 0
+                        ? magicLinkButtonLabel(magicLinkCooldownSeconds)
+                        : "Email secure link"}
                   </button>
                 </form>
               </details>
