@@ -33,6 +33,8 @@ function isActive(currentPath: string, href: string) {
 export function SiteLayout({ currentPath, children }: SiteLayoutProps) {
   const admin = useLearningAdmin();
   const publicPreview = new URLSearchParams(window.location.search).get("view") === "public";
+  const learningSurface = currentPath.startsWith("/learning");
+  const adminSurface = learningSurface || currentPath.startsWith("/admin");
   const [menuOpen, setMenuOpen] = useState(false);
   const [anonymousAnalytics, setAnonymousAnalytics] = useState(isAnalyticsEnabled);
 
@@ -97,11 +99,18 @@ export function SiteLayout({ currentPath, children }: SiteLayoutProps) {
         </nav>
       </header>
 
-      {admin.authState === "admin" && (currentPath.startsWith("/learning") || currentPath.startsWith("/admin")) ? (
+      {admin.authState === "admin" && adminSurface ? (
         <div className="adminModeBar" role="status">
           <div className="shell">
             <span><ShieldCheck size={16} aria-hidden="true" /> {publicPreview ? "Public preview" : "Admin mode"}</span>
-            <a href={publicPreview ? currentPath : `${currentPath}?view=public`}>{publicPreview ? "Return to admin mode" : "Preview public view"}</a>
+            <a href="/admin">Admin home</a>
+            {learningSurface ? (
+              <a href={publicPreview ? currentPath : `${currentPath}?view=public`}>
+                {publicPreview ? "Return to admin mode" : "Preview public view"}
+              </a>
+            ) : (
+              <a href="/learning/board?view=public">Preview public board</a>
+            )}
             <button type="button" onClick={() => void admin.signOut()}><LogOut size={15} aria-hidden="true" /> Sign out</button>
           </div>
         </div>
