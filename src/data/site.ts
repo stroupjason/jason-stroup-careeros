@@ -1000,6 +1000,212 @@ export const projects: Project[] = [
     },
   },
   {
+    slug: "careeros-learning-delivery",
+    title: "CareerOS Learning & Delivery System",
+    shortTitle: "Learning & Delivery",
+    type: "Career evidence and delivery system",
+    status: "Active",
+    evidenceState: "Practicing",
+    visibility: "Public",
+    summary:
+      "A data-driven CareerOS capability that turns learning goals into planned work, captures execution history and blockers, links artifacts to skills and target roles, and publishes only reviewed evidence as recruiter-safe portfolio proof.",
+    problem:
+      "Course lists and static skill sections show intent, but they do not explain how learning is planned, applied, reviewed, or converted into evidence a recruiter can inspect.",
+    outcome:
+      "CareerOS now has a typed public workflow with an overview, read-only board, ticket detail routes, a dated evidence timeline, publication validation, and an honest healthcare SQL seed initiative.",
+    approach:
+      "I separated delivery status, roadmap status, evidence maturity, and publication visibility so each concept can change without inflating the others. Private authoring remains outside the browser, while approved public records connect initiatives, tickets, sessions, artifacts, capabilities, role lenses, and portfolio projects. Runtime validation and focused tests reject missing approval, broken relationships, dependency cycles, incomplete Done tickets, and unverified healthcare SQL claims.",
+    stack: [
+      "React",
+      "TypeScript",
+      "Vite",
+      "Vitest",
+      "Delivery modeling",
+      "Evidence design",
+      "Privacy review",
+      "Jira (Private setup planned)",
+    ],
+    capabilities: [
+      "Workflow design",
+      "Typed domain modeling",
+      "Evidence architecture",
+      "Public/private data boundaries",
+      "Accessible frontend delivery",
+      "Validation and testing",
+    ],
+    roleLinks: [
+      "Senior TSE",
+      "TAM",
+      "CSE",
+      "Data Analytics",
+      "Application Engineer",
+      "FDE",
+    ],
+    verifiedFacts: [
+      "The public data model separates delivery, roadmap, evidence, and visibility states.",
+      "Every public learning record requires explicit human approval and a truth boundary.",
+      "The public board is read-only and has no runtime dependency on Jira.",
+      "Healthcare SQL seed tickets remain uncompleted and contain no course certificate, query result, or applied-project outcome.",
+      "Focused tests cover identifiers, relationships, dependency cycles, publication rules, filters, routes, chronology, and seed truthfulness.",
+    ],
+    unknowns: [
+      "Whether Jira will become the long-term private authoring system",
+      "The final shape of a controlled one-way Jira staging export",
+      "Which review cadence will remain useful after several real learning cycles",
+      "Measured recruiter or job-search impact",
+    ],
+    proofNote:
+      "The typed source, validation tests, public routes, and setup documentation are the current artifacts. Private work notes and external board details remain outside the public site.",
+    nextProof:
+      "Create and verify the private Jira board, then record the first real SQL work session before changing the healthcare initiative's evidence state.",
+    liveUrl: "https://www.jasonstroup.website/learning",
+    detailSections: [
+      {
+        kicker: "Model",
+        title: "From objective to reviewed evidence",
+        state: "Practicing",
+        summary:
+          "Initiatives establish direction; tickets define delivery gates; sessions record what happened; artifacts support capabilities and role lenses.",
+        items: [
+          "Keep delivery status independent from evidence maturity.",
+          "Derive milestone counts and actual effort from source records.",
+          "Require completion dates and linked evidence for Done public tickets.",
+          "Carry a visible truth boundary on every public initiative, ticket, session, and artifact.",
+        ],
+      },
+      {
+        kicker: "Publication boundary",
+        title: "Private operations, deliberate public proof",
+        state: "Demonstrated",
+        summary:
+          "The browser receives only reviewed public records; raw notes, credentials, private URLs, and external issue identifiers are excluded.",
+        items: [
+          "No live Jira requests run from the deployed website.",
+          "Publication requires visibility Public, explicit approval, a safe summary, and a truth boundary.",
+          "Validation rejects forbidden private fields and sensitive source text.",
+          "Human review remains mandatory even if a future export adapter is added.",
+        ],
+      },
+      {
+        kicker: "Jira boundary",
+        title: "Optional private authoring, never a runtime dependency",
+        state: "Planned",
+        summary:
+          "A team-managed Kanban board is the recommended private operating layer, but it has not been created or connected.",
+        items: [
+          "Keep credentials in local-only environment variables without VITE_ prefixes.",
+          "Export selected raw data only to a gitignored staging location.",
+          "Review and rewrite a public derivative before publication.",
+          "Preserve manual export so CareerOS is not locked into one vendor.",
+        ],
+      },
+      {
+        kicker: "Verification",
+        title: "Tests enforce the important claims",
+        state: "Practicing",
+        summary:
+          "The implementation combines type checking, runtime validation, focused automated tests, and responsive browser review.",
+        items: [
+          "Check unique identifiers, references, dependency cycles, and completion rules.",
+          "Reject unapproved records and raw private export shapes.",
+          "Verify board filters, valid and unknown ticket routes, and chronological ordering.",
+          "Confirm the healthcare seed never appears completed or demonstrated without real evidence.",
+        ],
+      },
+    ],
+    initiative: {
+      status: "Active",
+      started: "August 7, 2026",
+      currentPhase: "Public workflow verification",
+      summary:
+        "Build a reliable public learning and delivery workflow first, then establish private authoring and a human-reviewed publishing path.",
+      relatedTickets: ["PRODUCT-201–206", "PRODUCT-211–218"],
+      phases: [
+        {
+          phase: "01",
+          title: "Workflow and evidence model",
+          status: "Completed",
+          summary: "Create separate typed models for delivery, roadmap, evidence, visibility, sessions, and publication approval.",
+          milestones: ["Typed public data model", "Relationship validation", "Publication approval gate", "Truth-boundary requirement"],
+        },
+        {
+          phase: "02",
+          title: "Public learning board and ticket routes",
+          status: "Completed",
+          summary: "Ship the overview, read-only board, ticket details, timeline, filters, responsive behavior, and focused tests.",
+          milestones: ["Learning overview", "Read-only board", "Ticket detail routes", "Evidence timeline", "Responsive and automated checks"],
+        },
+        {
+          phase: "03",
+          title: "Private Jira operating board",
+          status: "Next",
+          ticket: "PRODUCT-216",
+          summary: "Create and verify the private team-managed Kanban board in an authenticated Jira session.",
+          milestones: ["Private project created", "Workflow configured", "Seed work items reviewed", "Daily and weekly cadence tested"],
+        },
+        {
+          phase: "04",
+          title: "Healthcare SQL initiative",
+          status: "Next",
+          ticket: "PRODUCT-217",
+          summary: "Begin the real SQL baseline, course verification, dataset selection, and Five-Minute Evidence Capture workflow.",
+          milestones: ["First real work session", "Course context verified", "Synthetic dataset selected", "Applied investigation started"],
+        },
+        {
+          phase: "05",
+          title: "Safe Jira-to-CareerOS publishing workflow",
+          status: "Planned",
+          summary: "Evaluate a local one-way export into private staging with human-approved public derivatives.",
+          milestones: ["Scoped token created", "Gitignored staging export", "Sanitization review", "Approved derivative validation"],
+        },
+        {
+          phase: "06",
+          title: "Learning analytics and review cadence",
+          status: "Planned",
+          summary: "Use only low-cardinality public interactions and evaluate the weekly evidence review after real usage exists.",
+          milestones: ["Privacy-safe event review", "Weekly evidence review", "Next-action quality review", "Tracker usefulness retrospective"],
+        },
+      ],
+    },
+  },
+  {
+    slug: "healthcare-sql-customer-operations",
+    title: "Healthcare Customer Operations SQL Case Study",
+    shortTitle: "Healthcare SQL",
+    type: "Applied SQL and technical account case study",
+    status: "Active planning",
+    evidenceState: "Learning",
+    visibility: "Public",
+    summary:
+      "An applied SQL and technical-account-management case study using synthetic healthcare data to investigate data quality, explain customer impact, structure a root-cause analysis, and recommend a practical action plan.",
+    problem:
+      "Build evidence that connects SQL mechanics to customer judgment: data quality, hypothesis testing, impact communication, mitigation, durable remediation, and accountable follow-up.",
+    outcome:
+      "The initiative, public-safe seed tickets, dependency order, completion gates, and next action are defined. No learning session, dataset, query, finding, certificate, or finished deliverable exists yet.",
+    approach:
+      "The work will begin with a candid SQL baseline and verified course context. Dataset selection and licensing follow, using only a small synthetic or public sample. The applied phase will profile quality, investigate an explicitly fictional incident, produce a technical-account action plan, test reproducibility, and publish only after evidence and privacy review pass.",
+    stack: ["SQL", "Synthetic healthcare data", "Data quality", "Root-cause analysis", "Technical account planning", "Reproducibility"],
+    capabilities: ["SQL", "Healthcare data", "Data-quality investigation", "Root-cause analysis", "Customer-risk management", "Executive communication"],
+    roleLinks: ["TAM", "Data Analytics", "CSE", "Senior TSE"],
+    verifiedFacts: [
+      "The public initiative and seed backlog exist.",
+      "SQL-001, SQL-002, and SQL-004 are ready; applied project work remains in the backlog.",
+      "The project requires synthetic or public data and explicitly excludes PHI, PII, employer data, and real customer information.",
+      "The highest-value next action is to verify the exact course context and record the real SQL baseline.",
+    ],
+    unknowns: [
+      "Exact LinkedIn Learning course title and current completion point",
+      "Final synthetic dataset, license, version, and sample size",
+      "SQL environment and setup details",
+      "Fictional incident scenario, queries, findings, and action plan",
+      "Public repository, artifact links, and completion date",
+    ],
+    proofNote:
+      "Only the approved plan and ticket structure exist. There is no course certificate, SQL script, query output, case-study result, or shareable brief yet.",
+    nextProof:
+      "Confirm the exact SQL course, record the current completion point, and start SQL-001 so the tracker begins with real evidence rather than assumptions.",
+  },
+  {
     slug: "python-mongodb-debugging-lab",
     title: "Python/MongoDB Debugging Lab",
     shortTitle: "Backend Debugging Lab",
@@ -1061,6 +1267,8 @@ export const roleLenses: RoleLens[] = [
     relevantProjects: [
       "careeros",
       "careeros-analytics-integrations",
+      "careeros-learning-delivery",
+      "healthcare-sql-customer-operations",
       "python-mongodb-debugging-lab",
     ],
     gaps: [
@@ -1110,6 +1318,8 @@ export const roleLenses: RoleLens[] = [
     relevantProjects: [
       "careeros",
       "careeros-analytics-integrations",
+      "careeros-learning-delivery",
+      "healthcare-sql-customer-operations",
       "rallye-control",
     ],
     gaps: [
@@ -1160,6 +1370,8 @@ export const roleLenses: RoleLens[] = [
     relevantProjects: [
       "careeros",
       "careeros-analytics-integrations",
+      "careeros-learning-delivery",
+      "healthcare-sql-customer-operations",
       "automatic-nerf-turret",
       "rallye-control",
     ],
@@ -1210,6 +1422,8 @@ export const roleLenses: RoleLens[] = [
     relevantProjects: [
       "careeros",
       "careeros-analytics-integrations",
+      "careeros-learning-delivery",
+      "healthcare-sql-customer-operations",
       "rallye-control",
     ],
     gaps: [
@@ -1262,6 +1476,7 @@ export const roleLenses: RoleLens[] = [
       "python-mongodb-debugging-lab",
       "careeros",
       "careeros-analytics-integrations",
+      "careeros-learning-delivery",
     ],
     gaps: [
       "Reviewed production backend contributions",
@@ -1314,6 +1529,7 @@ export const roleLenses: RoleLens[] = [
       "automatic-nerf-turret",
       "rallye-control",
       "python-mongodb-debugging-lab",
+      "careeros-learning-delivery",
     ],
     gaps: [
       "Reviewed backend contributions",
@@ -1369,6 +1585,7 @@ export const roleLenses: RoleLens[] = [
       "automatic-nerf-turret",
       "rallye-control",
       "python-mongodb-debugging-lab",
+      "careeros-learning-delivery",
     ],
     gaps: [
       "Production-quality engineering contribution",

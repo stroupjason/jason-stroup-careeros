@@ -1779,6 +1779,652 @@ code {
   accent-color: var(--accent);
 }
 
+.learningFocus {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 32px;
+  align-items: end;
+  border-block: 1px solid var(--line);
+  padding: 30px 0;
+}
+
+.learningFocus h2 {
+  max-width: 890px;
+  margin: 12px 0;
+  font-size: clamp(1.65rem, 3vw, 2.65rem);
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+.learningFocus p {
+  margin-bottom: 0;
+}
+
+.learningFocus > a,
+.learningInitiative > a,
+.ticketProjectLink,
+.learningTimeline a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--accent);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.learningMetricGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-block: 1px solid var(--line);
+}
+
+.learningMetricGrid > div {
+  min-height: 150px;
+  display: grid;
+  align-content: end;
+  gap: 8px;
+  padding: 24px;
+  border-right: 1px solid var(--line);
+}
+
+.learningMetricGrid > div:last-child {
+  border-right: 0;
+}
+
+.learningMetricGrid svg {
+  margin-bottom: auto;
+  color: var(--accent);
+}
+
+.learningMetricGrid strong {
+  font-size: 2rem;
+}
+
+.learningMetricGrid span {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.learningInitiativeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.learningInitiative {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 26px;
+  background: rgba(17, 31, 43, 0.72);
+}
+
+.learningInitiativeHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.learningInitiative h3 {
+  margin: 10px 0 0;
+  font-size: 1.6rem;
+  line-height: 1.15;
+  letter-spacing: 0;
+}
+
+.learningInitiative dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 24px 0;
+  border-block: 1px solid var(--line);
+}
+
+.learningInitiative dl > div {
+  padding: 14px 10px 14px 0;
+}
+
+.learningInitiative dt,
+.ticketPlanGrid dt {
+  color: var(--muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.learningInitiative dd,
+.ticketPlanGrid dd {
+  margin: 6px 0 0;
+  font-weight: 750;
+}
+
+.learningInitiative > strong {
+  display: block;
+  margin-bottom: 22px;
+  line-height: 1.5;
+}
+
+.learningSprintLayout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.25fr);
+  gap: 64px;
+  align-items: start;
+}
+
+.learningSprintLayout h2 {
+  margin: 12px 0;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.learningSprintGoals li {
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.learningEvidenceList {
+  border-top: 1px solid var(--line);
+}
+
+.learningEvidenceList article {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.65fr) auto minmax(320px, 1fr);
+  gap: 24px;
+  align-items: start;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.learningEvidenceList h3 {
+  margin: 8px 0 0;
+  letter-spacing: 0;
+}
+
+.learningEvidenceList article > p {
+  margin-bottom: 0;
+}
+
+.learningEvidenceList article > small {
+  grid-column: 3;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.capabilityProgression {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+}
+
+.capabilityProgression > div {
+  min-height: 70px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 14px;
+  align-items: center;
+  padding: 15px 20px 15px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.capabilityProgression > div:nth-child(odd) {
+  border-right: 1px solid var(--line);
+}
+
+.capabilityProgression > div:nth-child(even) {
+  padding-left: 20px;
+}
+
+.capabilityProgression small {
+  grid-column: 1 / -1;
+  color: var(--muted);
+}
+
+.completedMilestoneList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.completedMilestoneList > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px;
+  background: var(--bg);
+}
+
+.completedMilestoneList svg {
+  color: var(--accent);
+  flex: 0 0 auto;
+}
+
+.completedMilestoneList span {
+  display: grid;
+  gap: 5px;
+}
+
+.completedMilestoneList small {
+  color: var(--muted);
+}
+
+.deliveryBadge,
+.visibilityBadge {
+  display: inline-flex;
+  width: fit-content;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 9px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.67rem;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.delivery-done,
+.visibilityBadge {
+  color: var(--accent);
+  border-color: rgba(103, 232, 193, 0.25);
+}
+
+.delivery-ready,
+.delivery-in-progress,
+.delivery-in-review {
+  color: #a9c8ff;
+  border-color: rgba(121, 168, 255, 0.28);
+}
+
+.delivery-blocked {
+  color: var(--danger);
+  border-color: rgba(255, 158, 158, 0.28);
+}
+
+.learningFilters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.learningFilters label {
+  display: grid;
+  gap: 8px;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.learningFilters select {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 36px 9px 11px;
+  color: var(--text);
+  background: var(--panel);
+}
+
+.learningFilterActions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.learningFilterActions button {
+  cursor: pointer;
+}
+
+.learningResultCount {
+  margin: 28px 0 0;
+  color: var(--text);
+  font-weight: 750;
+}
+
+.kanbanBoard {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.kanbanColumn {
+  min-width: 0;
+  border-top: 3px solid var(--line);
+  padding-top: 12px;
+}
+
+.kanbanColumn > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 38px;
+  margin-bottom: 12px;
+}
+
+.kanbanColumn > header h3 {
+  margin: 0;
+  font-size: 0.86rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.kanbanColumn > header span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.kanbanTicketList,
+.backlogTicketGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.backlogTicketGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.kanbanTicketList > p {
+  padding: 16px 0;
+  font-size: 0.82rem;
+}
+
+.learningTicketCard {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  background: var(--panel);
+}
+
+.learningTicketMeta,
+.learningTicketStates,
+.learningTicketFooter {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.learningTicketMeta {
+  color: var(--muted);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.learningTicketMeta a {
+  color: var(--accent);
+  font-weight: 850;
+}
+
+.learningTicketCard h3 {
+  margin: 14px 0 9px;
+  font-size: 1rem;
+  line-height: 1.3;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.learningTicketCard h3 a {
+  text-decoration: none;
+}
+
+.learningTicketCard p {
+  font-size: 0.79rem;
+  line-height: 1.55;
+}
+
+.learningTicketParent,
+.learningTicketCard time {
+  display: block;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.learningTicketTags {
+  margin-top: 14px;
+}
+
+.learningTicketTags span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.learningTicketFooter {
+  justify-content: space-between;
+  margin-top: 15px;
+  padding-top: 13px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+
+.learningTicketFooter span,
+.learningTicketFooter a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.learningTicketFooter a {
+  color: var(--accent);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.ticketStatusStrip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 46px;
+}
+
+.ticketStatusStrip > span:last-child {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.ticketContextGrid,
+.ticketDefinitionGrid,
+.ticketPlanGrid,
+.ticketConnections,
+.ticketTruthBoundary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 54px;
+}
+
+.ticketContextGrid h2 {
+  margin: 10px 0 14px;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+.ticketContextGrid article:last-child {
+  border-left: 1px solid var(--line);
+  padding-left: 38px;
+}
+
+.ticketDefinitionGrid .sectionHeader,
+.ticketConnections .sectionHeader {
+  display: block;
+  margin-bottom: 24px;
+}
+
+.ticketDefinitionGrid .sectionHeader h2,
+.ticketConnections .sectionHeader h2 {
+  font-size: 1.8rem;
+  letter-spacing: 0;
+}
+
+.ticketDefinitionGrid .cleanList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.ticketDefinitionGrid .cleanList svg {
+  flex: 0 0 auto;
+  color: var(--accent);
+}
+
+.ticketPlanGrid dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+
+.ticketPlanGrid dl > div {
+  padding: 17px 12px 17px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.ticketPlanGrid h3 {
+  margin: 0 0 12px;
+  letter-spacing: 0;
+}
+
+.ticketPlanGrid h3:not(:first-child) {
+  margin-top: 30px;
+}
+
+.ticketLinkList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.ticketLinkList a,
+.ticketLinkList span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  text-decoration: none;
+}
+
+.ticketLinkList a {
+  color: var(--accent);
+}
+
+.ticketHistoryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.ticketHistoryGrid > div > h3 {
+  margin-bottom: 18px;
+  letter-spacing: 0;
+}
+
+.ticketHistoryGrid article {
+  display: grid;
+  gap: 8px;
+  padding: 20px 0;
+  border-top: 1px solid var(--line);
+}
+
+.ticketHistoryGrid article time,
+.ticketHistoryGrid article > span,
+.ticketHistoryGrid article small {
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.ticketHistoryGrid article p {
+  margin-bottom: 0;
+}
+
+.ticketConnections {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ticketTruthBoundary p {
+  margin: 10px 0 0;
+  color: var(--text);
+  font-size: 1.08rem;
+}
+
+.timelineFilters {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.learningTimeline {
+  max-width: 900px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.learningTimeline li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 18px;
+  padding-bottom: 38px;
+}
+
+.learningTimeline li::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  bottom: -2px;
+  left: 7px;
+  width: 1px;
+  background: var(--line);
+}
+
+.learningTimeline li:last-child::before {
+  display: none;
+}
+
+.timelineMarker {
+  position: relative;
+  z-index: 1;
+  width: 15px;
+  height: 15px;
+  margin-top: 5px;
+  border: 4px solid var(--bg);
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 1px rgba(103, 232, 193, 0.42);
+}
+
+.learningTimeline time,
+.learningTimeline li span {
+  display: inline-block;
+  margin-right: 10px;
+  color: var(--muted);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.learningTimeline h3 {
+  margin: 10px 0 8px;
+  font-size: 1.35rem;
+  letter-spacing: 0;
+}
+
+.learningTimeline p {
+  margin-bottom: 10px;
+}
+
 :focus-visible {
   outline: 3px solid rgba(103, 232, 193, 0.65);
   outline-offset: 3px;
@@ -1838,6 +2484,15 @@ code {
   }
 
   .developingSkillGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .kanbanBoard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .backlogTicketGrid,
+  .ticketConnections {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -2007,6 +2662,58 @@ code {
 
   .footerLinks {
     display: grid;
+  }
+
+  .learningFocus,
+  .learningInitiativeGrid,
+  .learningSprintLayout,
+  .learningEvidenceList article,
+  .learningFilters,
+  .kanbanBoard,
+  .backlogTicketGrid,
+  .ticketContextGrid,
+  .ticketDefinitionGrid,
+  .ticketPlanGrid,
+  .ticketHistoryGrid,
+  .ticketConnections,
+  .ticketTruthBoundary,
+  .timelineFilters {
+    grid-template-columns: 1fr;
+  }
+
+  .learningMetricGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .learningMetricGrid > div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .learningMetricGrid > div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .learningInitiative dl,
+  .capabilityProgression,
+  .completedMilestoneList,
+  .ticketPlanGrid dl {
+    grid-template-columns: 1fr;
+  }
+
+  .learningEvidenceList article > small {
+    grid-column: 1;
+  }
+
+  .capabilityProgression > div,
+  .capabilityProgression > div:nth-child(even) {
+    padding-inline: 0;
+    border-right: 0;
+  }
+
+  .ticketContextGrid article:last-child {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    padding: 28px 0 0;
   }
 }
 

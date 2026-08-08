@@ -3,9 +3,13 @@
 ## Mission and current phase
 
 This repository is Jason Stroup's public, recruiter-safe technical portfolio
-and the first public slice of CareerOS. The current goal is to complete Sprint
-001 and launch a truthful portfolio. Do not expand it into the later CareerOS
-platform until the portfolio launch criteria are satisfied.
+and the first public slice of CareerOS. The current goal is to maintain a
+truthful portfolio and complete approved, focused CareerOS increments. Jason
+explicitly authorized the public Learning & Delivery System on August 7, 2026.
+That authorization covers typed personal learning records, approved public
+projections, and private Jira setup guidance; it does not authorize
+multi-tenant organizations, employee scoring, HRIS or Lattice integrations, or
+a generalized SaaS product.
 
 ## Read before editing
 
@@ -49,8 +53,9 @@ approved them.
 
 ## Repository conventions
 
-- Keep portfolio content typed in `src/data/site.ts` until the Markdown content
-  loader in the backlog is intentionally started.
+- Keep portfolio content typed in `src/data/site.ts`. Learning & Delivery
+  records live in the focused `src/data/learning.ts` module. Do not publish raw
+  Jira records or move private operating notes into either client module.
 - Keep routes synchronized with `docs/SITE_MAP.md`.
 - Put personally owned public media under `public/projects/<project-slug>/`.
 - Put the reviewed public resume at

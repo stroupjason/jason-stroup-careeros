@@ -6,10 +6,15 @@ import {
 } from "./analytics";
 import { SiteLayout } from "./components/SiteLayout";
 import { projects, roleLenses } from "./data/site";
+import { getLearningTicket } from "./data/learning";
 import { AboutPage } from "./pages/AboutPage";
 import { CaseStudiesPage } from "./pages/CaseStudiesPage";
 import { HomePage } from "./pages/HomePage";
 import { JournalPage } from "./pages/JournalPage";
+import { LearningBoardPage } from "./pages/LearningBoardPage";
+import { LearningOverviewPage } from "./pages/LearningOverviewPage";
+import { LearningTicketPage } from "./pages/LearningTicketPage";
+import { LearningTimelinePage } from "./pages/LearningTimelinePage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { ProjectDetailPage } from "./pages/ProjectDetailPage";
 import { ProjectsPage } from "./pages/ProjectsPage";
@@ -89,7 +94,7 @@ export function App() {
   );
 }
 
-function resolveRoute(path: string) {
+export function resolveRoute(path: string) {
   if (path === "/") {
     return {
       title: "Jason Stroup | Technical Solutions, Integrations & Application Support",
@@ -151,6 +156,41 @@ function resolveRoute(path: string) {
         "Jason Stroup's public CareerOS roadmap for analytics, integrations, owned project evidence, and software delivery.",
       element: <RoadmapPage />,
     };
+  }
+  if (path === "/learning") {
+    return {
+      title: "Learning & Delivery",
+      description:
+        "Jason Stroup's public Learning & Delivery workflow for planned work, approved evidence, capability progression, and truthful next actions.",
+      element: <LearningOverviewPage />,
+    };
+  }
+  if (path === "/learning/board") {
+    return {
+      title: "Learning Work Board",
+      description:
+        "A read-only, recruiter-safe board of Jason Stroup's approved learning and project-delivery tickets.",
+      element: <LearningBoardPage />,
+    };
+  }
+  if (path === "/learning/timeline") {
+    return {
+      title: "Learning Evidence Timeline",
+      description:
+        "A dated public timeline of approved CareerOS work sessions, artifacts, milestones, and publication decisions.",
+      element: <LearningTimelinePage />,
+    };
+  }
+  if (path.startsWith("/learning/tickets/")) {
+    const ticketKey = path.replace("/learning/tickets/", "");
+    const ticket = getLearningTicket(ticketKey);
+    if (ticket) {
+      return {
+        title: `${ticket.key}: ${ticket.title}`,
+        description: ticket.publicSummary,
+        element: <LearningTicketPage ticket={ticket} />,
+      };
+    }
   }
   if (path === "/writing") {
     return {

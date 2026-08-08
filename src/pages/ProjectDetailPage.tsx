@@ -123,7 +123,7 @@ export function ProjectDetailPage({ project }: { project: Project }) {
           <div className="shell">
             <SectionHeader
               kicker="Implementation phases"
-              title="One initiative, five evidence gates"
+              title={`One initiative, ${project.initiative.phases.length} evidence gates`}
               copy={`Started ${project.initiative.started}. ${project.initiative.currentPhase} is the current phase.`}
             />
             <div className="initiativePhaseGrid">

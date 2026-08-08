@@ -49,18 +49,30 @@
 - QUALITY-004 Add GitHub pull-request template
 - QUALITY-005 Add Dependabot or dependency update workflow
 
-## EPIC 6 — Personal CareerOS product after portfolio launch
+## EPIC 6 — CareerOS Learning & Delivery System
 
-- PRODUCT-201 Fast private learning-event and daily evidence entry
-- PRODUCT-202 Evidence records with skill, role, evidence-type, and maturity tags
-- PRODUCT-203 Current and target roles
-- PRODUCT-204 Private/public visibility states
-- PRODUCT-205 Personal capability timeline
-- PRODUCT-206 Transparent next-action rules
+- PRODUCT-201 [Completed] Add typed learning-event records
+- PRODUCT-202 [Completed] Add evidence records and relationships; depends on PRODUCT-201
+- PRODUCT-203 [Completed] Connect learning to capabilities and role lenses; depends on PRODUCT-201 and PRODUCT-202
+- PRODUCT-204 [Completed] Enforce private/public visibility states; depends on PRODUCT-201 and PRODUCT-202
+- PRODUCT-205 [Completed] Add personal capability and delivery timeline; depends on PRODUCT-201 through PRODUCT-203
+- PRODUCT-206 [Completed] Add transparent next-action rules; depends on PRODUCT-201 through PRODUCT-205
 - PRODUCT-207 Draft STAR stories and public-safe summaries
 - PRODUCT-208 Confidentiality review gate before publication
 - PRODUCT-209 Evidence search by role, skill, challenge, or result
 - PRODUCT-210 Weekly strongest-evidence review prompt
+- PRODUCT-211 [Completed] Add the public learning overview; depends on PRODUCT-201 through PRODUCT-203
+- PRODUCT-212 [Completed] Add the public read-only Kanban board; depends on PRODUCT-204
+- PRODUCT-213 [Completed] Add public ticket-detail routes; depends on PRODUCT-202 and PRODUCT-204
+- PRODUCT-214 [Completed] Add initiative and milestone views; depends on PRODUCT-203
+- PRODUCT-215 [Completed] Add the work-session and evidence timeline; depends on PRODUCT-201 and PRODUCT-202
+- PRODUCT-216 [Ready] Set up private Jira authoring and evaluate a safe one-way export; depends on PRODUCT-204
+- PRODUCT-217 [Completed] Seed the healthcare SQL initiative; depends on PRODUCT-204
+- PRODUCT-218 [Completed] Verify accessibility, responsiveness, and tests; depends on PRODUCT-211 through PRODUCT-215
+
+`PRODUCT-216` remains open until an authenticated private Jira board and a
+controlled, gitignored staging export are actually tested. Public CareerOS has
+no live Jira dependency.
 
 ## Deferred organization product
 

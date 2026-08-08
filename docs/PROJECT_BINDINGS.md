@@ -28,6 +28,9 @@ specific, approved, public-safe artifact only when the task requires it.
 | Evidence terminology | `docs/EVIDENCE_MODEL.md` |
 | Public project facts | `docs/projects/` plus Jason-approved owned evidence |
 | Rendered typed site content | `src/data/site.ts` |
+| Public Learning & Delivery records | `src/data/learning.ts` |
+| Learning workflow and publication rules | `docs/LEARNING_DELIVERY_SYSTEM.md` |
+| Private Jira setup guidance | `docs/JIRA_LEARNING_SETUP.md` |
 | Private apprenticeship and raw work evidence | Outside the public repository |
 
 ## Sync rule
@@ -42,5 +45,7 @@ then create a deliberate snapshot only when one is needed.
 - GitHub: source control and pull requests after the repository is created.
 - Vercel: preview and production deployment after Jason connects the repository.
 - Otter: source material for private review; never publish raw transcripts.
-- Supabase, authentication, analytics, HR systems, and AI scoring: not bound and
-  explicitly outside Sprint 001 unless Jason changes the scope.
+- Jira: optional private authoring only; it is not bound, connected, or a public
+  runtime dependency.
+- Supabase, authentication, HR systems, and AI scoring: not bound and explicitly
+  outside the approved scope unless Jason changes it.

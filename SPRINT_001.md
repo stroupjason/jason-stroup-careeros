@@ -101,3 +101,11 @@ Definition of done:
 - Lattice/HR integrations
 - retention intelligence
 - AI scoring
+
+## Approved adjacent increment
+
+On August 7, 2026, Jason authorized the focused public Learning & Delivery
+System documented in `docs/LEARNING_DELIVERY_SYSTEM.md`. It adds a curated
+public workflow and Jira setup guidance without adding authentication, a
+private workspace UI, a database, or a live Jira runtime dependency. The
+organization-product deferrals above remain in force.

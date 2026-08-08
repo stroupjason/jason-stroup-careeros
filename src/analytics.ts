@@ -11,6 +11,23 @@ const campaignParameters = [
   "utm_content",
 ] as const;
 
+const learningEventNames = new Set([
+  "Learning Overview Viewed",
+  "Learning Board Viewed",
+  "Learning Board Filtered",
+  "Learning Ticket Viewed",
+  "Learning Timeline Viewed",
+  "Learning Evidence Opened",
+]);
+const learningPropertyAllowlist = new Set([
+  "delivery",
+  "evidence",
+  "issueType",
+  "initiative",
+  "capability",
+  "role",
+]);
+
 type CampaignParameter = (typeof campaignParameters)[number];
 type CampaignAttribution = Partial<Record<CampaignParameter, string>>;
 
@@ -30,6 +47,27 @@ type PortfolioEventMap = {
   "External Profile Opened": {
     profile: "github" | "linkedin" | "medium" | "published-writing";
     location: "footer" | "contact" | "writing";
+  };
+  "Learning Overview Viewed": Record<string, never>;
+  "Learning Board Viewed": Record<string, never>;
+  "Learning Board Filtered": {
+    initiative?: string;
+    delivery?: string;
+    evidence?: string;
+    capability?: string;
+    role?: string;
+    issueType?: string;
+  };
+  "Learning Ticket Viewed": {
+    delivery: string;
+    evidence: string;
+    issueType: string;
+    initiative: string;
+  };
+  "Learning Timeline Viewed": Record<string, never>;
+  "Learning Evidence Opened": {
+    evidence: string;
+    initiative: string;
   };
 };
 
@@ -148,10 +186,22 @@ export function filterAnalyticsEvent(event: BeforeSendEvent) {
   }
 }
 
+export function sanitizeLearningAnalyticsProperties(properties: Record<string, unknown>) {
+  return Object.fromEntries(
+    Object.entries(properties).filter(([key, value]) =>
+      learningPropertyAllowlist.has(key)
+      && typeof value === "string"
+      && /^[a-z0-9 -]{1,64}$/i.test(value)),
+  );
+}
+
 export function trackPortfolioEvent<EventName extends keyof PortfolioEventMap>(
   name: EventName,
   properties: PortfolioEventMap[EventName],
 ) {
   if (!isAnalyticsEnabled()) return;
-  track(name, { ...properties, ...analyticsProperties() });
+  const eventProperties = learningEventNames.has(name)
+    ? sanitizeLearningAnalyticsProperties(properties)
+    : properties;
+  track(name, { ...eventProperties, ...analyticsProperties() });
 }

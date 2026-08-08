@@ -6,7 +6,10 @@ Launch a polished public portfolio that makes Jason's unusual combination of
 customer-facing technical work, integrations, analytics, troubleshooting, and
 independent building understandable to a recruiter in under five minutes.
 
-This is **not** the organization/LMS/retention product yet.
+This is **not** the organization/LMS/retention product. Jason authorized one
+personal product increment on August 7, 2026: the recruiter-safe Learning &
+Delivery System. Its public projection may ship, while private authoring,
+credentials, and raw work notes remain outside the browser and public Git data.
 
 ## The positioning decision
 
@@ -87,6 +90,15 @@ npm run dev
 - numeric role-readiness percentages
 - more role pages beyond the explicitly approved Software Engineer lens
 - unsupported project metrics
+
+## Authorized personal workflow increment
+
+The public Learning & Delivery System may include typed initiatives, tickets,
+work sessions, evidence, milestones, and truthful next actions. Jira may be
+recommended as the private operating layer, but it is optional and must never
+be a browser runtime dependency. This authorization does not extend to
+organization workspaces, employee evaluation, HR systems, or generalized
+learning-management features.
 
 ## Definition of a useful first release
 

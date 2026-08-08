@@ -17,6 +17,7 @@ const navItems = [
   { href: "/", label: "Home" },
   { href: "/projects", label: "Projects" },
   { href: "/skills", label: "Skills" },
+  { href: "/learning", label: "Learning" },
   { href: "/roles", label: "Role Fit" },
   { href: "/writing", label: "Writing" },
   { href: "/roadmap", label: "Roadmap" },
@@ -132,6 +133,7 @@ export function SiteLayout({ currentPath, children }: SiteLayoutProps) {
             </a>
             <a href="/projects">Projects</a>
             <a href="/skills">Skills</a>
+            <a href="/learning">Learning</a>
             <a href="/roles">Role Fit</a>
             <a href="/writing">Writing</a>
             <a href="/roadmap">Roadmap</a>
