@@ -45,6 +45,17 @@ export type ProjectDetailSection = {
   items: string[];
 };
 
+export type ProjectProofLink = {
+  label: string;
+  href: string;
+  external?: boolean;
+};
+
+export type ProjectOwnership = {
+  statement: string;
+  summary: string;
+};
+
 export type Project = {
   slug: string;
   title: string;
@@ -65,6 +76,10 @@ export type Project = {
   nextProof: string;
   visibility?: "Public";
   liveUrl?: string;
+  liveLabel?: string;
+  sourceUrl?: string;
+  ownership?: ProjectOwnership;
+  proofLinks?: ProjectProofLink[];
   media?: ProjectMedia[];
   subsystems?: ProjectSubsystem[];
   initiative?: ProjectInitiative;
@@ -691,6 +706,26 @@ export const projects: Project[] = [
     proofNote: "The live product is the primary artifact for this project.",
     nextProof: "Add a concise product decision note after the public beta produces real feedback.",
     liveUrl: "https://www.jasonstroup.website",
+    liveLabel: "View live product",
+    sourceUrl: "https://github.com/stroupjason/jason-stroup-careeros",
+    ownership: {
+      statement: "Built and operated by Jason Stroup.",
+      summary:
+        "Jason owns the product strategy, domain model, implementation decisions, testing, deployment, production verification, and continued development of CareerOS.",
+    },
+    proofLinks: [
+      {
+        label: "CareerOS Learning & Delivery project",
+        href: "/projects/careeros-learning-delivery",
+      },
+      { label: "Public Learning board", href: "/learning/board" },
+      { label: "Roadmap", href: "/roadmap" },
+      {
+        label: "GitHub source",
+        href: "https://github.com/stroupjason/jason-stroup-careeros",
+        external: true,
+      },
+    ],
   },
   {
     slug: "automatic-nerf-turret",

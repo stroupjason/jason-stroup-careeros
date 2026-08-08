@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Github } from "lucide-react";
 import { trackPortfolioEvent } from "../analytics";
 import { evidenceStates, type EvidenceState, type Project, type RoleLens } from "../data/site";
 
@@ -76,17 +76,24 @@ export function ProjectCard({
       </div>
       <div className="projectFooter">
         <small>{project.status}</small>
-        <a
-          href={`/projects/${project.slug}`}
-          onClick={() =>
-            trackPortfolioEvent("Project Opened", {
-              project: project.slug,
-              location,
-            })
-          }
-        >
-          View project <ArrowUpRight size={16} />
-        </a>
+        <div className="projectActions">
+          <a
+            href={`/projects/${project.slug}`}
+            onClick={() =>
+              trackPortfolioEvent("Project Opened", {
+                project: project.slug,
+                location,
+              })
+            }
+          >
+            View project <ArrowUpRight size={16} aria-hidden="true" />
+          </a>
+          {location === "projects" && project.sourceUrl ? (
+            <a href={project.sourceUrl} target="_blank" rel="noreferrer">
+              Source <Github size={16} aria-hidden="true" />
+            </a>
+          ) : null}
+        </div>
       </div>
     </article>
   );

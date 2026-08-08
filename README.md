@@ -7,8 +7,13 @@ without presenting planned work as completed proof.
 
 **Live site:** [www.jasonstroup.website](https://www.jasonstroup.website)
 
-**Private source repository:**
+**Source:**
 [stroupjason/jason-stroup-careeros](https://github.com/stroupjason/jason-stroup-careeros)
+
+This repository is public so recruiters and technical reviewers can inspect
+CareerOS source code, architecture, domain modeling, tests, migrations,
+production fixes, and release history. No open-source license is currently
+granted; public visibility is for portfolio and technical-review purposes.
 
 ## Professional identity
 
@@ -92,7 +97,7 @@ Supabase provides the selected persistence and authentication layer.
 
 ```mermaid
 flowchart LR
-  G[Private GitHub repository] --> V[Vercel production deployment]
+  G[Public GitHub repository] --> V[Vercel production deployment]
   V --> P[Public CareerOS application]
   P --> R[Allowlisted public projection]
   A[Passwordless administrator] --> M[Immutable admin membership]
@@ -241,7 +246,7 @@ npm run build
 npm run preview
 ```
 
-The current release passes TypeScript validation, 62 automated tests, the Vite
+The current release passes TypeScript validation, 66 automated tests, the Vite
 production build, direct-route refresh checks, confidentiality scanning, and
 desktop/tablet/mobile browser verification. The production bundle currently
 has a non-blocking Vite chunk-size advisory that remains an optimization item.
@@ -265,10 +270,11 @@ GitHub is the source of truth. Vercel is the deployment target.
 1. Make a focused change in this repository.
 2. Run the applicable validation commands.
 3. Review the diff and scan for confidential data or credentials.
-4. Commit and push to the private GitHub repository.
-5. Let the existing Vercel Git integration build `main` for production.
-6. Verify the unique deployment and canonical custom domain.
-7. Record significant milestones with an annotated Git tag and GitHub Release.
+4. Commit and push to a focused branch in the public GitHub repository.
+5. Open a pull request and review its diff and automated checks.
+6. Merge the reviewed pull request to let the existing Vercel Git integration build `main` for production.
+7. Verify the unique deployment and canonical custom domain.
+8. Record significant milestones with an annotated Git tag and GitHub Release.
 
 ### Production checkpoints
 

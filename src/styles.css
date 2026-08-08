@@ -503,6 +503,19 @@ h3 {
   flex: 1;
 }
 
+.projectActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+.projectActions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .tags,
 .supports,
 .roleLinkList {
@@ -978,7 +991,7 @@ h3 {
 
 .nextProofLine {
   display: grid;
-  grid-template-columns: 150px 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.8fr);
   gap: 22px;
   align-items: start;
 }
@@ -987,6 +1000,45 @@ h3 {
   margin: 0;
   color: var(--text);
   font-size: 1.08rem;
+}
+
+.nextProofLinks {
+  display: grid;
+  gap: 10px;
+}
+
+.nextProofLinks a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--line);
+  padding: 0 0 10px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.nextProofLinks a:hover,
+.nextProofLinks a:focus-visible {
+  color: var(--accent);
+}
+
+.projectOwnership {
+  max-width: 900px;
+  margin-bottom: 38px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--line);
+}
+
+.projectOwnership h2 {
+  margin: 12px 0 10px;
+  font-size: 1.8rem;
+}
+
+.projectOwnership p {
+  max-width: 780px;
+  margin: 0;
+  color: var(--muted);
 }
 
 .overviewCard h2 {
