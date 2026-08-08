@@ -1,4 +1,4 @@
-import { CheckCircle2, ImageOff } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Github, ImageOff } from "lucide-react";
 import { trackPortfolioEvent } from "../analytics";
 import { LinkButton, PageHero, SectionHeader, StateBadge } from "../components/UI";
 import type { EvidenceState, InitiativePhaseStatus, Project } from "../data/site";
@@ -42,7 +42,12 @@ export function ProjectDetailPage({ project }: { project: Project }) {
                 external
                 analytics={{ destination: "live-project", location: "project-hero" }}
               >
-                View live beta
+                {project.liveLabel ?? "View live beta"}
+              </LinkButton>
+            ) : null}
+            {project.sourceUrl ? (
+              <LinkButton href={project.sourceUrl} external secondary>
+                <Github size={17} aria-hidden="true" /> View source on GitHub
               </LinkButton>
             ) : null}
           </>
@@ -50,6 +55,13 @@ export function ProjectDetailPage({ project }: { project: Project }) {
       />
 
       <section className="section shell sectionAfterHero">
+        {project.ownership ? (
+          <div className="projectOwnership">
+            <span className="kicker">Ownership</span>
+            <h2>{project.ownership.statement}</h2>
+            <p>{project.ownership.summary}</p>
+          </div>
+        ) : null}
         <div className="projectOverviewGrid">
           <article className="overviewCard">
             <span className="kicker">Project status</span>
@@ -237,8 +249,24 @@ export function ProjectDetailPage({ project }: { project: Project }) {
 
       <section className="section band">
         <div className="shell nextProofLine">
-          <span className="kicker">Next proof</span>
-          <p>{project.nextProof}</p>
+          <div>
+            <span className="kicker">Next proof</span>
+            <p>{project.nextProof}</p>
+          </div>
+          {project.proofLinks ? (
+            <nav className="nextProofLinks" aria-label={`${project.title} proof destinations`}>
+              {project.proofLinks.map((link) => (
+                <a
+                  href={link.href}
+                  key={link.href}
+                  target={link.external ? "_blank" : undefined}
+                  rel={link.external ? "noreferrer" : undefined}
+                >
+                  {link.label} <ArrowUpRight size={16} aria-hidden="true" />
+                </a>
+              ))}
+            </nav>
+          ) : null}
         </div>
       </section>
     </>

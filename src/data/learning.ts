@@ -703,6 +703,7 @@ function systemTicket(
   ticket: Omit<LearningTicket, "createdAt" | "plannedStart" | "initiativeSlug" | "relatedProjectSlug" | "visibility" | "publicApproved" | "blockers" | "roleLensSlugs"> & {
     plannedStart?: string;
     roleLensSlugs?: string[];
+    relatedProjectSlug?: string;
   },
 ): LearningTicket {
   return {
@@ -712,7 +713,7 @@ function systemTicket(
     createdAt: implementationCreatedAt,
     plannedStart: ticket.plannedStart ?? "2026-08-07",
     initiativeSlug: "careeros-learning-delivery",
-    relatedProjectSlug: "careeros-learning-delivery",
+    relatedProjectSlug: ticket.relatedProjectSlug ?? "careeros-learning-delivery",
     visibility: "Public",
     publicApproved: true,
     blockers: [],
@@ -1298,6 +1299,24 @@ export const learningTickets = [
     evidenceIds: [],
     nextAction: "Compare suitable low-volume SMTP providers and document the free-plan and DNS tradeoffs before configuration.",
     notClaimed: "SMTP is not configured. SFTP is unrelated to passwordless email delivery and is not part of this work.",
+  }),
+  systemTicket({
+    key: "PRODUCT-240",
+    issueType: "Story",
+    title: "Expose recruiter-safe CareerOS source and ownership proof",
+    publicSummary: "Make the public CareerOS repository a first-class recruiter proof artifact while preserving private administration and personal-data boundaries.",
+    deliveryStatus: "In Review",
+    evidenceState: "Practicing",
+    priority: "Highest",
+    dependencies: [],
+    actualStart: "2026-08-08",
+    definitionOfDone: "The public repository passes confidentiality review, documentation reflects its public state, and recruiters can inspect source and ownership proof without reaching private administration.",
+    acceptanceCriteria: ["Current tree and reachable history reviewed", "Typed source links on CareerOS project surfaces", "Ownership and proof destinations are clear", "Typecheck, tests, build, and responsive browser checks pass"],
+    capabilitySlugs: ["privacy-review", "delivery-modeling", "evidence-design", "testing", "responsive-design"],
+    evidenceIds: [],
+    nextAction: "Review and merge the focused PRODUCT-240 pull request after GitHub security settings receive a manual owner review.",
+    relatedProjectSlug: "careeros",
+    notClaimed: "Public source access does not expose CareerOS administration, private Supabase records, private notes, or private identifiers. PRODUCT-241 evidence rollups are not implemented.",
   }),
   systemTicket({
     key: "PRODUCT-217",

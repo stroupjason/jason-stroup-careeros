@@ -126,6 +126,11 @@ describe("CareerOS backend and CU coursework contract", () => {
     expect(getLearningTicket("PRODUCT-234")?.deliveryStatus).toBe("Backlog");
     expect(getLearningTicket("PRODUCT-239")).toMatchObject({ deliveryStatus: "Backlog", issueType: "Story" });
     expect(getLearningTicket("PRODUCT-239")?.notClaimed).toContain("SFTP is unrelated");
+    expect(getLearningTicket("PRODUCT-240")).toMatchObject({
+      deliveryStatus: "In Review",
+      issueType: "Story",
+      relatedProjectSlug: "careeros",
+    });
   });
 
   it("tracks each resolved activation defect as one classified canonical Bug", () => {
