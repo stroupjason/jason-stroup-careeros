@@ -32,6 +32,10 @@ function normalizePath(pathname: string) {
   return pathname.replace(/\/+$/, "") || "/";
 }
 
+function isAdminPath(path: string) {
+  return path === "/admin" || path.startsWith("/admin/");
+}
+
 const productionSiteUrl = "https://www.jasonstroup.website";
 
 function setMeta(selector: string, attribute: "name" | "property", key: string, content: string) {
@@ -78,7 +82,12 @@ export function App() {
     setMeta('meta[name="twitter:description"]', "name", "twitter:description", route.description);
     setMeta('meta[name="twitter:image"]', "name", "twitter:image", imageUrl);
     setMeta('meta[property="og:url"]', "property", "og:url", canonicalUrl);
-    setMeta('meta[name="robots"]', "name", "robots", path.startsWith("/admin/") ? "noindex, nofollow" : "index, follow");
+    setMeta(
+      'meta[name="robots"]',
+      "name",
+      "robots",
+      isAdminPath(path) ? "noindex, nofollow, noarchive" : "index, follow",
+    );
     setCanonical(canonicalUrl);
     if (window.location.hash) {
       window.requestAnimationFrame(() => {
@@ -184,10 +193,10 @@ export function resolveRoute(path: string) {
       element: <LearningTimelinePage />,
     };
   }
-  if (path === "/admin/login") {
+  if (path === "/admin" || path === "/admin/login") {
     return {
-      title: "CareerOS Admin Sign In",
-      description: "Secure sign-in for the CareerOS learning administration workspace.",
+      title: path === "/admin" ? "CareerOS Admin" : "CareerOS Admin Sign In",
+      description: "Secure sign-in and navigation for the CareerOS administration workspace.",
       element: <AdminLoginPage />,
     };
   }
