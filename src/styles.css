@@ -2850,6 +2850,50 @@ code {
 }
 .adminLoginPanel > svg { color: var(--accent); }
 .adminLoginPanel .sectionHeader { margin-bottom: 16px; }
+.adminAuthorizedStack { display: grid; gap: 24px; }
+.adminRecovery { margin-top: 24px; border-top: 1px solid var(--line); padding-top: 18px; }
+.adminRecovery summary { color: var(--text); cursor: pointer; font-weight: 760; }
+.adminRecovery form { margin-top: 18px; }
+
+.adminSecurityPanel {
+  border-top: 1px solid var(--line);
+  padding-top: 28px;
+}
+.adminSecurityHeading {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+.adminSecurityHeading > svg { color: var(--accent); }
+.adminSecurityHeading .sectionHeader { margin-bottom: 8px; }
+.adminSecurityActions,
+.passkeyActions,
+.passkeyRename {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: end;
+}
+.adminSecurityActions { margin-top: 18px; }
+.passkeyList { display: grid; gap: 12px; margin: 22px 0 0; padding: 0; }
+.passkeyItem {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  background: rgba(17, 31, 43, 0.72);
+}
+.passkeyItem > div:first-child { display: grid; gap: 4px; }
+.passkeyItem span { color: var(--muted); font-size: 0.78rem; }
+.passkeyRename { min-width: min(100%, 330px); }
+.passkeyRename label { flex: 1; display: grid; gap: 6px; color: var(--muted); font-size: 0.78rem; font-weight: 750; }
+.passkeyRename input { width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 9px 10px; color: var(--text); background: #0d1a24; }
+.adminEmptyState { margin-top: 20px; border-left: 3px solid var(--accent); padding: 10px 13px; }
 
 .adminLoginForm label,
 .adminTicketEditor label,
@@ -4133,6 +4177,15 @@ code {
 
   .adminLoginPanel {
     grid-template-columns: 1fr;
+  }
+
+  .adminSecurityHeading,
+  .passkeyItem {
+    grid-template-columns: 1fr;
+  }
+
+  .adminSecurityActions .button {
+    width: 100%;
   }
 
   .currentLearningCourseHeading {

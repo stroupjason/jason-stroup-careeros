@@ -27,14 +27,49 @@ No service-role key, database password, admin UUID, account identifier, grade,
 or private academic record belongs in Vite environment variables, Git, browser
 analytics, or a public DTO.
 
-## Authentication
+## Authentication and session authority
 
-The unadvertised route is `/admin/login`. It requests a Supabase email magic
-link with `shouldCreateUser: false` and returns the same neutral response for
-authorized and unauthorized addresses. Public self-sign-up must also remain
-disabled in the Supabase dashboard. The production Auth Site URL is the exact
-callback `https://www.jasonstroup.website/admin/login`. Preview callbacks stay
-disabled unless they are deliberately added to Supabase's redirect allowlist.
+The stable owner route is `/admin`, with `/admin/login` retained as the exact
+Magic Link callback. The Supabase client persists and refreshes the browser
+session, detects PKCE callback sessions, and opts into experimental passkeys.
+Public self-sign-up remains disabled.
+
+The production passkey configuration is Jason-controlled:
+
+- RP display name: `careerOS` (prefer `CareerOS` in a future dashboard review)
+- RP ID: `www.jasonstroup.website`
+- RP origin: `https://www.jasonstroup.website`
+
+Do not enroll passkeys on Vercel previews and do not change the RP ID after
+enrollment; passkeys are cryptographically bound to it. Passkey authentication
+does not grant CareerOS administration. Every restored session still calls
+`learning_admin_is_authorized()` and must match the immutable membership.
+
+Magic Link remains the recovery method with `shouldCreateUser: false` and a
+neutral response for authorized and unauthorized addresses. The exact callback
+remains `https://www.jasonstroup.website/admin/login`. A validated destination
+is preserved in same-origin session storage, not added to the callback URL.
+Only `/admin`, the private Bug Log, the Learning board and timeline, and public
+Learning ticket routes are accepted. Protocol-relative, external, malformed,
+and unapproved destinations fall back to `/admin`.
+
+Supabase session persistence means a healthy browser session should survive a
+reload and a new tab without another email. Project-level JWT/session timeout
+settings remain a production-dashboard verification item. Local sign-out uses
+`scope: "local"` intentionally.
+
+### Production passkey verification
+
+1. Recover through the existing email link on the canonical `www` origin.
+2. Confirm immutable administrator authorization succeeds.
+3. Register the first passkey in Admin security.
+4. Confirm the credential appears only after registration succeeds.
+5. Sign out locally and return to `/admin`.
+6. Sign in with the passkey and verify an approved `returnTo` destination.
+7. Sign out again and confirm Magic Link recovery still works.
+
+Until these steps pass, PRODUCT-243 remains In Review and no production
+passkey enrollment claim is made.
 
 ## Migration
 
