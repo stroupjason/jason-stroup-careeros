@@ -476,7 +476,7 @@ as $$
 declare
   item jsonb;
   snapshot jsonb;
-  item_index integer;
+  acceptance_index integer;
   next_rank numeric(20, 8) := 1000;
   baseline_count integer;
 begin
@@ -508,12 +508,12 @@ begin
     ) on conflict (key) do nothing;
     next_rank := next_rank + 1000;
 
-    item_index := 0;
+    acceptance_index := 0;
     for snapshot in select value from jsonb_array_elements(coalesce(item->'acceptanceCriteria', '[]'::jsonb)) loop
       insert into private.acceptance_items (ticket_key, item_index, label, mandatory)
-      values (item->>'key', item_index, trim(both '"' from snapshot::text), true)
+      values (item->>'key', acceptance_index, trim(both '"' from snapshot::text), true)
       on conflict (ticket_key, item_index) do nothing;
-      item_index := item_index + 1;
+      acceptance_index := acceptance_index + 1;
     end loop;
   end loop;
 
@@ -714,7 +714,7 @@ declare
   new_rank numeric(20, 8);
   public_record jsonb;
   acceptance jsonb;
-  item_index integer := 0;
+  acceptance_index integer := 0;
 begin
   if not (select private.is_learning_admin()) then raise exception 'Not authorized' using errcode = '42501'; end if;
   if new_key !~ '^[A-Z][A-Z0-9-]{2,31}$' then raise exception 'Ticket key format is invalid' using errcode = '22023'; end if;
@@ -766,8 +766,8 @@ begin
 
   for acceptance in select value from jsonb_array_elements(coalesce(p_ticket->'acceptanceCriteria', '[]'::jsonb)) loop
     insert into private.acceptance_items (ticket_key, item_index, label, mandatory)
-    values (new_key, item_index, trim(both '"' from acceptance::text), true);
-    item_index := item_index + 1;
+    values (new_key, acceptance_index, trim(both '"' from acceptance::text), true);
+    acceptance_index := acceptance_index + 1;
   end loop;
 
   insert into private.audit_events (actor_id, entity_type, entity_key, action, after_summary, correlation_id)

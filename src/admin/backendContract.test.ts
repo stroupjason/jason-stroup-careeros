@@ -109,4 +109,11 @@ describe("CareerOS backend and CU coursework contract", () => {
     expect(migration).toContain("'projectionReady', (select count(*) from public.learning_public_tickets) >= 22");
     expect(adminSource).toContain("publicSnapshot?.projectionReady ? publicSnapshot.tickets : learningTickets");
   });
+
+  it("keeps acceptance-item loop variables distinct from SQL column names", () => {
+    expect(migration).toContain("acceptance_index integer");
+    expect(migration).toContain("values (item->>'key', acceptance_index");
+    expect(migration).not.toContain("item_index integer;");
+    expect(migration).not.toContain("item_index integer := 0;");
+  });
 });
