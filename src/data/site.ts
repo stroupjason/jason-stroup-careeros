@@ -25,6 +25,7 @@ export type InitiativePhase = {
   summary: string;
   ticket?: string;
   milestones: string[];
+  completedMilestones?: string[];
 };
 
 export type ProjectInitiative = {
@@ -800,7 +801,7 @@ export const projects: Project[] = [
     problem:
       "CareerOS needs enough trustworthy product signal to improve recruiter journeys and campaign decisions without collecting personal details, exposing private configuration, or installing every possible marketing tool.",
     outcome:
-      "The production domain and Vercel analytics foundation are verified. The React instrumentation, typed event taxonomy, attribution controls, and production checks are the active phase; behavior analytics, inquiry capture, and CRM evaluation remain explicitly planned.",
+      "The production domain, Vercel dashboard foundation, React instrumentation, typed event taxonomy, UTM handling, privacy preference, and canonical metadata are deployed. Production page-view and dashboard result confirmation remains the Phase 1 gate; behavior analytics, inquiry capture, and CRM evaluation remain explicitly planned.",
     approach:
       "I translated practical portfolio questions into a small event taxonomy, integrated the framework-specific Vercel Analytics client, and limited campaign handling to allowlisted UTM fields. The client honors browser Do Not Track by default, provides a persistent anonymous-usage preference, removes arbitrary query data from analytics URLs, and keeps campaign attribution session-scoped. One phased initiative holds the implementation and future integration work so the public status stays accurate as evidence changes.",
     stack: [
@@ -835,7 +836,8 @@ export const projects: Project[] = [
     verifiedFacts: [
       "CareerOS runs on a Vercel Pro team with www.jasonstroup.website as the production custom domain.",
       "Vercel Web Analytics is enabled for the production project.",
-      "The source includes the official React analytics integration and a typed, low-cardinality interaction taxonomy.",
+      "The production deployment includes the official React analytics integration and a typed, low-cardinality interaction taxonomy.",
+      "The live project route loads the Vercel insights script from the canonical domain, refreshes directly, and introduces no browser-console or Vercel runtime errors.",
       "Campaign handling is limited to normalized UTM fields; arbitrary query parameters, URL fragments, and personal form data are excluded.",
       "GA4, Microsoft Clarity, Search Console, inquiry capture, Google Sheets, HubSpot, and the LinkedIn Insight Tag are not presented as live.",
     ],
@@ -882,8 +884,8 @@ export const projects: Project[] = [
         summary:
           "A package install, passing build, or deployment does not complete the analytics phase by itself.",
         items: [
-          "Check direct routes, refresh behavior, desktop and mobile layouts, keyboard behavior, and application console output.",
-          "Confirm production requests reach the Vercel analytics endpoints on the canonical domain.",
+          "Typecheck, Vercel's production build, direct-route refresh, responsive layouts, keyboard behavior, and console/runtime checks pass for the deployed implementation.",
+          "The production route loads the official Vercel insights script from the canonical domain with a successful response.",
           "Confirm page views and typed custom events appear in the correct Vercel dashboard before closing PORT-005.",
           "Keep private totals, visitor details, account identifiers, and administrator URLs out of the portfolio.",
         ],
@@ -937,6 +939,14 @@ export const projects: Project[] = [
             "Canonical-domain metadata",
             "Analytics documentation",
             "Production request and dashboard verification",
+          ],
+          completedMilestones: [
+            "Framework-specific Vercel Analytics integration",
+            "Typed custom-event instrumentation",
+            "LinkedIn UTM strategy",
+            "Privacy and consent controls",
+            "Canonical-domain metadata",
+            "Analytics documentation",
           ],
         },
         {

@@ -34,9 +34,15 @@ export function RoadmapPage() {
         <div className="initiativeList">
           {initiativeProjects.map((project) => {
             const initiative = project.initiative!;
-            const completedMilestones = initiative.phases
-              .filter((phase) => phase.status === "Completed")
-              .reduce((count, phase) => count + phase.milestones.length, 0);
+            const completedMilestones = initiative.phases.reduce(
+              (count, phase) =>
+                count + (
+                  phase.status === "Completed"
+                    ? phase.milestones.length
+                    : phase.completedMilestones?.length ?? 0
+                ),
+              0,
+            );
             const totalMilestones = initiative.phases.reduce(
               (count, phase) => count + phase.milestones.length,
               0,

@@ -957,6 +957,25 @@ h3 {
   margin-top: 20px;
 }
 
+.initiativeMilestoneList {
+  padding-left: 0;
+}
+
+.initiativeMilestoneList li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+  list-style: none;
+}
+
+.initiativeMilestoneList li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
 .nextProofLine {
   display: grid;
   grid-template-columns: 150px 1fr;

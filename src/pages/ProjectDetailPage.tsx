@@ -139,10 +139,22 @@ export function ProjectDetailPage({ project }: { project: Project }) {
                   <h3>{phase.title}</h3>
                   <p>{phase.summary}</p>
                   {phase.ticket ? <small>{phase.ticket}</small> : null}
-                  <ul className="cleanList">
-                    {phase.milestones.map((milestone) => (
-                      <li key={milestone}>{milestone}</li>
-                    ))}
+                  <ul className="cleanList initiativeMilestoneList">
+                    {phase.milestones.map((milestone) => {
+                      const completed = phase.status === "Completed"
+                        || phase.completedMilestones?.includes(milestone);
+                      const milestoneStatus = completed ? "Completed" : phase.status;
+
+                      return (
+                        <li key={milestone}>
+                          <span>{milestone}</span>
+                          <StateBadge
+                            state={phaseEvidenceState[milestoneStatus]}
+                            label={milestoneStatus}
+                          />
+                        </li>
+                      );
+                    })}
                   </ul>
                 </article>
               ))}

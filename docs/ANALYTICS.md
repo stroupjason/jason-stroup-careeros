@@ -10,9 +10,12 @@ or visitor-level data in the public repository.
 - Parent project: `CareerOS Analytics & Integrations`
 - Active work: `PORT-005`
 - Production domain: `https://www.jasonstroup.website`
-- Implemented in source: official React analytics client, automatic page views,
-  typed custom events, allowlisted UTM handling, URL redaction, browser Do Not
-  Track behavior, and a local anonymous-usage preference
+- Deployed and production-checked: official React analytics client, typed custom
+  events, allowlisted UTM handling, URL redaction, browser Do Not Track
+  behavior, local anonymous-usage preference, canonical metadata, and the
+  production insights script
+- Still being verified: automatic page-view results and custom-event results in
+  the correct Vercel dashboard
 - Completion gate: production requests and resulting events must both be
   verified in the correct Vercel dashboard
 - Not live: GA4, Microsoft Clarity, Search Console, inquiry capture, Google
