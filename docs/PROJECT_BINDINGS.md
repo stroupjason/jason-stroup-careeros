@@ -31,6 +31,7 @@ specific, approved, public-safe artifact only when the task requires it.
 | Public Learning & Delivery records | `src/data/learning.ts` |
 | Learning workflow and publication rules | `docs/LEARNING_DELIVERY_SYSTEM.md` |
 | LinkedIn Learning progress boundary | `docs/LINKEDIN_LEARNING_INTEGRATION.md` |
+| Admin backend, auth, migration, and rollback | `docs/LEARNING_ADMIN_BACKEND.md` and `supabase/` |
 | Private Jira setup guidance | `docs/JIRA_LEARNING_SETUP.md` |
 | Private apprenticeship and raw work evidence | Outside the public repository |
 
@@ -46,7 +47,8 @@ then create a deliberate snapshot only when one is needed.
 - GitHub: source control and pull requests after the repository is created.
 - Vercel: preview and production deployment after Jason connects the repository.
 - Otter: source material for private review; never publish raw transcripts.
-- Jira: optional private authoring only; it is not bound, connected, or a public
-  runtime dependency.
-- Supabase, authentication, HR systems, and AI scoring: not bound and explicitly
-  outside the approved scope unless Jason changes it.
+- Supabase: the approved durable authoring and passwordless-auth backend for the
+  personal learning workspace. Public pages retain a static fallback.
+- Jira: optional private authoring guidance only; it is not connected or a
+  public runtime dependency.
+- HR systems and AI scoring: not bound and outside the approved scope.

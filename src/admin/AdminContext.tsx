@@ -1,0 +1,491 @@
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import type { Session } from "@supabase/supabase-js";
+import {
+  learningCourses,
+  learningEvidence,
+  learningInitiatives,
+  learningTickets,
+  workSessions,
+  type CourseProgressSnapshot,
+  type DeliveryStatus,
+  type LearningCourse,
+  type LearningEvidence,
+  type LearningInitiative,
+  type LearningTicket,
+} from "../data/learning";
+import { isSupabaseConfigured, supabase } from "../lib/supabase";
+import type { TaskCoachFactors } from "./taskCoach";
+
+const baselineTicketKeys = [
+  "LDS-001",
+  "PRODUCT-211",
+  "PRODUCT-212",
+  "PRODUCT-213",
+  "PRODUCT-214",
+  "PRODUCT-215",
+  "PRODUCT-219",
+  "PRODUCT-216",
+  "PRODUCT-217",
+  "PRODUCT-218",
+  "SQL-000",
+  "SQL-001",
+  "SQL-002",
+  "SQL-003",
+  "SQL-004",
+  "SQL-005",
+  "SQL-006",
+  "SQL-007",
+  "SQL-008",
+  "SQL-009",
+  "SQL-010",
+  "SQL-012",
+] as const;
+
+export type AdminTicket = LearningTicket & {
+  revision: number;
+  rank: number;
+  privateNotes?: string;
+  archivedAt?: string;
+  taskCoachFactors?: TaskCoachFactors;
+  publicationApproved: boolean;
+  acceptanceItems: Array<{
+    index: number;
+    label: string;
+    mandatory: boolean;
+    completedAt?: string;
+  }>;
+};
+
+export type AdminWorkSession = {
+  id: string;
+  ticketKey: string;
+  startedAt: string;
+  endedAt?: string;
+  durationMinutes?: number;
+  privateNote?: string;
+  publicSummary?: string;
+  publicApproved: boolean;
+  correctedFrom?: string;
+  supersededAt?: string;
+};
+
+export type PublicWorkSession = {
+  id: string;
+  ticketKey: string;
+  startedAt: string;
+  endedAt: string;
+  durationMinutes: number;
+  publicSummary: string;
+  publicApproved: true;
+};
+
+type WorkSessionCapture = {
+  privateNote?: string;
+  publicSummary?: string;
+  nextAction?: string;
+  publicApproved?: boolean;
+};
+
+export type AdminAuditEvent = {
+  id: string;
+  occurredAt: string;
+  entityType: string;
+  entityKey: string;
+  action: string;
+  beforeSummary?: Record<string, unknown>;
+  afterSummary?: Record<string, unknown>;
+  correlationId: string;
+  reversible: boolean;
+};
+
+export type AdminEvidence = Omit<LearningEvidence, "approvedAt"> & {
+  approvedAt?: string;
+  revision: number;
+  privateLocation?: string;
+  privateNotes?: string;
+  publicationApproved: boolean;
+  archivedAt?: string;
+};
+
+export type NewAdminEvidence = {
+  id: string;
+  type: LearningEvidence["type"];
+  title: string;
+  dateCreated: string;
+  createdAt: string;
+  verificationState: LearningEvidence["verificationState"];
+  evidenceStateSupported: LearningEvidence["evidenceStateSupported"];
+  relatedProjectSlug: string;
+  capabilitySlugs: string[];
+  roleLensSlugs: string[];
+  publicUrl?: string;
+  repositoryPath?: string;
+  publicSummary: string;
+  limitations: string;
+  notClaimed: string;
+  privateLocation?: string;
+  privateNotes?: string;
+  publicationApproved: boolean;
+};
+
+type PublicLearningSnapshot = {
+  projectionReady: boolean;
+  tickets: LearningTicket[];
+  courses: LearningCourse[];
+  initiatives: LearningInitiative[];
+  evidence: LearningEvidence[];
+  sessions: PublicWorkSession[];
+};
+
+type AdminLearningSnapshot = PublicLearningSnapshot & {
+  adminTickets: AdminTicket[];
+  adminSessions: AdminWorkSession[];
+  adminEvidence: AdminEvidence[];
+  auditEvents: AdminAuditEvent[];
+};
+
+type TicketPatchKey =
+  | "title"
+  | "publicSummary"
+  | "nextAction"
+  | "priority"
+  | "initiativeSlug"
+  | "dependencies"
+  | "capabilitySlugs"
+  | "roleLensSlugs"
+  | "plannedStart"
+  | "actualStart"
+  | "targetDate"
+  | "completionDate"
+  | "userEstimate"
+  | "taskCoachFactors"
+  | "privateNotes"
+  | "publicationApproved"
+;
+
+type TicketPatch = {
+  [Key in TicketPatchKey]?: AdminTicket[Key] | null;
+};
+
+export type NewAdminTicket = {
+  key: string;
+  issueType: LearningTicket["issueType"];
+  title: string;
+  publicSummary: string;
+  deliveryStatus: DeliveryStatus;
+  evidenceState: LearningTicket["evidenceState"];
+  priority: LearningTicket["priority"];
+  initiativeSlug: string;
+  parentKey?: string;
+  dependencies: string[];
+  plannedStart?: string;
+  definitionOfDone: string;
+  acceptanceCriteria: string[];
+  capabilitySlugs: string[];
+  roleLensSlugs: string[];
+  nextAction: string;
+  relatedProjectSlug: string;
+  notClaimed: string;
+  privateNotes?: string;
+  publicationApproved: boolean;
+};
+
+type MoveContext = {
+  actualStartMode?: "keep_unknown" | "now" | "verified_date";
+  actualStartAt?: string;
+  blockerReason?: string;
+  blockerNextCheck?: string;
+  completedAt?: string;
+  overrideReason?: string;
+};
+
+type AdminContextValue = {
+  configured: boolean;
+  session: Session | null;
+  authState: "loading" | "anonymous" | "unauthorized" | "admin";
+  adminTickets: AdminTicket[];
+  sessions: AdminWorkSession[];
+  auditEvents: AdminAuditEvent[];
+  publicTickets: LearningTicket[];
+  publicCourses: LearningCourse[];
+  publicInitiatives: LearningInitiative[];
+  publicEvidence: LearningEvidence[];
+  publicSessions: PublicWorkSession[];
+  adminEvidence: AdminEvidence[];
+  busyAction?: string;
+  notice?: string;
+  requestMagicLink: (email: string) => Promise<void>;
+  signOut: () => Promise<void>;
+  refreshAdmin: () => Promise<void>;
+  createTicket: (ticket: NewAdminTicket) => Promise<void>;
+  moveTicket: (ticket: AdminTicket, status: DeliveryStatus, rank: number, context?: MoveContext) => Promise<void>;
+  updateTicket: (ticket: AdminTicket, patch: TicketPatch) => Promise<void>;
+  toggleAcceptanceItem: (ticket: AdminTicket, index: number, completed: boolean) => Promise<void>;
+  startWorkSession: (ticket: AdminTicket) => Promise<void>;
+  stopWorkSession: (session: AdminWorkSession, capture: WorkSessionCapture) => Promise<void>;
+  addManualWorkSession: (ticket: AdminTicket, startedAt: string, endedAt: string, capture: WorkSessionCapture, correctedFrom?: string) => Promise<void>;
+  addProgressSnapshot: (courseId: string, ticketKey: string, snapshot: CourseProgressSnapshot, publicApproved: boolean, privateEvidenceReference?: string) => Promise<void>;
+  createEvidence: (ticket: AdminTicket, evidence: NewAdminEvidence) => Promise<void>;
+  setEvidencePublication: (evidence: AdminEvidence, publicApproved: boolean) => Promise<void>;
+  archiveTicket: (ticket: AdminTicket, archive: boolean) => Promise<void>;
+  undoLastMove: (ticketKey: string) => Promise<void>;
+  clearNotice: () => void;
+};
+
+const AdminContext = createContext<AdminContextValue | null>(null);
+
+const staticPublicSessions: PublicWorkSession[] = workSessions.flatMap((session) => {
+  if (!session.startedAt || !session.endedAt) return [];
+  return [{
+    id: session.id,
+    ticketKey: session.ticketKey,
+    startedAt: session.startedAt,
+    endedAt: session.endedAt,
+    durationMinutes: Math.round((new Date(session.endedAt).getTime() - new Date(session.startedAt).getTime()) / 60_000),
+    publicSummary: session.outcome,
+    publicApproved: true,
+  }];
+});
+
+function rpcErrorMessage(error: { message?: string; code?: string } | null) {
+  if (!error) return "The change could not be saved.";
+  if (error.code === "40001") return "This record changed in another session. Refresh before saving again.";
+  if (error.code === "42501") return "This account is not authorized for the CareerOS admin workspace.";
+  return error.message || "The change could not be saved.";
+}
+
+function makeCorrelationId() {
+  return crypto.randomUUID();
+}
+
+export function AdminProvider({ children }: { children: ReactNode }) {
+  const [session, setSession] = useState<Session | null>(null);
+  const [authState, setAuthState] = useState<AdminContextValue["authState"]>("loading");
+  const [adminSnapshot, setAdminSnapshot] = useState<AdminLearningSnapshot | null>(null);
+  const [publicSnapshot, setPublicSnapshot] = useState<PublicLearningSnapshot | null>(null);
+  const [busyAction, setBusyAction] = useState<string>();
+  const [notice, setNotice] = useState<string>();
+
+  const loadPublicSnapshot = useCallback(async () => {
+    if (!supabase) return;
+    const { data, error } = await supabase.rpc("learning_public_snapshot");
+    if (!error && data && typeof data === "object") setPublicSnapshot(data as PublicLearningSnapshot);
+  }, []);
+
+  const loadAdminSnapshot = useCallback(async () => {
+    if (!supabase) return;
+    const { data, error } = await supabase.rpc("learning_admin_snapshot");
+    if (error) throw new Error(rpcErrorMessage(error));
+    setAdminSnapshot(data as AdminLearningSnapshot);
+  }, []);
+
+  const ensureSeeded = useCallback(async () => {
+    if (!supabase) return;
+    const { data, error } = await supabase.rpc("learning_admin_seed", {
+      p_snapshot: {
+        tickets: learningTickets,
+        courses: learningCourses,
+        initiatives: learningInitiatives,
+        evidence: learningEvidence,
+        sessions: workSessions,
+        baselineTicketKeys,
+      },
+      p_expected_baseline_count: baselineTicketKeys.length,
+      p_correlation_id: makeCorrelationId(),
+    });
+    if (error) throw new Error(rpcErrorMessage(error));
+    if (data?.baselineCount !== baselineTicketKeys.length) throw new Error("The durable ticket seed did not preserve the 22-ticket production baseline.");
+  }, []);
+
+  const authorizeSession = useCallback(async (nextSession: Session | null) => {
+    setSession(nextSession);
+    if (!supabase || !nextSession) {
+      setAuthState("anonymous");
+      setAdminSnapshot(null);
+      return;
+    }
+    setAuthState("loading");
+    const { data, error } = await supabase.rpc("learning_admin_is_authorized");
+    if (error || data !== true) {
+      setAuthState("unauthorized");
+      setAdminSnapshot(null);
+      return;
+    }
+    try {
+      await ensureSeeded();
+      await loadAdminSnapshot();
+      await loadPublicSnapshot();
+      setAuthState("admin");
+    } catch (error) {
+      setAuthState("unauthorized");
+      setNotice(error instanceof Error ? error.message : "The admin workspace could not be loaded.");
+    }
+  }, [ensureSeeded, loadAdminSnapshot, loadPublicSnapshot]);
+
+  useEffect(() => {
+    if (!supabase) {
+      setAuthState("anonymous");
+      return;
+    }
+    void loadPublicSnapshot();
+    void supabase.auth.getSession().then(({ data }) => authorizeSession(data.session));
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      window.setTimeout(() => void authorizeSession(nextSession), 0);
+    });
+    return () => listener.subscription.unsubscribe();
+  }, [authorizeSession, loadPublicSnapshot]);
+
+  const runMutation = useCallback(async (action: string, rpcName: string, parameters: Record<string, unknown>) => {
+    if (!supabase || authState !== "admin") throw new Error("Admin authorization is required.");
+    setBusyAction(action);
+    setNotice(undefined);
+    try {
+      const { error } = await supabase.rpc(rpcName, parameters);
+      if (error) throw new Error(rpcErrorMessage(error));
+      await loadAdminSnapshot();
+      await loadPublicSnapshot();
+      setNotice("Saved. The audit history and approved public projection are current.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "The change could not be saved.";
+      setNotice(message);
+      throw new Error(message);
+    } finally {
+      setBusyAction(undefined);
+    }
+  }, [authState, loadAdminSnapshot, loadPublicSnapshot]);
+
+  const value = useMemo<AdminContextValue>(() => ({
+    configured: isSupabaseConfigured,
+    session,
+    authState,
+    adminTickets: adminSnapshot?.adminTickets ?? [],
+    sessions: adminSnapshot?.adminSessions ?? [],
+    auditEvents: adminSnapshot?.auditEvents ?? [],
+    publicTickets: publicSnapshot?.projectionReady ? publicSnapshot.tickets : learningTickets,
+    publicCourses: publicSnapshot?.projectionReady ? publicSnapshot.courses : learningCourses,
+    publicInitiatives: publicSnapshot?.projectionReady ? publicSnapshot.initiatives : learningInitiatives,
+    publicEvidence: publicSnapshot?.projectionReady ? (publicSnapshot.evidence ?? learningEvidence) : learningEvidence,
+    publicSessions: publicSnapshot?.projectionReady ? (publicSnapshot.sessions ?? staticPublicSessions) : staticPublicSessions,
+    adminEvidence: adminSnapshot?.adminEvidence ?? [],
+    busyAction,
+    notice,
+    requestMagicLink: async (email) => {
+      if (!supabase) {
+        setNotice("Admin authentication is not configured in this deployment.");
+        return;
+      }
+      setBusyAction("sign-in");
+      try {
+        await supabase.auth.signInWithOtp({
+          email: email.trim(),
+          options: {
+            shouldCreateUser: false,
+            emailRedirectTo: `${window.location.origin}/admin/login`,
+          },
+        });
+      } catch {
+        // Keep transport failures neutral so the response cannot enumerate users.
+      } finally {
+        setBusyAction(undefined);
+        setNotice("If this address is authorized, a secure sign-in link is on its way.");
+      }
+    },
+    signOut: async () => {
+      if (supabase) await supabase.auth.signOut({ scope: "local" });
+      setSession(null);
+      setAdminSnapshot(null);
+      setAuthState("anonymous");
+      setNotice("Signed out.");
+    },
+    refreshAdmin: loadAdminSnapshot,
+    createTicket: (ticket) => runMutation(`create-${ticket.key}`, "learning_admin_create_ticket", {
+      p_ticket: ticket,
+      p_correlation_id: makeCorrelationId(),
+    }),
+    moveTicket: (ticket, status, rank, context = {}) => runMutation(`move-${ticket.key}`, "learning_admin_move_ticket", {
+      p_key: ticket.key,
+      p_status: status,
+      p_rank: rank,
+      p_expected_revision: ticket.revision,
+      p_context: context,
+      p_correlation_id: makeCorrelationId(),
+    }),
+    updateTicket: (ticket, patch) => runMutation(`update-${ticket.key}`, "learning_admin_update_ticket", {
+      p_key: ticket.key,
+      p_patch: patch,
+      p_expected_revision: ticket.revision,
+      p_correlation_id: makeCorrelationId(),
+    }),
+    toggleAcceptanceItem: (ticket, index, completed) => runMutation(`criterion-${ticket.key}-${index}`, "learning_admin_toggle_acceptance", {
+      p_key: ticket.key,
+      p_item_index: index,
+      p_completed: completed,
+      p_expected_revision: ticket.revision,
+      p_correlation_id: makeCorrelationId(),
+    }),
+    startWorkSession: (ticket) => runMutation(`session-start-${ticket.key}`, "learning_admin_start_session", {
+      p_key: ticket.key,
+      p_expected_revision: ticket.revision,
+      p_correlation_id: makeCorrelationId(),
+    }),
+    stopWorkSession: (workSession, capture) => runMutation(`session-stop-${workSession.id}`, "learning_admin_stop_session", {
+      p_session_id: workSession.id,
+      p_capture: capture,
+      p_correlation_id: makeCorrelationId(),
+    }),
+    addManualWorkSession: (ticket, startedAt, endedAt, capture, correctedFrom) => runMutation(`session-manual-${ticket.key}`, "learning_admin_add_manual_session", {
+      p_key: ticket.key,
+      p_started_at: startedAt,
+      p_ended_at: endedAt,
+      p_capture: capture,
+      p_corrected_from: correctedFrom ?? null,
+      p_correlation_id: makeCorrelationId(),
+    }),
+    addProgressSnapshot: (courseId, ticketKey, snapshot, publicApproved, privateEvidenceReference) => runMutation(`progress-${courseId}`, "learning_admin_add_progress_snapshot", {
+      p_course_id: courseId,
+      p_ticket_key: ticketKey,
+      p_snapshot: snapshot,
+      p_public_approved: publicApproved,
+      p_private_evidence_reference: privateEvidenceReference,
+      p_correlation_id: makeCorrelationId(),
+    }),
+    createEvidence: (ticket, evidence) => runMutation(`evidence-create-${evidence.id}`, "learning_admin_create_evidence", {
+      p_ticket_key: ticket.key,
+      p_evidence: evidence,
+      p_correlation_id: makeCorrelationId(),
+    }),
+    setEvidencePublication: (evidence, publicApproved) => runMutation(`evidence-publish-${evidence.id}`, "learning_admin_set_evidence_publication", {
+      p_id: evidence.id,
+      p_public_approved: publicApproved,
+      p_expected_revision: evidence.revision,
+      p_correlation_id: makeCorrelationId(),
+    }),
+    archiveTicket: (ticket, archive) => runMutation(`${archive ? "archive" : "restore"}-${ticket.key}`, "learning_admin_archive_ticket", {
+      p_key: ticket.key,
+      p_archive: archive,
+      p_expected_revision: ticket.revision,
+      p_correlation_id: makeCorrelationId(),
+    }),
+    undoLastMove: (ticketKey) => runMutation(`undo-${ticketKey}`, "learning_admin_undo_last_move", {
+      p_key: ticketKey,
+      p_correlation_id: makeCorrelationId(),
+    }),
+    clearNotice: () => setNotice(undefined),
+  }), [adminSnapshot, authState, busyAction, loadAdminSnapshot, notice, publicSnapshot, runMutation, session]);
+
+  return <AdminContext.Provider value={value}>{children}</AdminContext.Provider>;
+}
+
+export function useLearningAdmin() {
+  const context = useContext(AdminContext);
+  if (!context) throw new Error("useLearningAdmin must be used inside AdminProvider");
+  return context;
+}

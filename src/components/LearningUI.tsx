@@ -1,5 +1,6 @@
 import { AlertTriangle, ArrowUpRight, BookOpenCheck, ExternalLink, FileCheck2, Route } from "lucide-react";
 import { trackPortfolioEvent } from "../analytics";
+import { useLearningAdmin } from "../admin/AdminContext";
 import type { LearningCourse, LearningTicket } from "../data/learning";
 import {
   capabilityLabels,
@@ -56,8 +57,12 @@ export function TicketCard({ ticket }: { ticket: LearningTicket }) {
 }
 
 export function CurrentLearningCourseCard({ course }: { course: LearningCourse }) {
+  const admin = useLearningAdmin();
+  const publicPreview = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("view") === "public";
+  const adminMode = admin.authState === "admin" && !publicPreview;
   const initiative = getLearningInitiative(course.initiativeSlug)!;
   const ticket = getLearningTicket(course.relatedTicketKey)!;
+  const adminTicket = admin.adminTickets.find((item) => item.key === course.relatedTicketKey);
   const currentProgress = getCurrentCourseProgress(course);
   const currentPercentage = currentProgress ? getCourseProgressPercentage(currentProgress) : undefined;
 
@@ -66,8 +71,8 @@ export function CurrentLearningCourseCard({ course }: { course: LearningCourse }
       <div className="currentLearningCourseHeading">
         <div>
           <span className="kicker">{course.provider} / {course.kind}</span>
-          <h2>{course.title}</h2>
-          <p>Instructor {course.instructor} / Updated {course.providerUpdated}</p>
+          <h2>{course.courseNumber ? `${course.courseNumber} - ` : ""}{course.title}</h2>
+          <p>Instructor {course.instructor} / {course.providerUpdated}</p>
         </div>
         <div className="currentLearningCourseStates" aria-label="Course states">
           <DeliveryBadge status={ticket.deliveryStatus} />
@@ -116,6 +121,12 @@ export function CurrentLearningCourseCard({ course }: { course: LearningCourse }
               <dd>{currentProgress.valueKind}</dd>
             </div>
           ) : null}
+          {course.enrollmentState ? (
+            <div>
+              <dt>Enrollment</dt>
+              <dd>{course.enrollmentState}</dd>
+            </div>
+          ) : null}
           {currentProgress?.totalDurationSeconds !== undefined ? (
             <div>
               <dt>Total duration</dt>
@@ -150,7 +161,9 @@ export function CurrentLearningCourseCard({ course }: { course: LearningCourse }
 
       <div className="courseApplicationNote">
         <BookOpenCheck size={20} aria-hidden="true" />
-        <p>Course completion supports foundational SQL knowledge. The applied healthcare SQL investigation is the stronger evidence of capability.</p>
+        <p>{course.learningCategory === "Academic program coursework"
+          ? "Course work supports the Network Systems pathway. Independent, reviewed troubleshooting artifacts are the stronger evidence of applied capability."
+          : "Course completion supports foundational SQL knowledge. The applied healthcare SQL investigation is the stronger evidence of capability."}</p>
       </div>
 
       <div className="tags courseCapabilityTags" aria-label="Relevant capabilities">
@@ -178,6 +191,13 @@ export function CurrentLearningCourseCard({ course }: { course: LearningCourse }
           Open course page <ExternalLink size={16} aria-hidden="true" />
         </a>
       </div>
+      {adminMode && adminTicket ? (
+        <div className="courseAdminActions" aria-label={`Admin actions for ${course.title}`}>
+          <a className="button secondary" href={`/learning/tickets/${ticket.key}?adminAction=progress`}>Update progress</a>
+          <a className="button secondary" href={`/learning/tickets/${ticket.key}`}>Edit ticket</a>
+          <button className="button primary" type="button" onClick={() => void admin.startWorkSession(adminTicket)} disabled={Boolean(admin.busyAction)}>Start work</button>
+        </div>
+      ) : null}
     </article>
   );
 }

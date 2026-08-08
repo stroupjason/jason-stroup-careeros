@@ -1,7 +1,9 @@
 import { renderToStaticMarkup } from "react-dom/server";
+import type { ReactNode } from "react";
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { resolveRoute } from "../App";
+import { AdminProvider } from "../admin/AdminContext";
 import { sanitizeLearningAnalyticsProperties } from "../analytics";
 import { CurrentLearningCourseCard, formatCourseDuration } from "../components/LearningUI";
 import {
@@ -28,9 +30,12 @@ import {
 
 const verifiedProgress40: CourseProgressSnapshot = {
   id: "TEST-PROGRESS-40",
+  scope: "Course progress",
   observedAt: "2026-08-07T12:00:00-06:00",
   source: "Manual",
+  sourceProvider: "Test provider",
   verificationState: "Verified",
+  verificationLabel: "Verified test value",
   valueKind: "Provider reported",
   percentage: 40,
   totalDurationSeconds: 16_560,
@@ -55,6 +60,10 @@ const newerCandidate90: CourseProgressSnapshot = {
   percentage: 90,
   completedDurationSeconds: 14_904,
 };
+
+function renderWithAdminProvider(element: ReactNode) {
+  return renderToStaticMarkup(<AdminProvider>{element}</AdminProvider>);
+}
 
 describe("Learning & Delivery public data", () => {
   it("passes the complete public-data validator", () => {
@@ -165,9 +174,12 @@ describe("Learning & Delivery public data", () => {
   it("derives progress only from labeled duration inputs", () => {
     const derived: CourseProgressSnapshot = {
       id: "TEST-DERIVED-11",
+      scope: "Course progress",
       observedAt: "2026-08-07T12:00:00-06:00",
       source: "User-provided screenshot",
+      sourceProvider: "Test provider",
       verificationState: "Candidate",
+      verificationLabel: "Candidate test value",
       valueKind: "Derived",
       totalDurationSeconds: 16_560,
       remainingDurationSeconds: 14_742,
@@ -255,11 +267,11 @@ describe("Learning & Delivery public data", () => {
   it("renders valid public ticket routes and keeps unknown keys on the not-found route", () => {
     const validRoute = resolveRoute("/learning/tickets/SQL-001");
     expect(validRoute.title).toContain("SQL-001");
-    expect(renderToStaticMarkup(validRoute.element)).toContain("Establish SQL baseline");
+    expect(renderWithAdminProvider(validRoute.element)).toContain("Establish SQL baseline");
 
     const unknownRoute = resolveRoute("/learning/tickets/PRIVATE-001");
-    expect(unknownRoute.title).toBe("Not Found");
-    expect(renderToStaticMarkup(unknownRoute.element)).toContain("That page isn’t here");
+    expect(unknownRoute.title).toContain("PRIVATE-001");
+    expect(renderWithAdminProvider(unknownRoute.element)).toContain("That page isn’t here");
   });
 
   it("keeps learning analytics properties to the low-cardinality allowlist", () => {
@@ -286,7 +298,7 @@ describe("Learning & Delivery public data", () => {
   });
 
   it("renders the verified current learning snapshot", () => {
-    const markup = renderToStaticMarkup(resolveRoute("/learning").element);
+    const markup = renderWithAdminProvider(resolveRoute("/learning").element);
     expect(markup).toContain("Currently Learning");
     expect(markup).toContain("SQL Essential Training");
     expect(markup).toContain("Walter Shields");
@@ -302,9 +314,36 @@ describe("Learning & Delivery public data", () => {
     expect(markup).toContain("Completed Courses &amp; Credentials");
   });
 
+  it("renders the Career Track and all three CU Boulder course cards under Learning", () => {
+    const markup = renderWithAdminProvider(resolveRoute("/learning").element);
+    expect(markup).toContain("Career Track");
+    expect(markup).toContain("Customer-Facing Technical Engineering");
+    expect(markup).toContain("Technical Account Management");
+    expect(markup).toContain("CU Boulder MS-CS coursework");
+    expect(markup).toContain("30-credit curriculum");
+    expect(markup).toContain("Not yet verified");
+    expect(markup).toContain("CSCA 5063 - Network Systems Foundation");
+    expect(markup).toContain("CSCA 5073 - Network Principles in Practice: Linux Networking");
+    expect(markup).toContain("CSCA 5083 - Network Principles in Practice: Cloud Networking");
+    expect(markup).toContain('href="/learning/tickets/CU-NET-001"');
+    expect(markup).toContain('href="/learning/tickets/CU-NET-002"');
+    expect(markup).toContain('href="/learning/tickets/CU-NET-003"');
+  });
+
+  it("renders 20 percent only as CSCA 5063 course progress", () => {
+    const markup = renderWithAdminProvider(resolveRoute("/learning").element);
+    expect(markup).toContain('aria-label="Course progress for Network Systems Foundation"');
+    expect(markup).toContain('value="20"');
+    const csca5073 = markup.slice(markup.indexOf("CSCA 5073"), markup.indexOf("CSCA 5083"));
+    const csca5083 = markup.slice(markup.indexOf("CSCA 5083"));
+    expect(csca5073).toContain("No verified current percentage is published");
+    expect(csca5073).not.toContain("value=\"20\"");
+    expect(csca5083).toContain("No verified current percentage is published");
+  });
+
   it("renders verified numeric progress as an accessible course progress element", () => {
     const course = { ...learningCourses[0], progressSnapshots: [verifiedProgress60] } as LearningCourse;
-    const markup = renderToStaticMarkup(<CurrentLearningCourseCard course={course} />);
+    const markup = renderWithAdminProvider(<CurrentLearningCourseCard course={course} />);
     expect(markup).toContain('aria-label="Course progress for SQL Essential Training"');
     expect(markup).toContain('value="60"');
     expect(markup).toContain('max="100"');
@@ -324,7 +363,7 @@ describe("Learning & Delivery public data", () => {
   });
 
   it("renders native labeled board controls and textual status labels", () => {
-    const markup = renderToStaticMarkup(resolveRoute("/learning/board").element);
+    const markup = renderWithAdminProvider(resolveRoute("/learning/board").element);
     expect(markup).toContain("<form");
     expect(markup).toContain("<label>Initiative");
     expect(markup).toContain("<select");

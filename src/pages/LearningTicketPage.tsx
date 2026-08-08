@@ -1,24 +1,30 @@
 import { useEffect } from "react";
 import { ArrowUpRight, CheckCircle2, Link2 } from "lucide-react";
 import { trackPortfolioEvent } from "../analytics";
+import { useLearningAdmin, type AdminTicket } from "../admin/AdminContext";
+import { AdminTicketPanel } from "../components/AdminTicketPanel";
 import { DeliveryBadge, formatLearningDate, VisibilityBadge } from "../components/LearningUI";
 import { LinkButton, PageHero, SectionHeader, StateBadge } from "../components/UI";
+import { NotFoundPage } from "./NotFoundPage";
 import {
   capabilityLabels,
   getLearningInitiative,
   getLearningTicket,
-  getTicketEffortMinutes,
-  learningEvidence,
   learningRoleLabels,
-  workSessions,
   type LearningTicket,
 } from "../data/learning";
 
-export function LearningTicketPage({ ticket }: { ticket: LearningTicket }) {
+export function LearningTicketPage({ ticket: fallbackTicket }: { ticket: LearningTicket }) {
+  const admin = useLearningAdmin();
+  const publicPreview = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("view") === "public";
+  const adminMode = admin.authState === "admin" && !publicPreview;
+  const ticket = (adminMode
+    ? admin.adminTickets.find((item) => item.key === fallbackTicket.key)
+    : admin.publicTickets.find((item) => item.key === fallbackTicket.key)) ?? fallbackTicket;
   const initiative = getLearningInitiative(ticket.initiativeSlug)!;
-  const sessions = workSessions.filter((session) => session.ticketKey === ticket.key);
-  const evidence = learningEvidence.filter((artifact) => ticket.evidenceIds.includes(artifact.id));
-  const effortMinutes = getTicketEffortMinutes(ticket.key);
+  const sessions = admin.publicSessions.filter((session) => session.ticketKey === ticket.key);
+  const evidence = admin.publicEvidence.filter((artifact) => ticket.evidenceIds.includes(artifact.id));
+  const effortMinutes = sessions.reduce((total, session) => total + session.durationMinutes, 0);
 
   useEffect(() => {
     trackPortfolioEvent("Learning Ticket Viewed", {
@@ -50,6 +56,8 @@ export function LearningTicketPage({ ticket }: { ticket: LearningTicket }) {
         </div>
       </section>
 
+      {adminMode ? <AdminTicketPanel ticket={ticket as AdminTicket} /> : null}
+
       <section className="section band">
         <div className="shell ticketDefinitionGrid">
           <article>
@@ -67,11 +75,11 @@ export function LearningTicketPage({ ticket }: { ticket: LearningTicket }) {
         <SectionHeader kicker="Plan and relationships" title="Dates, dependencies, and public blockers" />
         <div className="ticketPlanGrid">
           <dl>
-            <div><dt>Planned start</dt><dd><time dateTime={ticket.plannedStart}>{formatLearningDate(ticket.plannedStart)}</time></dd></div>
+            <div><dt>Planned start</dt><dd>{ticket.plannedStart ? <time dateTime={ticket.plannedStart}>{formatLearningDate(ticket.plannedStart)}</time> : "Not scheduled"}</dd></div>
             <div><dt>Actual start</dt><dd>{ticket.actualStart ? <time dateTime={ticket.actualStart}>{formatLearningDate(ticket.actualStart)}</time> : "Not recorded"}</dd></div>
             <div><dt>Target</dt><dd>{ticket.targetDate ? <time dateTime={ticket.targetDate}>{formatLearningDate(ticket.targetDate)}</time> : "No verified target"}</dd></div>
             <div><dt>Completed</dt><dd>{ticket.completionDate ? <time dateTime={ticket.completionDate}>{formatLearningDate(ticket.completionDate)}</time> : "Not completed"}</dd></div>
-            <div><dt>Estimate</dt><dd>{ticket.estimateHours ? `${ticket.estimateHours} hours` : "Not supplied"}</dd></div>
+            <div><dt>Jason's estimate</dt><dd>{ticket.userEstimate ? `${ticket.userEstimate} story points` : "Not supplied"}</dd></div>
             <div><dt>Recorded effort</dt><dd>{effortMinutes > 0 ? `${effortMinutes} minutes` : "No timed sessions"}</dd></div>
           </dl>
           <div>
@@ -91,10 +99,10 @@ export function LearningTicketPage({ ticket }: { ticket: LearningTicket }) {
               <h3>Work sessions</h3>
               {sessions.length > 0 ? sessions.map((session) => (
                 <article key={session.id}>
-                  <time dateTime={session.date}>{formatLearningDate(session.date)}</time>
-                  <strong>{session.problemCategory}</strong>
-                  <p>{session.outcome}</p>
-                  <small>Learned: {session.whatILearned}</small>
+                  <time dateTime={session.startedAt}>{formatLearningDate(session.startedAt)}</time>
+                  <strong>Recorded work session</strong>
+                  <p>{session.publicSummary}</p>
+                  <small>{session.durationMinutes} minutes · approved public outcome</small>
                 </article>
               )) : <p>No approved work session has been recorded for this ticket.</p>}
             </div>
@@ -127,4 +135,13 @@ export function LearningTicketPage({ ticket }: { ticket: LearningTicket }) {
       </section>
     </>
   );
+}
+
+export function LearningTicketLookupPage({ ticketKey, fallbackTicket }: { ticketKey: string; fallbackTicket?: LearningTicket }) {
+  const admin = useLearningAdmin();
+  const publicPreview = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("view") === "public";
+  const ticket = (admin.authState === "admin" && !publicPreview
+    ? admin.adminTickets.find((item) => item.key === ticketKey.toUpperCase())
+    : admin.publicTickets.find((item) => item.key === ticketKey.toUpperCase())) ?? fallbackTicket;
+  return ticket ? <LearningTicketPage ticket={ticket} /> : <NotFoundPage />;
 }

@@ -18,8 +18,8 @@ export type IssueType = (typeof issueTypes)[number];
 export type Priority = "Highest" | "High" | "Medium" | "Low";
 export type EvidenceVerificationState = "Verified" | "Pending Review" | "Not Yet Created";
 
-export const courseStatuses = ["In Progress", "Completed"] as const;
-export const courseKinds = ["Course", "Professional certification"] as const;
+export const courseStatuses = ["Enrolled", "In Progress", "Completed"] as const;
+export const courseKinds = ["Course", "Academic course", "Professional certification"] as const;
 export const courseProgressSources = [
   "Manual",
   "User-provided screenshot",
@@ -36,9 +36,12 @@ export type CourseProgressValueKind = (typeof courseProgressValueKinds)[number];
 
 export type CourseProgressSnapshot = {
   id: string;
+  scope: "Course progress";
   observedAt: string;
   source: CourseProgressSource;
+  sourceProvider: string;
   verificationState: CourseProgressVerificationState;
+  verificationLabel: string;
   valueKind: CourseProgressValueKind;
   percentage?: number;
   totalDurationSeconds?: number;
@@ -56,6 +59,14 @@ export type LearningCourse = {
   providerSlug: string;
   instructor: string;
   providerUpdated: string;
+  courseNumber?: string;
+  institution?: string;
+  institutionSlug?: string;
+  academicProgramSlug?: string;
+  specializationSlug?: string;
+  nominalCredits?: number;
+  enrollmentState?: "Enrolled";
+  learningCategory: "Complementary professional learning" | "Academic program coursework";
   publicUrl: string;
   kind: CourseKind;
   status: CourseStatus;
@@ -77,6 +88,58 @@ export type LearningCourse = {
   notClaimed: string;
 };
 
+export type CareerTrack = {
+  slug: string;
+  title: string;
+  currentRoleFocus: string;
+  progression: string;
+  academicFoundation: string;
+  currentAcademicPathway: string;
+  complementaryLearning: string;
+  appliedEvidenceStreams: string[];
+  currentSprintGoal: string;
+  highestValueNextAction: string;
+};
+
+export type AcademicProgram = {
+  slug: string;
+  title: string;
+  institution: string;
+  platform: string;
+  publicStatus: string;
+  publicUrl: string;
+  curriculumVerifiedAt: string;
+  totalCredits: number;
+  breadthCredits: number;
+  electiveCredits: number;
+  activePathwaySlug: string;
+  coursesEnrolled: number;
+  coursesCompleted: number;
+  earnedCreditsLabel: "Not yet verified";
+  admissionStatus: "Not verified";
+  notClaimed: string;
+};
+
+export type AcademicSpecialization = {
+  slug: string;
+  title: string;
+  subtitle: string;
+  institution: string;
+  provider: string;
+  publicUrl: string;
+  instructor: string;
+  courseCount: number;
+  status: "In Progress";
+  evidenceState: EvidenceState;
+  relatedProgramSlug: string;
+  relatedInitiativeSlug: string;
+  relatedTicketKey: string;
+  capabilitySlugs: string[];
+  nextAction: string;
+  creditsContext: string;
+  notClaimed: string;
+};
+
 export type LearningMilestone = {
   id: string;
   title: string;
@@ -89,7 +152,7 @@ export type LearningInitiative = {
   goal: string;
   roadmapStatus: InitiativePhaseStatus;
   evidenceState: EvidenceState;
-  startDate: string;
+  startDate?: string;
   targetDate?: string;
   completionDate?: string;
   careerObjective: string;
@@ -124,11 +187,12 @@ export type LearningTicket = {
   dependencies: string[];
   blockers: LearningBlocker[];
   createdAt: string;
-  plannedStart: string;
+  plannedStart?: string;
   targetDate?: string;
   actualStart?: string;
   completionDate?: string;
-  estimateHours?: number;
+  userEstimate?: number;
+  assistedEstimate?: number;
   definitionOfDone: string;
   acceptanceCriteria: string[];
   capabilitySlugs: string[];
@@ -239,6 +303,14 @@ export const capabilityLabels = {
   "technical-account-planning": "Technical account planning",
   "executive-communication": "Executive communication",
   "customer-risk-management": "Customer-risk management",
+  "networking-fundamentals": "Networking fundamentals",
+  "tcp-ip": "TCP/IP",
+  "linux-networking": "Linux networking",
+  "network-troubleshooting": "Network troubleshooting",
+  "cloud-networking": "Cloud networking",
+  "network-architecture": "Network architecture",
+  "cloud-infrastructure": "Cloud infrastructure",
+  "technical-communication": "Technical communication",
 } as const;
 
 export const learningRoleLabels = {
@@ -266,8 +338,84 @@ const sqlRoles = [
   "senior-technical-support-engineer",
 ];
 
+const networkRoles = [
+  "technical-account-manager",
+  "customer-success-engineer",
+  "senior-technical-support-engineer",
+  "application-engineer",
+  "forward-deployed-engineer",
+];
+
 const implementationCreatedAt = "2026-08-07T18:59:26-06:00";
 const implementationCompletedAt = "2026-08-07T19:26:46-06:00";
+
+export const careerTrack: CareerTrack = {
+  slug: "customer-facing-technical-engineering",
+  title: "Customer-Facing Technical Engineering",
+  currentRoleFocus: "Technical Account Management",
+  progression: "Technical Account Manager -> Customer/Solutions Engineering -> Forward-Deployed Engineering",
+  academicFoundation: "University of Colorado Boulder Master of Science in Computer Science coursework",
+  currentAcademicPathway: "Network Systems: Principles and Practice",
+  complementaryLearning: "SQL Essential Training",
+  appliedEvidenceStreams: [
+    "Healthcare SQL and customer operations",
+    "Network and cloud troubleshooting",
+  ],
+  currentSprintGoal: "Finish verified foundational course work and convert it into original, reproducible applied evidence.",
+  highestValueNextAction: "Finish the remaining SQL course work and continue CSCA 5063 without conflating course progress with demonstrated capability.",
+};
+
+export const academicPrograms: AcademicProgram[] = [
+  {
+    slug: "cu-boulder-mscs",
+    title: "Master of Science in Computer Science",
+    institution: "University of Colorado Boulder",
+    platform: "Coursera",
+    publicStatus: "Pursuing MS-CS coursework",
+    publicUrl: "https://www.colorado.edu/cs/academics/online-programs/mscs-coursera/curriculum",
+    curriculumVerifiedAt: "2026-08-08",
+    totalCredits: 30,
+    breadthCredits: 15,
+    electiveCredits: 15,
+    activePathwaySlug: "network-systems-principles-in-practice",
+    coursesEnrolled: 3,
+    coursesCompleted: 0,
+    earnedCreditsLabel: "Not yet verified",
+    admissionStatus: "Not verified",
+    notClaimed: "Admission, degree-candidate status, for-credit enrollment, grades, GPA, earned credits, and degree progress are not verified in CareerOS.",
+  },
+];
+
+export const academicSpecializations: AcademicSpecialization[] = [
+  {
+    slug: "network-systems-principles-in-practice",
+    title: "Network Systems: Principles and Practice",
+    subtitle: "Linux and Cloud Networking",
+    institution: "University of Colorado Boulder",
+    provider: "Coursera",
+    publicUrl: "https://www.coursera.org/specializations/network-systems-principles-in-practice",
+    instructor: "Eric Keller",
+    courseCount: 3,
+    status: "In Progress",
+    evidenceState: "Learning",
+    relatedProgramSlug: "cu-boulder-mscs",
+    relatedInitiativeSlug: "cu-boulder-network-systems",
+    relatedTicketKey: "CU-NET-000",
+    capabilitySlugs: [
+      "networking-fundamentals",
+      "tcp-ip",
+      "linux-networking",
+      "network-troubleshooting",
+      "cloud-networking",
+      "network-architecture",
+      "cloud-infrastructure",
+      "technical-communication",
+    ],
+    nextAction: "Continue CSCA 5063 and build an original network-stack and packet-flow troubleshooting exercise.",
+    creditsContext: "3 credits only when completed for credit and accepted under the applicable degree requirements",
+    notClaimed: "No specialization percentage, course completion, earned credit, grade, admission milestone, or degree progress is claimed.",
+  },
+];
 
 export const learningInitiatives = [
   {
@@ -279,20 +427,20 @@ export const learningInitiatives = [
     startDate: "2026-08-07",
     careerObjective: "Make professional growth visible through truthful execution history, artifacts, and next actions.",
     roleLensSlugs: systemRoles,
-    currentPhase: "Public workflow verification",
-    nextAction: "Verify the production routes, then create the private Jira operating board before enabling any export workflow.",
+    currentPhase: "Secure admin backend verification",
+    nextAction: "Apply and verify the reviewed Supabase migration, then provision Jason's immutable admin membership.",
     publicSummary: "A typed CareerOS workflow for planning work, recording execution and blockers, linking evidence to capabilities and role lenses, and publishing only reviewed public derivatives.",
     milestones: [
       { id: "LDS-M1", title: "Workflow and evidence model", status: "Completed" },
       { id: "LDS-M2", title: "Public learning board and ticket routes", status: "Completed" },
-      { id: "LDS-M3", title: "Private Jira operating board", status: "Next" },
+      { id: "LDS-M3", title: "Secure Supabase authoring workspace", status: "Active" },
       { id: "LDS-M4", title: "Healthcare SQL initiative", status: "Next" },
-      { id: "LDS-M5", title: "Safe Jira-to-CareerOS publishing workflow", status: "Planned" },
+      { id: "LDS-M5", title: "Allowlisted public projection", status: "Active" },
       { id: "LDS-M6", title: "Learning analytics and review cadence", status: "Planned" },
     ],
     visibility: "Public",
     publicApproved: true,
-    notClaimed: "This public workflow does not mean Jira is connected, private notes are synchronized, or tracked work proves readiness for every related role.",
+    notClaimed: "This workflow does not mean provider accounts are synchronized or tracked work proves readiness for every related role.",
   },
   {
     slug: "healthcare-sql-customer-operations",
@@ -317,6 +465,33 @@ export const learningInitiatives = [
     publicApproved: true,
     notClaimed: "No course completion, SQL proficiency certification, healthcare-domain expertise, real customer incident, or finished case study is claimed.",
   },
+  {
+    slug: "cu-boulder-network-systems",
+    title: "Complete CU Boulder Network Systems pathway",
+    goal: "Complete the three-course Network Systems pathway truthfully and convert the learning into independent, public-safe network and cloud troubleshooting evidence.",
+    roadmapStatus: "Active",
+    evidenceState: "Learning",
+    careerObjective: "Build networking, Linux, cloud, troubleshooting, and technical communication depth for customer-facing technical engineering roles.",
+    roleLensSlugs: [
+      "technical-account-manager",
+      "customer-success-engineer",
+      "senior-technical-support-engineer",
+      "application-engineer",
+      "forward-deployed-engineer",
+    ],
+    currentPhase: "CSCA 5063 in progress",
+    nextAction: "Continue CSCA 5063 and create an original packet-flow or protocol-troubleshooting exercise.",
+    publicSummary: "Three enrolled CU Boulder courses on Coursera connected to independent network, Linux, and cloud troubleshooting artifacts. Course consumption and applied capability remain separate evidence states.",
+    milestones: [
+      { id: "CU-NET-M1", title: "CSCA 5063 Network Systems Foundation", status: "Active" },
+      { id: "CU-NET-M2", title: "CSCA 5073 Linux Networking", status: "Next" },
+      { id: "CU-NET-M3", title: "CSCA 5083 Cloud Networking", status: "Planned" },
+      { id: "CU-NET-M4", title: "Network Reliability & Cloud Troubleshooting Lab", status: "Planned" },
+    ],
+    visibility: "Public",
+    publicApproved: true,
+    notClaimed: "Enrollment in these courses does not establish admission, for-credit status, grades, earned credit, pathway completion, networking mastery, or degree progress.",
+  },
 ] satisfies LearningInitiative[];
 
 export const learningCourses: LearningCourse[] = [
@@ -328,6 +503,7 @@ export const learningCourses: LearningCourse[] = [
     providerSlug: "linkedin-learning",
     instructor: "Walter Shields",
     providerUpdated: "May 2024",
+    learningCategory: "Complementary professional learning",
     publicUrl: "https://www.linkedin.com/learning/sql-essential-training-20685933",
     kind: "Course",
     status: "In Progress",
@@ -348,9 +524,12 @@ export const learningCourses: LearningCourse[] = [
     progressSnapshots: [
       {
         id: "PROGRESS-SQL-ESSENTIAL-2026-08-07-184510",
+        scope: "Course progress",
         observedAt: "2026-08-07T18:45:10-06:00",
         source: "User-provided screenshot",
+        sourceProvider: "LinkedIn Learning",
         verificationState: "Verified",
+        verificationLabel: "Verified from supplied screenshot",
         valueKind: "Derived",
         totalDurationSeconds: 16_560,
         completedDurationSeconds: 1_818,
@@ -364,6 +543,127 @@ export const learningCourses: LearningCourse[] = [
     visibility: "Public",
     publicApproved: true,
     notClaimed: "Completed modules, completion date, certificate, SQL mastery, healthcare expertise, and applied project outcome are not yet verified.",
+  },
+  {
+    id: "COURSE-CSCA-5063",
+    slug: "csca-5063-network-systems-foundation",
+    courseNumber: "CSCA 5063",
+    title: "Network Systems Foundation",
+    provider: "Coursera",
+    providerSlug: "coursera",
+    instructor: "Eric Keller",
+    providerUpdated: "Curriculum verified Aug 2026",
+    institution: "University of Colorado Boulder",
+    institutionSlug: "cu-boulder",
+    academicProgramSlug: "cu-boulder-mscs",
+    specializationSlug: "network-systems-principles-in-practice",
+    nominalCredits: 1,
+    enrollmentState: "Enrolled",
+    learningCategory: "Academic program coursework",
+    publicUrl: "https://www.coursera.org/specializations/network-systems-principles-in-practice",
+    kind: "Academic course",
+    status: "In Progress",
+    evidenceState: "Learning",
+    metadataVerifiedAt: "2026-08-08",
+    relatedTicketKey: "CU-NET-001",
+    initiativeSlug: "cu-boulder-network-systems",
+    relatedProjectSlug: "network-reliability-cloud-troubleshooting-lab",
+    capabilitySlugs: [
+      "networking-fundamentals",
+      "tcp-ip",
+      "network-troubleshooting",
+      "technical-communication",
+    ],
+    evidenceIds: [],
+    progressSnapshots: [
+      {
+        id: "PROGRESS-CSCA-5063-2026-08-08",
+        scope: "Course progress",
+        observedAt: "2026-08-08T12:00:00-06:00",
+        source: "User-provided screenshot",
+        sourceProvider: "Coursera",
+        verificationState: "Verified",
+        verificationLabel: "Verified from supplied screenshot",
+        valueKind: "Provider reported",
+        percentage: 20,
+        relatedEvidenceIds: [],
+        currentModule: "Sharing the Link (13-minute video)",
+      },
+    ],
+    currentLearningFocus: "Network systems foundations and the path a packet takes across links and protocol layers.",
+    nextAction: "Continue with Sharing the Link, then write an original packet-flow explanation.",
+    publicSummary: "Active CU Boulder network systems course work connected to an independent packet-flow and protocol-troubleshooting exercise.",
+    visibility: "Public",
+    publicApproved: true,
+    notClaimed: "The 20% value is course-scoped only. It does not establish specialization progress, earned credit, a grade, admission, degree progress, or demonstrated networking capability.",
+  },
+  {
+    id: "COURSE-CSCA-5073",
+    slug: "csca-5073-linux-networking",
+    courseNumber: "CSCA 5073",
+    title: "Network Principles in Practice: Linux Networking",
+    provider: "Coursera",
+    providerSlug: "coursera",
+    instructor: "Eric Keller",
+    providerUpdated: "Curriculum verified Aug 2026",
+    institution: "University of Colorado Boulder",
+    institutionSlug: "cu-boulder",
+    academicProgramSlug: "cu-boulder-mscs",
+    specializationSlug: "network-systems-principles-in-practice",
+    nominalCredits: 1,
+    enrollmentState: "Enrolled",
+    learningCategory: "Academic program coursework",
+    publicUrl: "https://www.coursera.org/specializations/network-systems-principles-in-practice",
+    kind: "Academic course",
+    status: "Enrolled",
+    evidenceState: "Learning",
+    metadataVerifiedAt: "2026-08-08",
+    relatedTicketKey: "CU-NET-002",
+    initiativeSlug: "cu-boulder-network-systems",
+    relatedProjectSlug: "network-reliability-cloud-troubleshooting-lab",
+    capabilitySlugs: ["linux-networking", "network-troubleshooting", "technical-communication"],
+    evidenceIds: [],
+    progressSnapshots: [],
+    currentLearningFocus: "Enrolled; active course work has not yet been verified in CareerOS.",
+    nextAction: "Begin after the active foundation course reaches its verified completion gate.",
+    publicSummary: "Enrolled CU Boulder Linux networking course connected to a planned Linux troubleshooting lab and customer-facing diagnostic runbook.",
+    visibility: "Public",
+    publicApproved: true,
+    notClaimed: "No course start, percentage, grade, completion, earned credit, applied artifact, or demonstrated Linux networking capability is claimed.",
+  },
+  {
+    id: "COURSE-CSCA-5083",
+    slug: "csca-5083-cloud-networking",
+    courseNumber: "CSCA 5083",
+    title: "Network Principles in Practice: Cloud Networking",
+    provider: "Coursera",
+    providerSlug: "coursera",
+    instructor: "Eric Keller",
+    providerUpdated: "Curriculum verified Aug 2026",
+    institution: "University of Colorado Boulder",
+    institutionSlug: "cu-boulder",
+    academicProgramSlug: "cu-boulder-mscs",
+    specializationSlug: "network-systems-principles-in-practice",
+    nominalCredits: 1,
+    enrollmentState: "Enrolled",
+    learningCategory: "Academic program coursework",
+    publicUrl: "https://www.coursera.org/specializations/network-systems-principles-in-practice",
+    kind: "Academic course",
+    status: "Enrolled",
+    evidenceState: "Learning",
+    metadataVerifiedAt: "2026-08-08",
+    relatedTicketKey: "CU-NET-003",
+    initiativeSlug: "cu-boulder-network-systems",
+    relatedProjectSlug: "network-reliability-cloud-troubleshooting-lab",
+    capabilitySlugs: ["cloud-networking", "network-architecture", "cloud-infrastructure", "network-troubleshooting"],
+    evidenceIds: [],
+    progressSnapshots: [],
+    currentLearningFocus: "Enrolled; active course work has not yet been verified in CareerOS.",
+    nextAction: "Begin after the preceding pathway course reaches its verified completion gate.",
+    publicSummary: "Enrolled CU Boulder cloud networking course connected to a planned architecture and isolated failure-recovery exercise.",
+    visibility: "Public",
+    publicApproved: true,
+    notClaimed: "No course start, percentage, grade, completion, earned credit, applied artifact, or demonstrated cloud networking capability is claimed.",
   },
 ];
 
@@ -407,6 +707,23 @@ function sqlTicket(
   };
 }
 
+function academicTicket(
+  ticket: Omit<LearningTicket, "createdAt" | "initiativeSlug" | "relatedProjectSlug" | "visibility" | "publicApproved" | "blockers" | "roleLensSlugs"> & {
+    roleLensSlugs?: string[];
+  },
+): LearningTicket {
+  return {
+    ...ticket,
+    createdAt: "2026-08-08T12:00:00-06:00",
+    initiativeSlug: "cu-boulder-network-systems",
+    relatedProjectSlug: "network-reliability-cloud-troubleshooting-lab",
+    visibility: "Public",
+    publicApproved: true,
+    blockers: [],
+    roleLensSlugs: ticket.roleLensSlugs ?? networkRoles,
+  };
+}
+
 const implementationEvidence = ["EVD-LDS-SOURCE", "EVD-LDS-TESTS"];
 
 export const learningTickets = [
@@ -426,8 +743,8 @@ export const learningTickets = [
     capabilitySlugs: ["delivery-modeling", "evidence-design", "privacy-review"],
     evidenceIds: implementationEvidence,
     reflection: "Separating workflow, evidence, and visibility states prevents a completed task from becoming an unsupported capability claim.",
-    nextAction: "Create and verify the private Jira board without changing the public runtime boundary.",
-    notClaimed: "This epic does not claim a live Jira integration or measured learning outcomes.",
+    nextAction: "Verify the durable Supabase projection without changing the public truth boundary.",
+    notClaimed: "This epic does not claim provider synchronization or measured learning outcomes.",
   }),
   systemTicket({
     key: "PRODUCT-211",
@@ -465,7 +782,7 @@ export const learningTickets = [
     capabilitySlugs: ["delivery-modeling", "responsive-design", "accessibility"],
     evidenceIds: implementationEvidence,
     nextAction: "Use the board during the first SQL work session and review filter usefulness.",
-    notClaimed: "The board is not Jira and does not edit private work items.",
+    notClaimed: "Anonymous visitors cannot edit records or receive private authoring fields.",
   }),
   systemTicket({
     key: "PRODUCT-213",
@@ -545,20 +862,156 @@ export const learningTickets = [
   }),
   systemTicket({
     key: "PRODUCT-216",
-    issueType: "Spike",
-    title: "Set up private Jira authoring and evaluate a safe export",
-    publicSummary: "Configure the private operating board first, then test a one-way staging export that still requires human publication approval.",
+    issueType: "Epic",
+    title: "Build the Jason-only CareerOS Learning Admin Workspace",
+    publicSummary: "Add durable authentication, authorized authoring, audit history, and an allowlisted public projection to the existing learning board and ticket routes.",
+    deliveryStatus: "In Progress",
+    evidenceState: "Planned",
+    priority: "Highest",
+    parentKey: "LDS-001",
+    dependencies: [],
+    definitionOfDone: "Jason alone can administer the existing board and ticket routes through RLS-protected durable records, with audit history, fallback public data, and verified production persistence.",
+    acceptanceCriteria: ["No public self-sign-up", "RLS and RPC authorization are verified", "Public/private records stay structurally separate", "Every material mutation is audited"],
+    capabilitySlugs: ["privacy-review", "delivery-modeling", "testing", "accessibility"],
+    evidenceIds: [],
+    nextAction: "Apply and verify the reviewed Supabase migration, then provision Jason's immutable admin membership.",
+    notClaimed: "The admin workspace is not production-verified until authentication, persistence, rollback, and anonymous-denial tests pass.",
+  }),
+  systemTicket({
+    key: "PRODUCT-220",
+    issueType: "Story",
+    title: "Add durable auth, authorization, database, and migration",
+    publicSummary: "Establish the single-admin Supabase foundation, versioned schema, RLS policies, allowlisted RPCs, seed parity, and rollback path.",
+    deliveryStatus: "In Progress",
+    evidenceState: "Planned",
+    priority: "Highest",
+    parentKey: "PRODUCT-216",
+    dependencies: [],
+    definitionOfDone: "The reviewed migration is applied, 22 baseline ticket keys survive parity checks, and anonymous and non-admin requests cannot reach authoring data.",
+    acceptanceCriteria: ["Single immutable admin membership", "RLS on every authoring table", "Idempotent migration and seed", "No service key in the client"],
+    capabilitySlugs: ["privacy-review", "delivery-modeling", "testing"],
+    evidenceIds: [],
+    nextAction: "Apply the migration to the approved CareerOS Supabase project and run the policy verification queries.",
+    notClaimed: "Authorization and persistence remain unverified until the production database checks pass.",
+  }),
+  systemTicket({
+    key: "PRODUCT-221",
+    issueType: "Story",
+    title: "Add authenticated board movement and accessible status controls",
+    publicSummary: "Enable pointer, touch, keyboard, and conventional status movement on the existing board with optimistic rollback and durable rank updates.",
+    deliveryStatus: "Ready",
+    evidenceState: "Planned",
+    priority: "High",
+    parentKey: "PRODUCT-216",
+    dependencies: ["PRODUCT-220"],
+    definitionOfDone: "Authorized moves persist atomically, stale writes are rejected, failures roll back, and a status menu provides an equivalent accessible path.",
+    acceptanceCriteria: ["Pointer, touch, and keyboard movement", "Accessible announcements", "Fractional rank", "Undo for a safe last move"],
+    capabilitySlugs: ["accessibility", "responsive-design", "delivery-modeling"],
+    evidenceIds: [],
+    nextAction: "Verify the move RPC before testing the existing board controls.",
+    notClaimed: "A rendered drag handle does not prove production persistence or complete assistive-technology coverage.",
+  }),
+  systemTicket({
+    key: "PRODUCT-222",
+    issueType: "Story",
+    title: "Add ticket editing, truthful dates, and transition gates",
+    publicSummary: "Manage public-safe and private ticket fields separately while preserving unknown dates and enforcing review and completion rules.",
+    deliveryStatus: "Ready",
+    evidenceState: "Planned",
+    priority: "High",
+    parentKey: "PRODUCT-216",
+    dependencies: ["PRODUCT-220"],
+    definitionOfDone: "Ticket edits use revision checks and transitions cannot fabricate starts, targets, completion, blockers, or evidence readiness.",
+    acceptanceCriteria: ["Unknown dates remain unknown", "Blocked requires a private reason and next check", "Done enforces mandatory criteria", "Target history is audited"],
+    capabilitySlugs: ["delivery-modeling", "privacy-review"],
+    evidenceIds: [],
+    nextAction: "Verify SQL-002 can be edited without backfilling any unknown field.",
+    notClaimed: "No SQL-002 dates, estimates, sessions, or completion facts are supplied by this implementation ticket.",
+  }),
+  systemTicket({
+    key: "PRODUCT-223",
+    issueType: "Story",
+    title: "Add work sessions and Five-Minute Evidence Capture",
+    publicSummary: "Record actual work intervals, derive effort only from valid sessions, and capture reviewed public-safe outcomes separately from private notes.",
+    deliveryStatus: "Ready",
+    evidenceState: "Planned",
+    priority: "High",
+    parentKey: "PRODUCT-216",
+    dependencies: ["PRODUCT-220", "PRODUCT-222"],
+    definitionOfDone: "Running and manual sessions validate chronology, survive corrections with audit history, and never fabricate effort from status or progress.",
+    acceptanceCriteria: ["One running session per admin", "End follows start", "Effort is derived", "Public summary requires approval"],
+    capabilitySlugs: ["delivery-modeling", "evidence-design"],
+    evidenceIds: [],
+    nextAction: "Test one real SQL-002 session only when Jason begins actual work.",
+    notClaimed: "No SQL-002 study time has been recorded by creating the session controls.",
+  }),
+  systemTicket({
+    key: "PRODUCT-224",
+    issueType: "Story",
+    title: "Add validated progress-source and snapshot workflow",
+    publicSummary: "Store immutable course-scoped snapshots with source, value basis, verification, private evidence reference, and separate publication approval.",
+    deliveryStatus: "Ready",
+    evidenceState: "Planned",
+    priority: "High",
+    parentKey: "PRODUCT-216",
+    dependencies: ["PRODUCT-220"],
+    definitionOfDone: "Candidates never replace verified current progress and no snapshot fabricates work time, understanding, credit, or degree progress.",
+    acceptanceCriteria: ["Validated source types", "Exact scope", "Newest verified selection", "Provider API remains deferred"],
+    capabilitySlugs: ["evidence-design", "privacy-review", "testing"],
+    evidenceIds: [],
+    nextAction: "Preserve the SQL and CSCA 5063 historical snapshots during migration.",
+    notClaimed: "No live LinkedIn Learning or Coursera synchronization is implemented.",
+  }),
+  systemTicket({
+    key: "PRODUCT-225",
+    issueType: "Story",
+    title: "Add deterministic task-health and effort assistance",
+    publicSummary: "Explain assisted Fibonacci effort from six scored factors while keeping Jason's estimate, recorded effort, and course-duration planning separate.",
     deliveryStatus: "Ready",
     evidenceState: "Planned",
     priority: "Medium",
-    parentKey: "LDS-001",
-    dependencies: ["PRODUCT-204"],
-    definitionOfDone: "A private board is verified, credentials remain local, a raw export stays gitignored, and only a reviewed derivative can pass publication validation.",
-    acceptanceCriteria: ["No browser Jira calls", "No committed credentials", "Human approval remains mandatory", "Manual export remains available"],
-    capabilitySlugs: ["privacy-review", "delivery-modeling"],
+    parentKey: "PRODUCT-216",
+    dependencies: ["PRODUCT-222", "PRODUCT-223"],
+    definitionOfDone: "Every score boundary is tested, 13 recommends a split, and historical calibration remains unavailable before five comparable completions.",
+    acceptanceCriteria: ["No LLM or external API", "Story points are not hours", "Missing inputs stay visible", "Jason's estimate is never overwritten"],
+    capabilitySlugs: ["delivery-modeling", "testing"],
     evidenceIds: [],
-    nextAction: "Create the team-managed Kanban board and workflow in an authenticated Jira session.",
-    notClaimed: "Jira is not connected and no controlled export has been tested.",
+    nextAction: "Run the deterministic boundary tests and inspect SQL-002's missing-input guidance.",
+    notClaimed: "The assisted estimate is decision support, not a prediction or autonomous project-management decision.",
+  }),
+  systemTicket({
+    key: "PRODUCT-226",
+    issueType: "Story",
+    title: "Add CU Boulder program, pathway, and course records",
+    publicSummary: "Connect the MS-CS coursework context, Network Systems pathway, three enrolled courses, and independent applied-practice tickets without unsupported academic claims.",
+    deliveryStatus: "In Progress",
+    evidenceState: "Learning",
+    priority: "High",
+    parentKey: "PRODUCT-216",
+    dependencies: ["PRODUCT-224"],
+    definitionOfDone: "The three course cards and tickets render under Learning with correct relationships and only CSCA 5063 shows its verified course-scoped 20% value.",
+    acceptanceCriteria: ["All three official course numbers", "No invented 5073 or 5083 progress", "Earned credits say Not yet verified", "No admission claim"],
+    capabilitySlugs: ["delivery-modeling", "evidence-design", "networking-fundamentals"],
+    evidenceIds: [],
+    nextAction: "Verify all CU course and ticket routes on desktop and mobile.",
+    notClaimed: "Course enrollment and provider progress do not establish for-credit status, grades, credit, admission, degree progress, or demonstrated capability.",
+  }),
+  systemTicket({
+    key: "PRODUCT-227",
+    issueType: "Story",
+    title: "Verify admin security, privacy, accessibility, and production persistence",
+    publicSummary: "Test anonymous, non-admin, and admin paths; direct refreshes; touch and keyboard controls; secret scanning; rollback; and persistence across deployment.",
+    deliveryStatus: "Ready",
+    evidenceState: "Planned",
+    priority: "Highest",
+    parentKey: "PRODUCT-216",
+    dependencies: ["PRODUCT-220", "PRODUCT-221", "PRODUCT-222", "PRODUCT-223", "PRODUCT-224", "PRODUCT-225", "PRODUCT-226"],
+    definitionOfDone: "Required checks pass on preview and production, and one real reversible SQL-002 workflow is confirmed without inventing missing facts.",
+    acceptanceCriteria: ["Anonymous and non-admin denied", "No secrets in build", "Direct routes refresh", "Production edit survives deployment"],
+    capabilitySlugs: ["testing", "privacy-review", "accessibility", "responsive-design"],
+    evidenceIds: [],
+    nextAction: "Run the complete verification matrix after the production migration is applied.",
+    notClaimed: "Verification is not complete until the deployed admin and persistence checks actually pass.",
   }),
   systemTicket({
     key: "PRODUCT-217",
@@ -801,6 +1254,158 @@ export const learningTickets = [
     nextAction: "Wait until the reviewed project is published.",
     notClaimed: "No retrospective outcome exists before the applied work is completed.",
   }),
+  sqlTicket({
+    key: "SQL-013",
+    issueType: "Spike",
+    title: "Evaluate supported LinkedIn Learning enterprise progress access",
+    publicSummary: "Keep provider API access deferred unless an eligible enterprise arrangement and administrator-provisioned authorization are demonstrated.",
+    deliveryStatus: "Backlog",
+    evidenceState: "Planned",
+    priority: "Low",
+    parentKey: "SQL-000",
+    dependencies: ["SQL-002"],
+    definitionOfDone: "A current supported integration path, authorization model, privacy impact, cost, and fallback are documented without using private endpoints or personal session data.",
+    acceptanceCriteria: ["Enterprise eligibility is verified", "No credentials or cookies stored", "Human confirmation remains required", "Manual snapshots remain available"],
+    capabilitySlugs: ["privacy-review", "delivery-modeling"],
+    evidenceIds: [],
+    nextAction: "Keep deferred until Jason has eligible enterprise administrator access.",
+    notClaimed: "CareerOS does not have a live LinkedIn Learning API or continuous progress synchronization.",
+  }),
+  academicTicket({
+    key: "CU-NET-000",
+    issueType: "Epic",
+    title: "Complete CU Boulder Network Systems pathway",
+    publicSummary: "Complete the three enrolled courses truthfully and connect them to independent network, Linux, and cloud troubleshooting evidence.",
+    deliveryStatus: "In Progress",
+    evidenceState: "Learning",
+    priority: "Highest",
+    dependencies: [],
+    definitionOfDone: "All three provider completions are verified, each course has original notes and an applied artifact, and any credit or academic milestone is counted only from private qualifying evidence.",
+    acceptanceCriteria: ["Three course completion gates verified", "Independent public-safe artifacts linked", "No restricted coursework published", "Academic claims remain evidence-gated"],
+    capabilitySlugs: ["networking-fundamentals", "linux-networking", "cloud-networking", "network-troubleshooting"],
+    evidenceIds: [],
+    nextAction: "Continue CSCA 5063 and build an original network-stack and packet-flow troubleshooting exercise.",
+    notClaimed: "The pathway is not complete, and no earned credit, grade, admission milestone, degree progress, or demonstrated networking capability is claimed.",
+  }),
+  academicTicket({
+    key: "CU-NET-001",
+    issueType: "Task",
+    title: "Complete CSCA 5063 - Network Systems Foundation",
+    publicSummary: "Continue the active foundation course and convert verified concepts into an original packet-flow or protocol-troubleshooting exercise.",
+    deliveryStatus: "In Progress",
+    evidenceState: "Learning",
+    priority: "Highest",
+    parentKey: "CU-NET-000",
+    dependencies: [],
+    definitionOfDone: "Provider completion and actual completion date are verified, Jason writes an original concept summary, and at least one independent applied practice artifact is linked.",
+    acceptanceCriteria: ["Provider completion verified", "Original concept summary", "Applied practice linked", "Private grade and credit evidence required before any credit claim"],
+    capabilitySlugs: ["networking-fundamentals", "tcp-ip", "network-troubleshooting", "technical-communication"],
+    evidenceIds: [],
+    nextAction: "Continue with Sharing the Link, then write an original packet-flow explanation.",
+    notClaimed: "The verified 20% is course progress only and does not establish completion, credit, a grade, pathway progress, admission, or demonstrated capability.",
+  }),
+  academicTicket({
+    key: "CU-NET-002",
+    issueType: "Task",
+    title: "Complete CSCA 5073 - Linux Networking",
+    publicSummary: "Complete the enrolled Linux networking course and connect verified learning to an independent troubleshooting lab and diagnostic runbook.",
+    deliveryStatus: "Ready",
+    evidenceState: "Learning",
+    priority: "High",
+    parentKey: "CU-NET-000",
+    dependencies: ["CU-NET-001"],
+    definitionOfDone: "Provider completion and actual completion date are verified, Jason writes an original concept summary, and an independent Linux networking artifact is linked.",
+    acceptanceCriteria: ["Provider completion verified", "Original concept summary", "Linux lab linked", "No credit claim without private academic evidence"],
+    capabilitySlugs: ["linux-networking", "network-troubleshooting", "technical-communication"],
+    evidenceIds: [],
+    nextAction: "Begin after CSCA 5063 reaches its verified completion gate.",
+    notClaimed: "Enrollment does not establish a start date, progress, completion, grade, credit, admission, or demonstrated Linux networking capability.",
+  }),
+  academicTicket({
+    key: "CU-NET-003",
+    issueType: "Task",
+    title: "Complete CSCA 5083 - Cloud Networking",
+    publicSummary: "Complete the enrolled cloud networking course and connect verified learning to an independent architecture and failure-recovery exercise.",
+    deliveryStatus: "Backlog",
+    evidenceState: "Learning",
+    priority: "High",
+    parentKey: "CU-NET-000",
+    dependencies: ["CU-NET-002"],
+    definitionOfDone: "Provider completion and actual completion date are verified, Jason writes an original concept summary, and an independent cloud networking artifact is linked.",
+    acceptanceCriteria: ["Provider completion verified", "Original concept summary", "Cloud exercise linked", "No credit claim without private academic evidence"],
+    capabilitySlugs: ["cloud-networking", "network-architecture", "cloud-infrastructure", "network-troubleshooting"],
+    evidenceIds: [],
+    nextAction: "Begin after CSCA 5073 reaches its verified completion gate.",
+    notClaimed: "Enrollment does not establish a start date, progress, completion, grade, credit, admission, or demonstrated cloud networking capability.",
+  }),
+  academicTicket({
+    key: "CU-NET-004",
+    issueType: "Story",
+    title: "Build a network-stack and packet-flow troubleshooting exercise",
+    publicSummary: "Create an original explainer and reproducible protocol-troubleshooting exercise independent of restricted or graded course material.",
+    deliveryStatus: "Backlog",
+    evidenceState: "Planned",
+    priority: "High",
+    parentKey: "CU-NET-000",
+    dependencies: ["CU-NET-001"],
+    definitionOfDone: "The packet flow, symptoms, diagnostic method, expected observations, and limitations are independently written, reproducible, reviewed, and public-safe.",
+    acceptanceCriteria: ["Original framing", "Reproducible steps", "Expected observations", "Academic-integrity review"],
+    capabilitySlugs: ["networking-fundamentals", "tcp-ip", "network-troubleshooting", "technical-communication"],
+    evidenceIds: [],
+    nextAction: "Wait for enough verified CSCA 5063 context to frame the exercise independently.",
+    notClaimed: "No packet-flow exercise or reviewed networking evidence exists yet.",
+  }),
+  academicTicket({
+    key: "CU-NET-005",
+    issueType: "Story",
+    title: "Build a Linux network troubleshooting lab and diagnostic runbook",
+    publicSummary: "Create an independent Linux networking lab with a customer-facing diagnostic sequence and explicit recovery checks.",
+    deliveryStatus: "Backlog",
+    evidenceState: "Planned",
+    priority: "High",
+    parentKey: "CU-NET-000",
+    dependencies: ["CU-NET-002"],
+    definitionOfDone: "The lab is reproducible, failure states are isolated, diagnostics are explained for a customer-facing audience, and recovery is verified.",
+    acceptanceCriteria: ["Reproducible environment", "Isolated failure", "Diagnostic runbook", "Recovery evidence"],
+    capabilitySlugs: ["linux-networking", "network-troubleshooting", "technical-communication"],
+    evidenceIds: [],
+    nextAction: "Begin only after relevant Linux networking work is verified.",
+    notClaimed: "No Linux lab, runbook, or demonstrated Linux networking capability exists yet.",
+  }),
+  academicTicket({
+    key: "CU-NET-006",
+    issueType: "Story",
+    title: "Design and test a cloud network failure-recovery scenario",
+    publicSummary: "Create an independent cloud network architecture and test one isolated failure and recovery path with evidence and limitations.",
+    deliveryStatus: "Backlog",
+    evidenceState: "Planned",
+    priority: "High",
+    parentKey: "CU-NET-000",
+    dependencies: ["CU-NET-003"],
+    definitionOfDone: "The architecture, failure hypothesis, diagnostics, recovery, validation, cost boundary, and limitations are independently documented and reviewed.",
+    acceptanceCriteria: ["Architecture documented", "Failure isolated", "Recovery validated", "Cost and privacy reviewed"],
+    capabilitySlugs: ["cloud-networking", "network-architecture", "cloud-infrastructure", "network-troubleshooting"],
+    evidenceIds: [],
+    nextAction: "Begin only after relevant cloud networking work is verified.",
+    notClaimed: "No cloud architecture, failure-recovery test, or demonstrated cloud networking capability exists yet.",
+  }),
+  academicTicket({
+    key: "CU-NET-007",
+    issueType: "Story",
+    title: "Publish the Network Reliability & Cloud Troubleshooting Lab",
+    publicSummary: "Publish a reviewed, public-safe case study only after the independent network, Linux, and cloud artifacts are created and tested.",
+    deliveryStatus: "Backlog",
+    evidenceState: "Planned",
+    priority: "Medium",
+    parentKey: "CU-NET-000",
+    dependencies: ["CU-NET-004", "CU-NET-005", "CU-NET-006"],
+    definitionOfDone: "The public case study links reproducible artifacts, explains customer impact and troubleshooting decisions, and passes academic-integrity, privacy, and technical review.",
+    acceptanceCriteria: ["Artifacts are real", "Claims follow evidence", "No restricted coursework", "Public review approved"],
+    capabilitySlugs: ["network-troubleshooting", "cloud-networking", "technical-communication", "evidence-design"],
+    evidenceIds: [],
+    nextAction: "Wait until the three independent applied artifacts are created, tested, and reviewed.",
+    notClaimed: "The case study and its underlying artifacts are planned, not completed or publication-ready.",
+  }),
 ] satisfies LearningTicket[];
 
 export const learningEvidence = [
@@ -822,7 +1427,7 @@ export const learningEvidence = [
     visibility: "Public",
     publicApproved: true,
     approvedAt: implementationCompletedAt,
-    notClaimed: "This artifact does not prove a live Jira integration or generalized product readiness.",
+    notClaimed: "This artifact does not prove provider synchronization or generalized product readiness.",
   },
   {
     id: "EVD-LDS-TESTS",
@@ -858,7 +1463,7 @@ export const workSessions: WorkSession[] = [
     whatIDid: "Separated initiative, ticket, session, evidence, roadmap, delivery, and visibility concepts into a typed public model with approval validation.",
     outcome: "The public projection can fail typecheck, tests, or module validation when records are incomplete, private, or inconsistent.",
     whatILearned: "Completion, evidence maturity, and publication approval need independent states to keep recruiter-facing claims truthful.",
-    nextAction: "Verify the routes and create the private Jira board in an authenticated session.",
+    nextAction: "Verify the secure admin routes and durable public projection in production.",
     roleLensSlugs: ["application-engineer", "forward-deployed-engineer", "technical-account-manager"],
     evidenceIds: implementationEvidence,
     privateDetailsRemoved: true,
@@ -956,6 +1561,9 @@ export function validateCourseProgressSnapshot(snapshot: CourseProgressSnapshot)
   }
 
   if (!courseProgressSources.includes(snapshot.source)) errors.push(`${snapshot.id} has an unsupported progress source`);
+  if (snapshot.scope !== "Course progress") errors.push(`${snapshot.id} must use Course progress scope`);
+  if (!snapshot.sourceProvider.trim()) errors.push(`${snapshot.id} requires a source provider`);
+  if (!snapshot.verificationLabel.trim()) errors.push(`${snapshot.id} requires a verification label`);
   if (!courseProgressVerificationStates.includes(snapshot.verificationState)) errors.push(`${snapshot.id} has an invalid verification state`);
   if (!courseProgressValueKinds.includes(snapshot.valueKind)) errors.push(`${snapshot.id} has an invalid progress value kind`);
   if (
@@ -1021,9 +1629,9 @@ export function getCourseProgressPercentage(snapshot: CourseProgressSnapshot) {
   return Math.round((completed / snapshot.totalDurationSeconds) * 100);
 }
 
-export function getCurrentCourseProgress(course: LearningCourse) {
+export function getCurrentCourseProgress(course: LearningCourse, scope: CourseProgressSnapshot["scope"] = "Course progress") {
   return [...course.progressSnapshots]
-    .filter((snapshot) => snapshot.verificationState === "Verified")
+    .filter((snapshot) => snapshot.verificationState === "Verified" && snapshot.scope === scope)
     .sort((a, b) => b.observedAt.localeCompare(a.observedAt) || b.id.localeCompare(a.id))[0];
 }
 
@@ -1218,8 +1826,8 @@ export function parseBoardFilters(search: string): BoardFilters {
   };
 }
 
-export function filterLearningTickets(filters: BoardFilters) {
-  return learningTickets.filter((ticket) =>
+export function filterLearningTickets(filters: BoardFilters, tickets: readonly LearningTicket[] = learningTickets) {
+  return tickets.filter((ticket) =>
     (!filters.initiative || ticket.initiativeSlug === filters.initiative)
     && (!filters.delivery || ticket.deliveryStatus === filters.delivery)
     && (!filters.evidence || ticket.evidenceState === filters.evidence)
@@ -1233,10 +1841,33 @@ export function parseTimelineFilters(search: string): TimelineFilters {
   return { initiative: filters.initiative, capability: filters.capability, role: filters.role };
 }
 
-export function getLearningTimeline(filters: TimelineFilters = {}) {
-  const events: LearningTimelineEvent[] = [];
+type TimelineSessionSource = {
+  id: string;
+  ticketKey: string;
+  startedAt?: string;
+  date?: string;
+  problemCategory?: string;
+  outcome?: string;
+  publicSummary?: string;
+  capabilitySlugs?: string[];
+  roleLensSlugs?: string[];
+};
 
-  learningTickets.forEach((ticket) => {
+export function getLearningTimeline(
+  filters: TimelineFilters = {},
+  sources: {
+    tickets?: readonly LearningTicket[];
+    sessions?: readonly TimelineSessionSource[];
+    evidence?: readonly LearningEvidence[];
+  } = {},
+) {
+  const events: LearningTimelineEvent[] = [];
+  const tickets = sources.tickets ?? learningTickets;
+  const sessions: readonly TimelineSessionSource[] = sources.sessions ?? workSessions;
+  const evidence = sources.evidence ?? learningEvidence;
+  const ticketByKey = new Map(tickets.map((ticket) => [ticket.key, ticket]));
+
+  tickets.forEach((ticket) => {
     events.push({
       id: `${ticket.key}-created`,
       occurredAt: ticket.createdAt,
@@ -1276,23 +1907,25 @@ export function getLearningTimeline(filters: TimelineFilters = {}) {
     }
   });
 
-  workSessions.forEach((session) => {
-    const ticket = getLearningTicket(session.ticketKey)!;
+  sessions.forEach((session) => {
+    const ticket = ticketByKey.get(session.ticketKey);
+    if (!ticket || (!session.startedAt && !session.date)) return;
     events.push({
       id: session.id,
-      occurredAt: session.startedAt ?? session.date,
+      occurredAt: session.startedAt ?? session.date!,
       type: "Work session recorded",
-      title: `${session.ticketKey}: ${session.problemCategory}`,
-      summary: session.outcome,
+      title: `${session.ticketKey}: ${session.problemCategory ?? "Recorded work session"}`,
+      summary: session.outcome ?? session.publicSummary ?? "An approved work session was recorded.",
       ticketKey: session.ticketKey,
       initiativeSlug: ticket.initiativeSlug,
-      capabilitySlugs: session.capabilitySlugs,
-      roleLensSlugs: session.roleLensSlugs,
+      capabilitySlugs: session.capabilitySlugs ?? ticket.capabilitySlugs,
+      roleLensSlugs: session.roleLensSlugs ?? ticket.roleLensSlugs,
     });
   });
 
-  learningEvidence.forEach((artifact) => {
-    const ticket = getLearningTicket(artifact.relatedTicketKeys[0])!;
+  evidence.forEach((artifact) => {
+    const ticket = ticketByKey.get(artifact.relatedTicketKeys[0]);
+    if (!ticket) return;
     events.push({
       id: `${artifact.id}-created`,
       occurredAt: artifact.createdAt,

@@ -2644,6 +2644,400 @@ code {
   margin-bottom: 10px;
 }
 
+.adminModeBar {
+  position: sticky;
+  top: 64px;
+  z-index: 20;
+  border-bottom: 1px solid rgba(103, 232, 193, 0.3);
+  background: rgba(8, 17, 24, 0.96);
+  backdrop-filter: blur(12px);
+}
+
+.adminModeBar > div {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.adminModeBar span,
+.adminModeBar a,
+.adminModeBar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+  font-size: 0.75rem;
+  font-weight: 750;
+}
+
+.adminModeBar span { color: var(--accent); }
+.adminModeBar a { margin-left: auto; }
+.adminModeBar button {
+  border: 0;
+  padding: 5px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.careerTrackSummary {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(360px, 1.3fr) minmax(240px, 0.8fr);
+  gap: 32px;
+  border-block: 1px solid var(--line);
+  padding: 28px 0;
+}
+
+.careerTrackDirection h3 {
+  margin: 10px 0;
+  font-size: 1.65rem;
+  letter-spacing: 0;
+}
+
+.careerTrackSummary dl,
+.academicProgramContext {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  background: var(--line);
+}
+
+.careerTrackSummary dl > div,
+.academicProgramContext > div {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 15px;
+  background: var(--bg);
+}
+
+.careerTrackSummary dt,
+.academicProgramContext span {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.careerTrackSummary dd { margin: 0; line-height: 1.45; }
+.careerTrackActions { display: grid; align-content: start; gap: 14px; }
+.careerTrackActions strong { line-height: 1.5; }
+.careerTrackActions a,
+.academicPathwayFooter a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  font-weight: 750;
+}
+
+.academicPathwaySection { border-block: 1px solid var(--line); }
+.academicProgramContext {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  margin-bottom: 22px;
+}
+.academicProgramContext strong { line-height: 1.35; }
+.academicCourseGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.academicCourseGrid .currentLearningCourse {
+  min-width: 0;
+  align-content: start;
+  gap: 18px;
+  padding: 20px;
+}
+
+.academicCourseGrid .currentLearningCourseHeading,
+.academicCourseGrid .courseLearningContext {
+  grid-template-columns: 1fr;
+  display: grid;
+  gap: 14px;
+}
+
+.academicCourseGrid .currentLearningCourseHeading h2 { font-size: 1.25rem; line-height: 1.2; }
+.academicCourseGrid .currentLearningCourseStates { justify-content: flex-start; }
+.academicCourseGrid .courseProgressMeta { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.academicCourseGrid .currentLearningCourseActions,
+.academicCourseGrid .courseAdminActions { display: grid; gap: 10px; }
+.academicCourseGrid .currentLearningCourseActions a { align-items: flex-start; }
+
+.academicPathwayFooter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 28px;
+  align-items: center;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.academicPathwayFooter p { flex: 1 1 560px; margin: 0; }
+.courseAdminActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.courseAdminActions .button { width: auto; }
+
+.adminLoginSection { max-width: 820px; }
+.adminLoginPanel {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 24px;
+  background: rgba(17, 31, 43, 0.72);
+}
+.adminLoginPanel > svg { color: var(--accent); }
+.adminLoginPanel .sectionHeader { margin-bottom: 16px; }
+
+.adminLoginForm label,
+.adminTicketEditor label,
+.adminDialog label,
+.adminSessionCapture label,
+.manualSessionEditor label,
+.adminEvidenceEditor label,
+.adminProgressPanel label,
+.adminCreateTicket label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.adminLoginForm input,
+.adminTicketEditor input,
+.adminTicketEditor select,
+.adminTicketEditor textarea,
+.adminDialog input,
+.adminDialog textarea,
+.adminSessionCapture textarea,
+.manualSessionEditor input,
+.manualSessionEditor select,
+.manualSessionEditor textarea,
+.adminEvidenceEditor input,
+.adminEvidenceEditor select,
+.adminEvidenceEditor textarea,
+.adminProgressPanel input,
+.adminProgressPanel select,
+.adminCreateTicket input,
+.adminCreateTicket select,
+.adminCreateTicket textarea,
+.adminTicketToolbar select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 11px;
+  color: var(--text);
+  background: #0d1a24;
+  font: inherit;
+}
+
+.adminTicketEditor textarea,
+.adminDialog textarea,
+.adminSessionCapture textarea,
+.manualSessionEditor textarea,
+.adminEvidenceEditor textarea,
+.adminCreateTicket textarea { min-height: 92px; resize: vertical; }
+.adminLoginForm .button { margin-top: 14px; }
+
+.adminNotice,
+.adminUnsaved,
+.adminWarning {
+  border-left: 3px solid var(--accent);
+  padding: 11px 14px;
+  color: var(--text);
+  background: rgba(103, 232, 193, 0.07);
+}
+.adminUnsaved,
+.adminWarning { border-left-color: var(--warn); background: rgba(255, 196, 92, 0.07); }
+
+.adminBoardHeader,
+.adminWorkspaceHeader,
+.adminDialog > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+.adminBoardHeader { align-items: center; margin-bottom: 18px; }
+.adminBoardHeader > div { display: grid; gap: 4px; }
+.adminBoardHeader span { color: var(--muted); font-size: 0.8rem; }
+.adminKanbanBoard { margin-top: 18px; }
+.adminSortableTicket { position: relative; min-width: 0; }
+.adminSortableTicket.dragging { opacity: 0.55; }
+.adminTicketToolbar {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 7px;
+  margin-bottom: 6px;
+}
+.adminTicketToolbar select { min-height: 36px; padding: 5px 8px; font-size: 0.74rem; }
+.iconButton {
+  width: 36px;
+  height: 36px;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--text);
+  background: #0d1a24;
+  cursor: pointer;
+}
+.dragHandle { cursor: grab; touch-action: manipulation; }
+.dragHandle:active { cursor: grabbing; }
+.adminBacklog { margin-top: 34px; }
+.adminBacklog > header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.adminBacklog h3 { margin: 0; }
+
+.adminCreateTicket { border-block: 1px solid var(--line); padding: 14px 0; }
+.adminCreateTicket summary,
+.courseworkPlanner summary { width: fit-content; color: var(--accent); font-weight: 750; cursor: pointer; }
+.adminCreateTicket form,
+.adminProgressPanel form { display: grid; gap: 14px; margin-top: 18px; }
+.adminFieldGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+.adminDialogBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(3, 8, 12, 0.76);
+}
+.adminDialog {
+  width: min(620px, 100%);
+  max-height: calc(100vh - 36px);
+  overflow: auto;
+  border: 1px solid rgba(103, 232, 193, 0.35);
+  border-radius: 8px;
+  padding: 22px;
+  background: #0b1720;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+}
+.adminDialog h2,
+.adminWorkspaceHeader h2 { margin: 8px 0 0; font-size: 1.45rem; letter-spacing: 0; }
+.adminDialog fieldset,
+.adminTicketEditor fieldset {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+}
+.adminDialog fieldset label,
+.adminCheckItem { grid-template-columns: auto minmax(0, 1fr); align-items: start; }
+.adminDialogFields { display: grid; gap: 14px; margin: 18px 0; }
+.adminDialog > footer,
+.adminDangerZone { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+
+.adminTicketWorkspace { border-block: 1px solid rgba(103, 232, 193, 0.28); }
+.adminTicketEditor { display: grid; gap: 16px; margin-top: 22px; }
+.adminWorkspaceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 22px;
+}
+.adminWorkspaceGrid > section,
+.adminAuditPanel,
+.adminEvidencePanel {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  background: rgba(17, 31, 43, 0.62);
+}
+.adminWorkspaceGrid h3,
+.adminAuditPanel h3,
+.adminEvidencePanel h3 { margin: 7px 0 14px; font-size: 1.15rem; letter-spacing: 0; }
+.taskCoachSummary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 2px 10px;
+  align-items: end;
+  margin-bottom: 14px;
+}
+.taskCoachSummary strong { grid-row: 1 / 3; font-size: 2.6rem; line-height: 1; color: var(--accent); }
+.taskCoachSummary small { color: var(--muted); }
+.taskCoachFactors { display: grid; gap: 12px; margin: 18px 0; }
+.taskCoachFactors label { display: grid; gap: 6px; }
+.taskCoachFactors label > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+.taskCoachFactors input { width: 100%; accent-color: var(--accent); }
+.taskHealthList li { padding: 7px 0; border-bottom: 1px solid var(--line); }
+.adminCheckItem {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 9px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--text) !important;
+}
+.adminCheckItem input { width: 17px; height: 17px; margin: 1px 0 0; accent-color: var(--accent); }
+.adminSessionCapture { display: grid; gap: 12px; }
+.adminSessionCapture p { display: flex; align-items: center; gap: 7px; }
+.adminSessionHistory { display: grid; gap: 8px; margin: 18px 0 0; }
+.adminSessionHistory > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+.adminSessionHistory dd { margin: 0; }
+.adminSessionHistory > div[data-superseded="true"] { color: var(--muted); text-decoration: line-through; }
+.manualSessionEditor { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 14px; }
+.manualSessionEditor summary { width: fit-content; color: var(--accent); font-weight: 750; cursor: pointer; }
+.manualSessionEditor form { display: grid; gap: 12px; margin-top: 14px; }
+.adminEvidencePanel { margin-top: 22px; }
+.adminEvidenceList { display: grid; gap: 10px; }
+.adminEvidenceList > div {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.5fr) minmax(180px, 1fr) auto auto;
+  gap: 12px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+}
+.adminEvidenceList span { display: flex; align-items: center; gap: 7px; color: var(--accent); }
+.adminEvidenceList small { color: var(--muted); }
+.adminEvidenceEditor { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 14px; }
+.adminEvidenceEditor summary { width: fit-content; color: var(--accent); font-weight: 750; cursor: pointer; }
+.adminEvidenceEditor form { display: grid; gap: 12px; margin-top: 14px; }
+.courseworkPlanner { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 14px; }
+.courseworkPlanner .adminFieldGrid { margin-top: 14px; }
+.adminAuditPanel { margin-top: 22px; }
+.adminAuditPanel ol { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.adminAuditPanel li {
+  display: grid;
+  grid-template-columns: minmax(170px, 0.5fr) minmax(150px, 0.5fr) 1fr;
+  gap: 14px;
+  border-top: 1px solid var(--line);
+  padding: 10px 0;
+}
+.adminAuditPanel time,
+.adminAuditPanel small { color: var(--muted); font-size: 0.76rem; }
+.adminDangerZone { justify-content: flex-start; align-items: center; padding-top: 18px; border-top: 1px solid var(--line); }
+.adminDangerZone span { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.76rem; }
+
 :focus-visible {
   outline: 3px solid rgba(103, 232, 193, 0.65);
   outline-offset: 3px;
@@ -2710,6 +3104,22 @@ code {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .careerTrackSummary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .careerTrackActions {
+    grid-column: 1 / -1;
+  }
+
+  .academicProgramContext {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .academicCourseGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .backlogTicketGrid,
   .ticketConnections {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2723,6 +3133,10 @@ code {
 
   .siteHeader {
     position: static;
+  }
+
+  .adminModeBar {
+    top: 0;
   }
 
   .nav {
@@ -2884,6 +3298,9 @@ code {
   }
 
   .learningFocus,
+  .careerTrackSummary,
+  .academicProgramContext,
+  .academicCourseGrid,
   .courseProgressMeta,
   .courseLearningContext,
   .completedCourseList article,
@@ -2899,7 +3316,39 @@ code {
   .ticketHistoryGrid,
   .ticketConnections,
   .ticketTruthBoundary,
-  .timelineFilters {
+  .timelineFilters,
+  .adminWorkspaceGrid,
+  .adminFieldGrid,
+  .adminEvidenceList > div {
+    grid-template-columns: 1fr;
+  }
+
+  .careerTrackActions {
+    grid-column: 1;
+  }
+
+  .adminModeBar > div {
+    min-height: 44px;
+    gap: 10px;
+  }
+
+  .adminModeBar span,
+  .adminModeBar a,
+  .adminModeBar button {
+    font-size: 0.68rem;
+  }
+
+  .adminBoardHeader,
+  .adminWorkspaceHeader {
+    display: grid;
+  }
+
+  .adminAuditPanel li {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .adminLoginPanel {
     grid-template-columns: 1fr;
   }
 

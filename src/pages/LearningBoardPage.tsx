@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { Filter, RotateCcw } from "lucide-react";
 import { trackPortfolioEvent } from "../analytics";
+import { useLearningAdmin, type AdminTicket } from "../admin/AdminContext";
+import { AdminLearningBoard } from "../components/AdminLearningBoard";
 import { TicketCard } from "../components/LearningUI";
 import { PageHero, SectionHeader } from "../components/UI";
 import {
@@ -8,7 +10,6 @@ import {
   deliveryStatuses,
   filterLearningTickets,
   issueTypes,
-  learningInitiatives,
   learningRoleLabels,
   parseBoardFilters,
   type DeliveryStatus,
@@ -17,9 +18,13 @@ import {
 const boardColumns: DeliveryStatus[] = ["Ready", "In Progress", "Blocked", "In Review", "Done"];
 
 export function LearningBoardPage() {
+  const admin = useLearningAdmin();
   const search = typeof window === "undefined" ? "" : window.location.search;
+  const publicPreview = new URLSearchParams(search).get("view") === "public";
+  const adminMode = admin.authState === "admin" && !publicPreview;
   const filters = parseBoardFilters(search);
-  const filteredTickets = filterLearningTickets(filters);
+  const sourceTickets = adminMode ? admin.adminTickets.filter((ticket) => !ticket.archivedAt) : admin.publicTickets;
+  const filteredTickets = filterLearningTickets(filters, sourceTickets);
   const visibleFilters = Object.entries(filters).filter((entry): entry is [string, string] => Boolean(entry[1]));
 
   useEffect(() => {
@@ -39,14 +44,16 @@ export function LearningBoardPage() {
   return (
     <>
       <PageHero
-        eyebrow="Public work board"
-        title="Approved work, grouped by delivery state."
-        copy="This is a read-only projection. Raw notes, private preparation, external-system identifiers, and unreviewed artifacts do not appear here."
+        eyebrow={adminMode ? "Jason-only admin workspace" : "Public work board"}
+        title={adminMode ? "Manage the existing learning delivery board." : "Approved work, grouped by delivery state."}
+        copy={adminMode
+          ? "Moves, edits, sessions, and progress updates persist through the authorized CareerOS data layer and create audit history."
+          : "This is a read-only projection. Raw notes, private preparation, external-system identifiers, and unreviewed artifacts do not appear here."}
       />
       <section className="section shell sectionAfterHero">
         <SectionHeader kicker="Filters" title="Narrow the board without exposing private detail." />
         <form className="learningFilters" action="/learning/board" method="get">
-          <label>Initiative<select name="initiative" defaultValue={filters.initiative ?? ""}><option value="">All initiatives</option>{learningInitiatives.map((item) => <option key={item.slug} value={item.slug}>{item.title}</option>)}</select></label>
+          <label>Initiative<select name="initiative" defaultValue={filters.initiative ?? ""}><option value="">All initiatives</option>{admin.publicInitiatives.map((item) => <option key={item.slug} value={item.slug}>{item.title}</option>)}</select></label>
           <label>Delivery status<select name="delivery" defaultValue={filters.delivery ?? ""}><option value="">All delivery states</option>{deliveryStatuses.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
           <label>Evidence state<select name="evidence" defaultValue={filters.evidence ?? ""}><option value="">All evidence states</option>{["Demonstrated", "Practicing", "Learning", "Planned"].map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
           <label>Capability<select name="capability" defaultValue={filters.capability ?? ""}><option value="">All capabilities</option>{Object.entries(capabilityLabels).map(([slug, label]) => <option key={slug} value={slug}>{label}</option>)}</select></label>
@@ -57,9 +64,19 @@ export function LearningBoardPage() {
             <a className="button secondary" href="/learning/board"><RotateCcw size={17} aria-hidden="true" /> Reset</a>
           </div>
         </form>
-        <p className="learningResultCount" aria-live="polite">{filteredTickets.length} public {filteredTickets.length === 1 ? "ticket" : "tickets"}</p>
+        <p className="learningResultCount" aria-live="polite">{filteredTickets.length} {adminMode ? "managed" : "public"} {filteredTickets.length === 1 ? "ticket" : "tickets"}</p>
       </section>
 
+      {adminMode ? (
+        <section className="section band learningBoardSection" aria-labelledby="board-heading">
+          <div className="shell">
+            <SectionHeader kicker="Admin board" title="Backlog through done" />
+            <h2 className="srOnly" id="board-heading">Learning delivery admin board</h2>
+            <AdminLearningBoard tickets={filteredTickets as AdminTicket[]} allTickets={sourceTickets as AdminTicket[]} />
+            {admin.notice ? <p className="adminNotice" role="status">{admin.notice}</p> : null}
+          </div>
+        </section>
+      ) : (<>
       <section className="section band learningBoardSection" aria-labelledby="board-heading">
         <div className="shell">
           <SectionHeader kicker="Focused board" title="Ready through done" />
@@ -87,6 +104,7 @@ export function LearningBoardPage() {
         </div>
         {filteredTickets.every((ticket) => ticket.deliveryStatus !== "Backlog") ? <p>No backlog tickets match the current filters.</p> : null}
       </section>
+      </>)}
     </>
   );
 }

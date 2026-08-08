@@ -8,12 +8,13 @@ import { SiteLayout } from "./components/SiteLayout";
 import { projects, roleLenses } from "./data/site";
 import { getLearningTicket } from "./data/learning";
 import { AboutPage } from "./pages/AboutPage";
+import { AdminLoginPage } from "./pages/AdminLoginPage";
 import { CaseStudiesPage } from "./pages/CaseStudiesPage";
 import { HomePage } from "./pages/HomePage";
 import { JournalPage } from "./pages/JournalPage";
 import { LearningBoardPage } from "./pages/LearningBoardPage";
 import { LearningOverviewPage } from "./pages/LearningOverviewPage";
-import { LearningTicketPage } from "./pages/LearningTicketPage";
+import { LearningTicketLookupPage } from "./pages/LearningTicketPage";
 import { LearningTimelinePage } from "./pages/LearningTimelinePage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { ProjectDetailPage } from "./pages/ProjectDetailPage";
@@ -181,16 +182,21 @@ export function resolveRoute(path: string) {
       element: <LearningTimelinePage />,
     };
   }
+  if (path === "/admin/login") {
+    return {
+      title: "CareerOS Admin Sign In",
+      description: "Secure sign-in for the CareerOS learning administration workspace.",
+      element: <AdminLoginPage />,
+    };
+  }
   if (path.startsWith("/learning/tickets/")) {
     const ticketKey = path.replace("/learning/tickets/", "");
     const ticket = getLearningTicket(ticketKey);
-    if (ticket) {
-      return {
-        title: `${ticket.key}: ${ticket.title}`,
-        description: ticket.publicSummary,
-        element: <LearningTicketPage ticket={ticket} />,
-      };
-    }
+    return {
+      title: ticket ? `${ticket.key}: ${ticket.title}` : `${ticketKey.toUpperCase()}: Learning ticket`,
+      description: ticket?.publicSummary ?? "CareerOS learning and delivery ticket.",
+      element: <LearningTicketLookupPage ticketKey={ticketKey} fallbackTicket={ticket} />,
+    };
   }
   if (path === "/writing") {
     return {

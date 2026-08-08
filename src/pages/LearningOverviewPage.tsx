@@ -1,18 +1,17 @@
 import { useEffect } from "react";
 import { ArrowUpRight, Award, CheckCircle2, CircleDot, Clock3, ExternalLink, FileCheck2 } from "lucide-react";
 import { trackPortfolioEvent } from "../analytics";
+import { useLearningAdmin } from "../admin/AdminContext";
 import { CurrentLearningCourseCard, formatLearningDate } from "../components/LearningUI";
 import { LinkButton, PageHero, SectionHeader, StateBadge } from "../components/UI";
 import {
   capabilityLabels,
+  academicPrograms,
+  academicSpecializations,
+  careerTrack,
   currentLearningSprint,
   getLearningTicket,
   getInitiativeProgress,
-  learningCourses,
-  learningEvidence,
-  learningInitiatives,
-  learningTickets,
-  workSessions,
   type DeliveryStatus,
 } from "../data/learning";
 import type { EvidenceState } from "../data/site";
@@ -24,10 +23,18 @@ const evidenceRank: Record<EvidenceState, number> = {
   Demonstrated: 3,
 };
 
-const currentCourses = learningCourses.filter((course) => course.status === "In Progress");
-const completedCourses = learningCourses.filter((course) => course.status === "Completed");
-
 export function LearningOverviewPage() {
+  const admin = useLearningAdmin();
+  const publicTickets = admin.publicTickets;
+  const publicCourses = admin.publicCourses;
+  const publicEvidence = admin.publicEvidence;
+  const publicSessions = admin.publicSessions;
+  const publicInitiatives = admin.publicInitiatives;
+  const currentCourses = publicCourses.filter((course) => course.status === "In Progress");
+  const completedCourses = publicCourses.filter((course) => course.status === "Completed");
+  const cuCourses = publicCourses.filter((course) => course.academicProgramSlug === "cu-boulder-mscs");
+  const academicProgram = academicPrograms[0];
+  const networkPathway = academicSpecializations[0];
   useEffect(() => {
     trackPortfolioEvent("Learning Overview Viewed", {});
     currentCourses.forEach((course) => {
@@ -42,19 +49,19 @@ export function LearningOverviewPage() {
     });
   }, []);
 
-  const statusCounts = learningTickets.reduce<Partial<Record<DeliveryStatus, number>>>((counts, ticket) => {
+  const statusCounts = publicTickets.reduce<Partial<Record<DeliveryStatus, number>>>((counts, ticket) => {
     counts[ticket.deliveryStatus] = (counts[ticket.deliveryStatus] ?? 0) + 1;
     return counts;
   }, {});
   const capabilityProgression = Object.entries(capabilityLabels).map(([slug, label]) => {
-    const relatedTickets = learningTickets.filter((ticket) => ticket.capabilitySlugs.includes(slug));
+    const relatedTickets = publicTickets.filter((ticket) => ticket.capabilitySlugs.includes(slug));
     const state = relatedTickets.reduce<EvidenceState>(
       (highest, ticket) => evidenceRank[ticket.evidenceState] > evidenceRank[highest] ? ticket.evidenceState : highest,
       "Planned",
     );
     return { slug, label, state, ticketCount: relatedTickets.length };
   }).filter((item) => item.ticketCount > 0);
-  const completedMilestones = learningInitiatives.flatMap((initiative) =>
+  const completedMilestones = publicInitiatives.flatMap((initiative) =>
     initiative.milestones
       .filter((milestone) => milestone.status === "Completed")
       .map((milestone) => ({ ...milestone, initiative: initiative.title })));
@@ -64,7 +71,7 @@ export function LearningOverviewPage() {
       <PageHero
         eyebrow="Learning & Delivery"
         title="Learning that produces reviewable proof."
-        copy="A public, read-only view of planned work, real execution history, blockers, evidence, and next actions. Private operating notes remain outside this site."
+        copy="A public, read-only view of planned work, real execution history, blockers, evidence, and next actions. Private operating notes remain outside the public projection."
         actions={
           <>
             <LinkButton href="/learning/board">View work board</LinkButton>
@@ -73,7 +80,33 @@ export function LearningOverviewPage() {
         }
       />
 
-      <section className="section shell sectionAfterHero" id="currently-learning">
+      <section className="section shell sectionAfterHero" id="career-track">
+        <SectionHeader
+          kicker="Career Track"
+          title={careerTrack.title}
+          copy="One connected path from active course work to original applied evidence, without combining course, degree, project, or role readiness into one percentage."
+        />
+        <div className="careerTrackSummary">
+          <div className="careerTrackDirection">
+            <span className="kicker">Current role focus</span>
+            <h3>{careerTrack.currentRoleFocus}</h3>
+            <p>{careerTrack.progression}</p>
+          </div>
+          <dl>
+            <div><dt>Academic foundation</dt><dd>{careerTrack.academicFoundation}</dd></div>
+            <div><dt>Active pathway</dt><dd>{careerTrack.currentAcademicPathway}</dd></div>
+            <div><dt>Complementary learning</dt><dd>{careerTrack.complementaryLearning}</dd></div>
+            <div><dt>Current sprint goal</dt><dd>{careerTrack.currentSprintGoal}</dd></div>
+          </dl>
+          <div className="careerTrackActions">
+            <strong>Next: {careerTrack.highestValueNextAction}</strong>
+            <a href="/learning/board">Open linked work board <ArrowUpRight size={16} aria-hidden="true" /></a>
+            <a href="/learning/timeline">Review evidence timeline <ArrowUpRight size={16} aria-hidden="true" /></a>
+          </div>
+        </div>
+      </section>
+
+      <section className="section shell" id="currently-learning">
         <SectionHeader
           kicker="Currently Learning"
           title="Course work connected to applied proof."
@@ -81,6 +114,32 @@ export function LearningOverviewPage() {
         />
         <div className="currentlyLearningList">
           {currentCourses.map((course) => <CurrentLearningCourseCard course={course} key={course.id} />)}
+        </div>
+      </section>
+
+      <section className="section band academicPathwaySection" id="cu-boulder-mscs">
+        <div className="shell">
+          <SectionHeader
+            kicker="CU Boulder MS-CS coursework"
+            title={networkPathway.title}
+            copy="Three enrolled courses on Coursera. Only verified course-level progress is shown; academic and applied-evidence claims remain separate."
+          />
+          <div className="academicProgramContext">
+            <div><span>Program status</span><strong>Pursuing coursework</strong></div>
+            <div><span>Curriculum context</span><strong>{academicProgram.totalCredits}-credit curriculum</strong></div>
+            <div><span>Pathway</span><strong>{networkPathway.subtitle}</strong></div>
+            <div><span>Courses</span><strong>{academicProgram.coursesEnrolled} enrolled</strong></div>
+            <div><span>Earned credits</span><strong>{academicProgram.earnedCreditsLabel}</strong></div>
+            <div><span>Admission</span><strong>{academicProgram.admissionStatus}</strong></div>
+          </div>
+          <div className="academicCourseGrid">
+            {cuCourses.map((course) => <CurrentLearningCourseCard course={course} key={course.id} />)}
+          </div>
+          <div className="academicPathwayFooter">
+            <p>{academicProgram.notClaimed}</p>
+            <a href={academicProgram.publicUrl} target="_blank" rel="noreferrer">CU Boulder curriculum <ExternalLink size={15} aria-hidden="true" /></a>
+            <a href={networkPathway.publicUrl} target="_blank" rel="noreferrer">Coursera pathway <ExternalLink size={15} aria-hidden="true" /></a>
+          </div>
         </div>
       </section>
 
@@ -120,8 +179,8 @@ export function LearningOverviewPage() {
           <div className="learningMetricGrid">
             <div><CheckCircle2 size={20} aria-hidden="true" /><strong>{statusCounts.Done ?? 0}</strong><span>Tickets completed</span></div>
             <div><CircleDot size={20} aria-hidden="true" /><strong>{statusCounts.Ready ?? 0}</strong><span>Ready to begin</span></div>
-            <div><Clock3 size={20} aria-hidden="true" /><strong>{workSessions.length}</strong><span>Recorded sessions</span></div>
-            <div><FileCheck2 size={20} aria-hidden="true" /><strong>{learningEvidence.length}</strong><span>Approved artifacts</span></div>
+            <div><Clock3 size={20} aria-hidden="true" /><strong>{publicSessions.length}</strong><span>Recorded sessions</span></div>
+            <div><FileCheck2 size={20} aria-hidden="true" /><strong>{publicEvidence.length}</strong><span>Approved artifacts</span></div>
           </div>
         </div>
       </section>
@@ -133,7 +192,7 @@ export function LearningOverviewPage() {
           copy="Milestone counts come from completed evidence gates, not estimated percentages."
         />
         <div className="learningInitiativeGrid">
-          {learningInitiatives.map((initiative) => {
+          {publicInitiatives.map((initiative) => {
             const progress = getInitiativeProgress(initiative);
             return (
               <article className="learningInitiative" key={initiative.slug}>
@@ -148,7 +207,7 @@ export function LearningOverviewPage() {
                 <dl>
                   <div><dt>Roadmap</dt><dd>{initiative.roadmapStatus}</dd></div>
                   <div><dt>Milestones</dt><dd>{progress.completed} of {progress.total} complete</dd></div>
-                  <div><dt>Start</dt><dd><time dateTime={initiative.startDate}>{formatLearningDate(initiative.startDate)}</time></dd></div>
+                  <div><dt>Start</dt><dd>{initiative.startDate ? <time dateTime={initiative.startDate}>{formatLearningDate(initiative.startDate)}</time> : "Not recorded"}</dd></div>
                 </dl>
                 <strong>Next: {initiative.nextAction}</strong>
                 <a href={`/learning/board?initiative=${initiative.slug}`}>View initiative tickets <ArrowUpRight size={16} aria-hidden="true" /></a>
@@ -161,7 +220,7 @@ export function LearningOverviewPage() {
       <section className="section shell">
         <SectionHeader kicker="Recent evidence" title="Approved artifacts, with their limits attached." />
         <div className="learningEvidenceList">
-          {learningEvidence.map((artifact) => (
+          {publicEvidence.map((artifact) => (
             <article key={artifact.id}>
               <div><span className="kicker">{artifact.type}</span><h3>{artifact.title}</h3></div>
               <StateBadge state={artifact.evidenceStateSupported} />

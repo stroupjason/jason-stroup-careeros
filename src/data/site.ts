@@ -1012,9 +1012,9 @@ export const projects: Project[] = [
     problem:
       "Course lists and static skill sections show intent, but they do not explain how learning is planned, applied, reviewed, or converted into evidence a recruiter can inspect.",
     outcome:
-      "CareerOS now has a typed public workflow with an overview, read-only board, ticket detail routes, a dated evidence timeline, publication validation, and an honest healthcare SQL seed initiative.",
+      "CareerOS now has a typed public workflow, a Jason-only durable authoring workspace, ticket detail routes, a dated evidence timeline, publication validation, and honest SQL and CU coursework records.",
     approach:
-      "I separated delivery status, roadmap status, evidence maturity, and publication visibility so each concept can change without inflating the others. Private authoring remains outside the browser, while approved public records connect initiatives, tickets, sessions, artifacts, capabilities, role lenses, and portfolio projects. Runtime validation and focused tests reject missing approval, broken relationships, dependency cycles, incomplete Done tickets, and unverified healthcare SQL claims.",
+      "I separated delivery status, roadmap status, evidence maturity, and publication visibility so each concept can change without inflating the others. Supabase stores authorized private authoring records while an explicit allowlist projects approved public fields. Runtime validation and focused tests reject missing approval, stale writes, broken relationships, dependency cycles, incomplete Done tickets, and unverified course or evidence claims.",
     stack: [
       "React",
       "TypeScript",
@@ -1023,7 +1023,7 @@ export const projects: Project[] = [
       "Delivery modeling",
       "Evidence design",
       "Privacy review",
-      "Jira (Private setup planned)",
+      "Supabase Postgres and Auth",
     ],
     capabilities: [
       "Workflow design",
@@ -1044,20 +1044,19 @@ export const projects: Project[] = [
     verifiedFacts: [
       "The public data model separates delivery, roadmap, evidence, and visibility states.",
       "Every public learning record requires explicit human approval and a truth boundary.",
-      "The public board is read-only and has no runtime dependency on Jira.",
+      "The public board is read-only; authenticated editing is enforced through an immutable admin membership and database policies.",
       "Healthcare SQL seed tickets remain uncompleted and contain no course certificate, query result, or applied-project outcome.",
       "Focused tests cover identifiers, relationships, dependency cycles, publication rules, filters, routes, chronology, and seed truthfulness.",
     ],
     unknowns: [
-      "Whether Jira will become the long-term private authoring system",
-      "The final shape of a controlled one-way Jira staging export",
-      "Which review cadence will remain useful after several real learning cycles",
+      "Which admin review cadence will remain useful after several real learning cycles",
+      "Whether an optional portable export adds value beyond database backup and the checked-in fallback",
       "Measured recruiter or job-search impact",
     ],
     proofNote:
       "The typed source, validation tests, public routes, and setup documentation are the current artifacts. Private work notes and external board details remain outside the public site.",
     nextProof:
-      "Create and verify the private Jira board, then record the first real SQL work session before changing the healthcare initiative's evidence state.",
+      "Verify the Supabase migration and single-admin flow, then record the first real SQL work session before changing the healthcare initiative's evidence state.",
     liveUrl: "https://www.jasonstroup.website/learning",
     detailSections: [
       {
@@ -1080,23 +1079,23 @@ export const projects: Project[] = [
         summary:
           "The browser receives only reviewed public records; raw notes, credentials, private URLs, and external issue identifiers are excluded.",
         items: [
-          "No live Jira requests run from the deployed website.",
+          "No private-schema row or privileged Supabase credential enters the browser bundle.",
           "Publication requires visibility Public, explicit approval, a safe summary, and a truth boundary.",
           "Validation rejects forbidden private fields and sensitive source text.",
           "Human review remains mandatory even if a future export adapter is added.",
         ],
       },
       {
-        kicker: "Jira boundary",
-        title: "Optional private authoring, never a runtime dependency",
-        state: "Planned",
+        kicker: "Admin boundary",
+        title: "Durable authoring with an explicit public projection",
+        state: "Practicing",
         summary:
-          "A team-managed Kanban board is the recommended private operating layer, but it has not been created or connected.",
+          "Supabase stores private authoring records, while public visitors receive only approved fields and a static fallback remains available.",
         items: [
-          "Keep credentials in local-only environment variables without VITE_ prefixes.",
-          "Export selected raw data only to a gitignored staging location.",
-          "Review and rewrite a public derivative before publication.",
-          "Preserve manual export so CareerOS is not locked into one vendor.",
+          "Use only the project URL and publishable key in Vite configuration.",
+          "Authorize Jason by immutable authenticated user ID.",
+          "Reject stale writes and retain append-only mutation history.",
+          "Keep the checked-in public snapshot as a portable recovery path.",
         ],
       },
       {
@@ -1116,9 +1115,9 @@ export const projects: Project[] = [
     initiative: {
       status: "Active",
       started: "August 7, 2026",
-      currentPhase: "Public workflow verification",
+      currentPhase: "Secure admin backend verification",
       summary:
-        "Build a reliable public learning and delivery workflow first, then establish private authoring and a human-reviewed publishing path.",
+        "Extend the reliable public workflow with durable private authoring and a human-reviewed publishing path.",
       relatedTickets: ["PRODUCT-201–206", "PRODUCT-211–218"],
       phases: [
         {
@@ -1137,11 +1136,11 @@ export const projects: Project[] = [
         },
         {
           phase: "03",
-          title: "Private Jira operating board",
-          status: "Next",
+          title: "Secure Supabase authoring workspace",
+          status: "Active",
           ticket: "PRODUCT-216",
-          summary: "Create and verify the private team-managed Kanban board in an authenticated Jira session.",
-          milestones: ["Private project created", "Workflow configured", "Seed work items reviewed", "Daily and weekly cadence tested"],
+          summary: "Apply and verify the RLS migration, single-admin auth, durable records, audit history, and public projection.",
+          milestones: ["Approved free project reused", "Schema and policies reviewed", "Seed parity verified", "Admin workflow tested"],
         },
         {
           phase: "04",
@@ -1153,10 +1152,10 @@ export const projects: Project[] = [
         },
         {
           phase: "05",
-          title: "Safe Jira-to-CareerOS publishing workflow",
-          status: "Planned",
-          summary: "Evaluate a local one-way export into private staging with human-approved public derivatives.",
-          milestones: ["Scoped token created", "Gitignored staging export", "Sanitization review", "Approved derivative validation"],
+          title: "Allowlisted CareerOS publishing workflow",
+          status: "Active",
+          summary: "Refresh public DTOs transactionally while preserving explicit human approval and a checked-in recovery snapshot.",
+          milestones: ["Explicit DTO allowlist", "Publication approval", "Static fallback", "Rollback procedure"],
         },
         {
           phase: "06",
@@ -1243,6 +1242,40 @@ export const projects: Project[] = [
     ],
     proofNote: "No working lab or artifact exists yet; this project is planned.",
     nextProof: "Build the smallest runnable service, reproduce one failure, and add a regression test.",
+  },
+  {
+    slug: "network-reliability-cloud-troubleshooting-lab",
+    title: "Network Reliability & Cloud Troubleshooting Lab",
+    shortTitle: "Network Reliability Lab",
+    type: "Independent networking and cloud troubleshooting lab",
+    status: "Planned evidence stream",
+    evidenceState: "Planned",
+    visibility: "Public",
+    summary:
+      "A planned public-safe evidence stream connecting CU Boulder network systems coursework to original packet-flow, Linux networking, cloud architecture, and failure-recovery exercises.",
+    problem:
+      "Course progress can show learning activity, but customer-facing technical engineering claims need independent, reproducible troubleshooting evidence.",
+    outcome:
+      "The pathway, three course tickets, and independent practice backlog are defined. No lab artifact or applied networking outcome is complete yet.",
+    approach:
+      "Build the evidence in stages: an original network-stack and packet-flow exercise, a Linux troubleshooting lab and customer-facing runbook, then a cloud network architecture with one isolated failure and verified recovery. Publish a case study only after the artifacts are created, tested, and reviewed independently from graded course work.",
+    stack: ["TCP/IP", "Linux networking", "Cloud networking", "Network troubleshooting", "Technical documentation"],
+    capabilities: ["Networking fundamentals", "Linux networking", "Cloud architecture", "Troubleshooting", "Customer communication"],
+    roleLinks: ["TAM", "CSE", "Senior TSE", "Application Engineer", "FDE"],
+    verifiedFacts: [
+      "Jason stated that he is enrolled in CSCA 5063, CSCA 5073, and CSCA 5083.",
+      "A supplied Coursera screenshot dated August 8, 2026 verifies 20 percent course progress for CSCA 5063 only.",
+      "The planned artifacts are independent demonstrations and exclude graded assessments, restricted prompts, and instructor solutions.",
+    ],
+    unknowns: [
+      "Provider completion, grades, for-credit status, and earned-credit applicability",
+      "Final lab environments, tooling, repository, test results, and publication date",
+      "Whether infrastructure as code fits the actual cloud networking work",
+    ],
+    proofNote:
+      "Only the linked learning records and planned ticket hierarchy exist. No networking artifact is represented as completed or demonstrated.",
+    nextProof:
+      "Continue CSCA 5063 and independently create a reproducible packet-flow or protocol-troubleshooting exercise.",
   },
 ];
 

@@ -14,15 +14,17 @@ already demonstrated.
 
 ### Private operating layer
 
-Jira Cloud Free is the recommended private authoring system for raw work items,
-daily notes, blockers, interview preparation, and private feedback. Jira is
-optional and is not connected in phase one.
+The approved CareerOS Supabase project is the canonical durable authoring layer
+for tickets, ordering, sessions, blockers, progress snapshots, evidence
+metadata, checklists, and append-only audit events. Access is limited to
+Jason's immutable authenticated user ID. Jira remains optional and unconnected.
 
 ### Public portfolio layer
 
-CareerOS renders a curated, read-only projection from typed records in
-`src/data/learning.ts`. The deployed browser does not request Jira, contain Jira
-credentials, or receive raw Jira payloads.
+CareerOS renders an allowlisted, read-only Supabase projection with the typed
+records in `src/data/learning.ts` as its last-known static fallback. The browser
+never receives private-schema rows, a service-role key, a database password,
+or raw Jira payloads.
 
 The public layer excludes:
 
@@ -138,23 +140,20 @@ The eventual case study must use a small, licensed synthetic or public dataset.
 It must not use PHI, PII, real patient data, employer data, interview materials,
 or a real customer incident. Synthea is a candidate, not a selected dataset.
 
-`SQL-011` is intentionally absent from the client bundle. It is a private
-company-specific shareable-brief task that belongs only in the private Jira
-board until Jason explicitly approves a public derivative.
+`SQL-011` is intentionally absent from the client bundle. It is private,
+company-specific preparation that must remain outside the public projection
+until Jason explicitly approves a public derivative.
 
 ## Current integration boundary
 
-There is no Jira adapter in phase one. The safe future flow is:
+The browser uses a publishable Supabase key and short-lived user sessions;
+authorization is enforced by membership-aware database functions and RLS. A
+private authoring row is never serialized wholesale. Approved public DTOs are
+refreshed transactionally after mutations, while the checked-in typed snapshot
+keeps the public site useful when Supabase or analytics is unavailable.
 
-1. Work in private Jira.
-2. Run an explicitly invoked local export with server-only credentials.
-3. Write raw selected data to a gitignored private staging directory.
-4. Review and rewrite a public derivative.
-5. Mark the derivative Public and approved.
-6. Run typecheck, tests, and build before publication.
-
-The public site must continue to build and render when Jira and analytics are
-unavailable.
+LinkedIn and Coursera progress remains human-verified. Provider API work is
+deferred until supported administrator access exists.
 
 ## Review cadence
 
@@ -171,4 +170,5 @@ Weekly:
 - confirm evidence states still match the proof
 - approve or reject public derivatives
 - choose one highest-value next action
-- export private Jira data manually for backup when useful
+- export the durable authoring data through a deliberate admin-only recovery
+  process when useful

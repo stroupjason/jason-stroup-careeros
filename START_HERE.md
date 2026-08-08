@@ -81,8 +81,6 @@ npm run dev
 
 ## Do not add yet
 
-- authentication
-- Supabase
 - HRIS or Lattice integrations
 - employee attrition scoring
 - manager dashboards
@@ -93,12 +91,12 @@ npm run dev
 
 ## Authorized personal workflow increment
 
-The public Learning & Delivery System may include typed initiatives, tickets,
-work sessions, evidence, milestones, and truthful next actions. Jira may be
-recommended as the private operating layer, but it is optional and must never
-be a browser runtime dependency. This authorization does not extend to
-organization workspaces, employee evaluation, HR systems, or generalized
-learning-management features.
+The Learning & Delivery System may use the approved CareerOS Supabase project
+for Jason-only authentication and durable private authoring. Public pages must
+still receive only an explicit, approved projection and retain the checked-in
+static fallback. Jira is optional and must never be a browser runtime
+dependency. This authorization does not extend to organization workspaces,
+employee evaluation, HR systems, or generalized learning-management features.
 
 ## Definition of a useful first release
 

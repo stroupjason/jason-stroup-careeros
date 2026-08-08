@@ -1,0 +1,43 @@
+begin;
+
+drop function if exists public.learning_admin_undo_last_move(text, uuid);
+drop function if exists public.learning_admin_archive_ticket(text, boolean, integer, uuid);
+drop function if exists public.learning_admin_add_progress_snapshot(text, text, jsonb, boolean, text, uuid);
+drop function if exists public.learning_admin_set_evidence_publication(text, boolean, integer, uuid);
+drop function if exists public.learning_admin_create_evidence(text, jsonb, uuid);
+drop function if exists public.learning_admin_stop_session(text, jsonb, uuid);
+drop function if exists public.learning_admin_add_manual_session(text, timestamptz, timestamptz, jsonb, text, uuid);
+drop function if exists public.learning_admin_start_session(text, integer, uuid);
+drop function if exists public.learning_admin_toggle_acceptance(text, integer, boolean, integer, uuid);
+drop function if exists public.learning_admin_update_ticket(text, jsonb, integer, uuid);
+drop function if exists public.learning_admin_move_ticket(text, text, numeric, integer, jsonb, uuid);
+drop function if exists public.learning_admin_create_ticket(jsonb, uuid);
+drop function if exists public.learning_admin_snapshot();
+drop function if exists public.learning_admin_seed(jsonb, integer, uuid);
+drop function if exists public.learning_admin_is_authorized();
+drop function if exists public.learning_public_snapshot();
+drop function if exists private.assert_ticket_revision(text, integer);
+drop trigger if exists audit_events_append_only on private.audit_events;
+drop function if exists private.reject_audit_mutation();
+drop function if exists private.refresh_learning_public_projection();
+drop function if exists private.public_ticket_dto(private.learning_tickets);
+drop function if exists private.is_learning_admin();
+
+drop table if exists public.learning_public_initiatives;
+drop table if exists public.learning_public_evidence;
+drop table if exists public.learning_public_sessions;
+drop table if exists public.learning_public_courses;
+drop table if exists public.learning_public_tickets;
+drop table if exists private.audit_events;
+drop table if exists private.learning_blockers;
+drop table if exists private.work_sessions;
+drop table if exists private.progress_snapshots;
+drop table if exists private.learning_evidence;
+drop table if exists private.learning_courses;
+drop table if exists private.acceptance_items;
+drop table if exists private.learning_tickets;
+drop table if exists private.learning_initiatives;
+drop table if exists private.admin_memberships;
+drop schema if exists private;
+
+commit;

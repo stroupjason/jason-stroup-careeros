@@ -1,0 +1,112 @@
+import { readFileSync } from "node:fs";
+import { describe, expect, it } from "vitest";
+import { academicPrograms, academicSpecializations, careerTrack, getLearningTicket, learningCourses, learningTickets } from "../data/learning";
+
+const migration = readFileSync(new URL("../../supabase/migrations/20260808000100_learning_admin.sql", import.meta.url), "utf8");
+const adminSource = readFileSync(new URL("./AdminContext.tsx", import.meta.url), "utf8");
+const supabaseSource = readFileSync(new URL("../lib/supabase.ts", import.meta.url), "utf8");
+
+describe("CareerOS backend and CU coursework contract", () => {
+  it("preserves the exact 22-ticket production baseline while extending the backlog", () => {
+    const baselineKeys = [
+      "LDS-001", "PRODUCT-211", "PRODUCT-212", "PRODUCT-213", "PRODUCT-214", "PRODUCT-215",
+      "PRODUCT-219", "PRODUCT-216", "PRODUCT-217", "PRODUCT-218", "SQL-000", "SQL-001",
+      "SQL-002", "SQL-003", "SQL-004", "SQL-005", "SQL-006", "SQL-007", "SQL-008",
+      "SQL-009", "SQL-010", "SQL-012",
+    ];
+    expect(baselineKeys).toHaveLength(22);
+    expect(baselineKeys.every((key) => learningTickets.some((ticket) => ticket.key === key))).toBe(true);
+    expect(migration).toContain("Baseline parity failed");
+    expect(migration).toContain("on conflict (key) do nothing");
+  });
+
+  it("models the Career Track without a combined readiness percentage", () => {
+    expect(careerTrack.title).toBe("Customer-Facing Technical Engineering");
+    expect(careerTrack.currentRoleFocus).toBe("Technical Account Management");
+    expect(JSON.stringify(careerTrack)).not.toMatch(/readiness|percentage/i);
+  });
+
+  it("keeps CU academic statuses and credit claims separate", () => {
+    const program = academicPrograms[0];
+    const pathway = academicSpecializations[0];
+    expect(program).toMatchObject({ totalCredits: 30, breadthCredits: 15, electiveCredits: 15, coursesEnrolled: 3, coursesCompleted: 0, earnedCreditsLabel: "Not yet verified", admissionStatus: "Not verified" });
+    expect(pathway).toMatchObject({ courseCount: 3, status: "In Progress", evidenceState: "Learning" });
+    expect(pathway).not.toHaveProperty("percentage");
+  });
+
+  it("records only the verified CSCA 5063 course-scoped percentage", () => {
+    const courses = learningCourses.filter((course) => course.academicProgramSlug === "cu-boulder-mscs");
+    expect(courses.map((course) => course.courseNumber)).toEqual(["CSCA 5063", "CSCA 5073", "CSCA 5083"]);
+    expect(courses[0].progressSnapshots).toEqual([expect.objectContaining({
+      scope: "Course progress",
+      percentage: 20,
+      source: "User-provided screenshot",
+      sourceProvider: "Coursera",
+      valueKind: "Provider reported",
+      verificationState: "Verified",
+      observedAt: "2026-08-08T12:00:00-06:00",
+    })]);
+    expect(courses[1].progressSnapshots).toEqual([]);
+    expect(courses[2].progressSnapshots).toEqual([]);
+  });
+
+  it("preserves SQL-002 unknown dates, estimate, effort, and completion", () => {
+    const ticket = getLearningTicket("SQL-002")!;
+    expect(ticket).toMatchObject({ deliveryStatus: "In Progress", plannedStart: "2026-08-08" });
+    expect(ticket.actualStart).toBeUndefined();
+    expect(ticket.targetDate).toBeUndefined();
+    expect(ticket.completionDate).toBeUndefined();
+    expect(ticket.userEstimate).toBeUndefined();
+  });
+
+  it("enforces private authoring, immutable audit, and stale-write rejection in SQL", () => {
+    const privateTables = [
+      "admin_memberships", "learning_initiatives", "learning_tickets", "acceptance_items",
+      "learning_courses", "learning_evidence", "progress_snapshots", "work_sessions",
+      "learning_blockers", "audit_events",
+    ];
+    privateTables.forEach((table) => expect(migration).toContain(`alter table private.${table} enable row level security`));
+    expect(migration).toContain("revoke all on schema private from public, anon, authenticated");
+    expect(migration).toContain("raise exception 'Stale ticket revision' using errcode = '40001'");
+    expect(migration).toContain("insert into private.audit_events");
+    expect(migration).toContain("before update or delete on private.audit_events");
+    expect(migration).toContain("raise exception 'Audit events are append-only'");
+    expect(migration).not.toMatch(/update private\.audit_events|delete from private\.audit_events/i);
+  });
+
+  it("authorizes through the immutable membership and preserves session corrections", () => {
+    expect(migration).toMatch(/function public\.learning_admin_is_authorized\(\)[\s\S]*?security definer/);
+    expect(migration).toContain("learning_admin_add_manual_session");
+    expect(migration).toContain("superseded_at");
+    expect(migration).toContain("A valid start and end are required");
+    expect(migration).toContain("set resolved_at = now()");
+  });
+
+  it("exposes only publishable browser configuration and disables public account creation", () => {
+    expect(supabaseSource).toContain("VITE_SUPABASE_PUBLISHABLE_KEY");
+    expect(supabaseSource).not.toMatch(/service.role|database.password|secret.key/i);
+    expect(adminSource).toContain("shouldCreateUser: false");
+    expect(adminSource).toContain("If this address is authorized");
+    expect(adminSource).not.toMatch(/accountEmail|adminEmail/);
+  });
+
+  it("keeps provider API progress deferred and human confirmation explicit", () => {
+    expect(getLearningTicket("SQL-013")?.deliveryStatus).toBe("Backlog");
+    expect(adminSource).toContain("p_public_approved");
+    expect(migration).toContain("Only verified progress can enter the public projection");
+    expect(migration).not.toMatch(/linkedin.*password|coursera.*password/i);
+  });
+
+  it("projects only approved evidence while private locations remain private", () => {
+    expect(migration).toContain("create table if not exists public.learning_public_evidence");
+    expect(migration).toContain("learning_admin_create_evidence");
+    expect(migration).toContain("learning_admin_set_evidence_publication");
+    expect(migration).toContain("private_location");
+    expect(migration).not.toMatch(/learning_public_evidence[\s\S]{0,500}private_location/i);
+  });
+
+  it("keeps the verified static projection until the durable baseline is ready", () => {
+    expect(migration).toContain("'projectionReady', (select count(*) from public.learning_public_tickets) >= 22");
+    expect(adminSource).toContain("publicSnapshot?.projectionReady ? publicSnapshot.tickets : learningTickets");
+  });
+});
