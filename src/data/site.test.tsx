@@ -1,5 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import { AdminProvider } from "../admin/AdminContext";
 import { ProjectCard } from "../components/UI";
 import { ProjectDetailPage } from "../pages/ProjectDetailPage";
 import { ProjectsPage } from "../pages/ProjectsPage";
@@ -7,6 +8,10 @@ import { projects } from "./site";
 
 const careerOS = projects.find((project) => project.slug === "careeros")!;
 const nerfTurret = projects.find((project) => project.slug === "automatic-nerf-turret")!;
+
+function renderProjectDetail(project: typeof careerOS) {
+  return renderToStaticMarkup(<AdminProvider><ProjectDetailPage project={project} /></AdminProvider>);
+}
 
 describe("public project source proof", () => {
   it("assigns a verified source only to CareerOS", () => {
@@ -16,7 +21,7 @@ describe("public project source proof", () => {
   });
 
   it("renders secure source access and ownership on the CareerOS detail page", () => {
-    const markup = renderToStaticMarkup(<ProjectDetailPage project={careerOS} />);
+    const markup = renderProjectDetail(careerOS);
 
     expect(markup).toContain("View source on GitHub");
     expect(markup).toContain("Built and operated by Jason Stroup.");
@@ -27,7 +32,7 @@ describe("public project source proof", () => {
   });
 
   it("keeps source actions off projects without a verified repository", () => {
-    const detailMarkup = renderToStaticMarkup(<ProjectDetailPage project={nerfTurret} />);
+    const detailMarkup = renderProjectDetail(nerfTurret);
     const cardMarkup = renderToStaticMarkup(<ProjectCard project={nerfTurret} />);
 
     expect(detailMarkup).not.toContain("View source on GitHub");

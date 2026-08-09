@@ -36,13 +36,16 @@ CareerOS currently includes:
 
 - A name-first professional homepage and evidence-backed project portfolio
 - Role-fit views for current, adjacent, bridge, long-term, and exploratory paths
-- A public Learning & Delivery System with a read-only work board
+- A focused Learning overview with current courses, exact state counts, recent
+  approved evidence, and a searchable public Delivery board
 - A Career Track, LinkedIn Learning SQL record, and CU Boulder MS-CS Network
   Systems pathway with three linked course records
-- Passwordless, single-administrator access backed by Supabase Auth
+- Passwordless recovery and Windows Hello passkey re-entry backed by Supabase
+  Auth and immutable single-administrator membership
 - Durable ticket, session, progress, evidence, blocker, checklist, and audit data
-- A Delivery Intelligence roadmap with deterministic flow metrics, a truthful
-  timeline, an explicit Unscheduled lane, and an Evidence Delivery Map
+- Delivery Intelligence with deterministic flow metrics, an interactive
+  planned/actual/open/completed timeline, an explicit Unscheduled lane, and an
+  Evidence Delivery Map
 - Three canonical operational Bugs with sanitized public RCA records
 - A private, membership-protected Bug Log for classification and observations
 - A checked-in static public snapshot that keeps the public site available when
@@ -54,9 +57,9 @@ At this release point, the reviewed data contains:
 |---|---:|---|
 | Stable seed baseline | 22 | Historical, explicitly scoped ticket-key subset |
 | Pre-Delivery Intelligence public scope | 39 | Public projection before the current feature release |
-| Current canonical tickets | 51 | Durable production ticket records |
-| Current public tickets | 51 | Allowlisted recruiter-safe projection |
-| Canonical Bugs | 3 | Authorization, mail-provider throttle, and database-function defects |
+| Reviewed source tickets | 53 | Recovery snapshot and idempotent stable-key seed |
+| Canonical ticket state | Live | Durable production records remain authoritative for mutable fields |
+| Canonical Bugs | 4 | Three operational defects plus the deferred passkey-provider compatibility Bug |
 | Private incident/RCA records | 3 | Membership-protected operational records linked by stable Bug key |
 
 The release-time Delivery Intelligence view reports 12 current WIP items, 12
@@ -78,14 +81,15 @@ These values are derived from live records and will change as the board moves.
 
 ### Learning and delivery
 
-- `/learning` - Career Track, current courses, sprint, initiatives, Delivery
-  Pulse, evidence, and academic milestones
-- `/learning/board` - public, read-only board with shareable filters
+- `/learning` - compact Career Track context, exact course states, current
+  courses, highest next action, and newest approved evidence
+- `/learning/board` - canonical Delivery workspace with pulse, URL-backed
+  search, shareable filters, board, and backlog
 - `/learning/board?type=Bug` - canonical public Bugs view
-- `/learning/timeline` - shared delivery schedule plus approved chronology
+- `/learning/timeline` - URL-filterable delivery kinds plus approved chronology
 - `/learning/tickets/:ticketKey` - public ticket detail and truth boundary
 - `/admin` - stable, unadvertised administrator entry point and workspace chooser
-- `/admin/login` - passwordless sign-in alias for the administrator entry point
+- `/admin/login` - cross-browser email recovery callback and passkey sign-in
 - `/admin/operations/bugs` - unadvertised private Bug classification and RCA view
 
 The full route inventory lives in [`docs/SITE_MAP.md`](docs/SITE_MAP.md).

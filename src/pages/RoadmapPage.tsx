@@ -5,6 +5,7 @@ import { DeliveryMetricSummary, DeliveryTimelineView, EvidenceDeliveryMap } from
 import { PageHero, SectionHeader, StateBadge } from "../components/UI";
 import { buildEvidenceDeliveryMap } from "../data/deliveryIntelligence";
 import { careerTrack } from "../data/learning";
+import { selectInitiativeBySlug, selectInitiativeTickets } from "../data/learningSelectors";
 import {
   projects,
   roadmap,
@@ -73,6 +74,39 @@ export function RoadmapPage() {
         />
         <div className="initiativeList">
           {initiativeProjects.map((project) => {
+            const canonicalInitiative = selectInitiativeBySlug(admin.publicInitiatives, project.slug);
+            if (canonicalInitiative) {
+              const initiativeTickets = selectInitiativeTickets(admin.publicTickets, canonicalInitiative.slug);
+              const completedMilestones = canonicalInitiative.milestones.filter((milestone) => milestone.status === "Completed").length;
+              return (
+                <article className="initiativeCard" key={project.slug}>
+                  <div className="initiativeCardHeader">
+                    <div>
+                      <span className="kicker">{canonicalInitiative.startDate ? `Started ${canonicalInitiative.startDate}` : "Start date not recorded"}</span>
+                      <h2>{canonicalInitiative.title}</h2>
+                    </div>
+                    <StateBadge state={canonicalInitiative.evidenceState} label={canonicalInitiative.roadmapStatus} />
+                  </div>
+                  <p>{canonicalInitiative.publicSummary}</p>
+                  <div className="initiativeMetrics" aria-label="Initiative progress">
+                    <span><strong>{canonicalInitiative.currentPhase}</strong><small>Current phase</small></span>
+                    <span><strong>{completedMilestones} of {canonicalInitiative.milestones.length}</strong><small>Milestones complete</small></span>
+                    <span><strong>{initiativeTickets.length}</strong><small>Canonical tickets</small></span>
+                  </div>
+                  <div className="initiativeProgression">
+                    {canonicalInitiative.milestones.map((milestone) => (
+                      <div key={milestone.id}>
+                        <span>Milestone</span>
+                        <strong>{milestone.title}</strong>
+                        <StateBadge state={phaseEvidenceState[milestone.status]} label={milestone.status} />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="tags largeTags">{project.stack.map((technology) => <span key={technology}>{technology}</span>)}</div>
+                  <a className="initiativeLink" href={`/projects/${project.slug}`}>View project <ArrowUpRight size={17} aria-hidden="true" /></a>
+                </article>
+              );
+            }
             const initiative = project.initiative!;
             const completedMilestones = initiative.phases.reduce(
               (count, phase) =>
@@ -138,7 +172,7 @@ export function RoadmapPage() {
       <section className="section shell">
         <SectionHeader
           kicker="Execution sequence"
-          title="Public beta complete. Product and project proof next."
+          title="Operational delivery is active. Applied proof remains next."
         />
         <div className="roadmap">
           {roadmap.map((item) => (

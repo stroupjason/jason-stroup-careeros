@@ -18,6 +18,7 @@ import {
   learningInitiatives,
   learningTickets,
   parseBoardFilters,
+  parseTimelineFilters,
   recordCourseProgress,
   validateCourseProgressSnapshot,
   validateLearningData,
@@ -63,6 +64,11 @@ const newerCandidate90: CourseProgressSnapshot = {
 
 function renderWithAdminProvider(element: ReactNode) {
   return renderToStaticMarkup(<AdminProvider>{element}</AdminProvider>);
+}
+
+function courseMarkup(markup: string, title: string) {
+  const start = markup.indexOf(title);
+  return start < 0 ? "" : markup.slice(start, markup.indexOf("</article>", start));
 }
 
 describe("Learning & Delivery public data", () => {
@@ -236,8 +242,9 @@ describe("Learning & Delivery public data", () => {
   });
 
   it("parses, combines, and recovers URL filter state", () => {
-    const filters = parseBoardFilters("?initiative=healthcare-sql-customer-operations&delivery=Ready&evidence=Learning&capability=sql&role=technical-account-manager&type=Spike");
+    const filters = parseBoardFilters("?q=baseline&initiative=healthcare-sql-customer-operations&delivery=Ready&evidence=Learning&capability=sql&role=technical-account-manager&type=Spike");
     expect(filters).toEqual({
+      query: "baseline",
       initiative: "healthcare-sql-customer-operations",
       delivery: "Ready",
       evidence: "Learning",
@@ -247,6 +254,7 @@ describe("Learning & Delivery public data", () => {
     });
     expect(filterLearningTickets(filters).map((ticket) => ticket.key)).toEqual(["SQL-001"]);
     expect(parseBoardFilters("?delivery=Invented&capability=free-text&type=Unknown")).toEqual({
+      query: undefined,
       initiative: undefined,
       delivery: undefined,
       evidence: undefined,
@@ -254,6 +262,28 @@ describe("Learning & Delivery public data", () => {
       role: undefined,
       issueType: undefined,
     });
+    expect(parseTimelineFilters("?initiative=healthcare-sql-customer-operations&kind=actual")).toEqual({
+      initiative: "healthcare-sql-customer-operations",
+      capability: undefined,
+      role: undefined,
+      kind: "actual",
+    });
+    expect(parseTimelineFilters("?kind=invented").kind).toBeUndefined();
+  });
+
+  it("searches only public-safe ticket key, title, and summary fields", () => {
+    const candidate = {
+      ...learningTickets[0],
+      key: "SEARCH-001",
+      title: "Visible title phrase",
+      publicSummary: "Approved summary phrase",
+      nextAction: "private-shaped next action phrase",
+    } as LearningTicket;
+    expect(filterLearningTickets({ query: "search-001" }, [candidate])).toHaveLength(1);
+    expect(filterLearningTickets({ query: "visible title" }, [candidate])).toHaveLength(1);
+    expect(filterLearningTickets({ query: "approved summary" }, [candidate])).toHaveLength(1);
+    expect(filterLearningTickets({ query: "private-shaped" }, [candidate])).toHaveLength(0);
+    expect(filterLearningTickets({ query: "VISIBLE", delivery: candidate.deliveryStatus }, [candidate])).toHaveLength(1);
   });
 
   it("derives a reverse-chronological timeline from source records", () => {
@@ -299,7 +329,7 @@ describe("Learning & Delivery public data", () => {
 
   it("renders the verified current learning snapshot", () => {
     const markup = renderWithAdminProvider(resolveRoute("/learning").element);
-    expect(markup).toContain("Currently Learning");
+    expect(markup).toContain("Current courses");
     expect(markup).toContain("SQL Essential Training");
     expect(markup).toContain("Walter Shields");
     expect(markup).toContain('aria-label="Course progress for SQL Essential Training"');
@@ -311,17 +341,18 @@ describe("Learning & Delivery public data", () => {
     expect(markup).toContain("Derived");
     expect(markup).toContain('href="/learning/tickets/SQL-002"');
     expect(markup).toContain('href="/projects/healthcare-sql-customer-operations"');
-    expect(markup).toContain("Completed Courses &amp; Credentials");
+    expect(markup).toContain('aria-label="Course state counts"');
+    expect(markup).toContain('aria-label="Learning workspace"');
+    expect(markup).toContain("The three newest approved artifacts");
   });
 
-  it("renders the Career Track and all three CU Boulder course cards under Learning", () => {
+  it("renders compact Career context and all three current CU Boulder course cards", () => {
     const markup = renderWithAdminProvider(resolveRoute("/learning").element);
-    expect(markup).toContain("Career Track");
+    expect(markup).toContain("Career context");
     expect(markup).toContain("Customer-Facing Technical Engineering");
     expect(markup).toContain("Technical Account Management");
-    expect(markup).toContain("CU Boulder MS-CS coursework");
-    expect(markup).toContain("30-credit curriculum");
-    expect(markup).toContain("Not yet verified");
+    expect(markup).toContain("University of Colorado Boulder Master of Science in Computer Science coursework");
+    expect(markup).toContain("Network Systems: Principles and Practice");
     expect(markup).toContain("CSCA 5063 - Network Systems Foundation");
     expect(markup).toContain("CSCA 5073 - Network Principles in Practice: Linux Networking");
     expect(markup).toContain("CSCA 5083 - Network Principles in Practice: Cloud Networking");
@@ -334,8 +365,8 @@ describe("Learning & Delivery public data", () => {
     const markup = renderWithAdminProvider(resolveRoute("/learning").element);
     expect(markup).toContain('aria-label="Course progress for Network Systems Foundation"');
     expect(markup).toContain('value="20"');
-    const csca5073 = markup.slice(markup.indexOf("CSCA 5073"), markup.indexOf("CSCA 5083"));
-    const csca5083 = markup.slice(markup.indexOf("CSCA 5083"));
+    const csca5073 = courseMarkup(markup, "CSCA 5073");
+    const csca5083 = courseMarkup(markup, "CSCA 5083");
     expect(csca5073).toContain("No verified current percentage is published");
     expect(csca5073).not.toContain("value=\"20\"");
     expect(csca5083).toContain("No verified current percentage is published");
@@ -365,11 +396,23 @@ describe("Learning & Delivery public data", () => {
   it("renders native labeled board controls and textual status labels", () => {
     const markup = renderWithAdminProvider(resolveRoute("/learning/board").element);
     expect(markup).toContain("<form");
+    expect(markup).toContain('type="search"');
+    expect(markup).toContain('name="q"');
     expect(markup).toContain("<label>Initiative");
     expect(markup).toContain("<select");
     expect(markup).toContain("<button");
     expect(markup).toContain(">Ready<");
     expect(markup).toContain(">Learning<");
+    expect(markup).toContain("Delivery Pulse");
+  });
+
+  it("renders timeline kinds as shareable filter links", () => {
+    const markup = renderWithAdminProvider(resolveRoute("/learning/timeline").element);
+    expect(markup).toContain("Planned window");
+    expect(markup).toContain("Actual work");
+    expect(markup).toContain("Open-ended work");
+    expect(markup).toContain("Completion milestone");
+    expect(markup).toContain('aria-label="Filter timeline by work kind"');
   });
 
   it("keeps the mobile board stacked without horizontal column scrolling", () => {
