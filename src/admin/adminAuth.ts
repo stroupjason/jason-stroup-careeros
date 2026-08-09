@@ -50,6 +50,17 @@ export function resolveAdminReturnTo(
   return returnTo;
 }
 
+export function buildAdminRecoveryRedirect(
+  origin: string,
+  search: string,
+  storage?: Pick<Storage, "getItem" | "setItem">,
+) {
+  const redirect = new URL("/admin/login", origin);
+  const returnTo = resolveAdminReturnTo(search, storage);
+  if (returnTo !== "/admin") redirect.searchParams.set("returnTo", returnTo);
+  return redirect.toString();
+}
+
 export function isPasskeySupported(environment: {
   PublicKeyCredential?: unknown;
   credentials?: unknown;

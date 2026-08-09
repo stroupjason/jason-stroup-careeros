@@ -98,6 +98,8 @@ describe("CareerOS backend and CU coursework contract", () => {
 
   it("keeps passkey authentication behind immutable membership and email recovery", () => {
     expect(supabaseSource).toContain("experimental: { passkey: true }");
+    expect(supabaseSource).toContain('flowType: "implicit"');
+    expect(adminSource).toContain("buildAdminRecoveryRedirect");
     expect(adminSource).toContain("signInWithPasskey");
     expect(adminSource).toMatch(/signInWithPasskey\(\)[\s\S]*?authorizeSession\(data\.session\)/);
     expect(adminSource).toContain('signOut({ scope: "local" })');

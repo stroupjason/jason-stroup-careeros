@@ -24,6 +24,7 @@ import {
 import { isSupabaseConfigured, supabase } from "../lib/supabase";
 import type { TaskCoachFactors } from "./taskCoach";
 import {
+  buildAdminRecoveryRedirect,
   isPasskeySupported,
   isCanonicalPasskeyOrigin,
   magicLinkNotice,
@@ -521,7 +522,11 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           email: email.trim(),
           options: {
             shouldCreateUser: false,
-            emailRedirectTo: `${window.location.origin}/admin/login`,
+            emailRedirectTo: buildAdminRecoveryRedirect(
+              window.location.origin,
+              window.location.search,
+              window.sessionStorage,
+            ),
           },
         });
         const retrySeconds = magicLinkRetrySeconds(error);

@@ -11,7 +11,7 @@ export const supabase: SupabaseClient | null = isSupabaseConfigured
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: true,
-        flowType: "pkce",
+        flowType: "implicit",
         experimental: { passkey: true },
       },
     })
