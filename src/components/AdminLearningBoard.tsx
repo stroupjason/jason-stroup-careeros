@@ -161,7 +161,7 @@ function CreateTicketForm() {
   );
 }
 
-export function AdminLearningBoard({ tickets, allTickets }: { tickets: AdminTicket[]; allTickets: AdminTicket[] }) {
+export function AdminLearningBoard({ tickets, allTickets, filtered = false }: { tickets: AdminTicket[]; allTickets: AdminTicket[]; filtered?: boolean }) {
   const admin = useLearningAdmin();
   const [groupedKeys, setGroupedKeys] = useState<GroupedKeys>(() => groupTickets(tickets));
   const [pendingMove, setPendingMove] = useState<PendingMove>();
@@ -179,6 +179,12 @@ export function AdminLearningBoard({ tickets, allTickets }: { tickets: AdminTick
   useEffect(() => setGroupedKeys(groupTickets(tickets)), [tickets]);
 
   function rankForMove(keys: GroupedKeys, status: DeliveryStatus, ticketKey: string) {
+    if (filtered) {
+      const canonicalRanks = allTickets
+        .filter((ticket) => !ticket.archivedAt && ticket.deliveryStatus === status && ticket.key !== ticketKey)
+        .map((ticket) => ticket.rank);
+      return (canonicalRanks.length ? Math.max(...canonicalRanks) : 0) + 1000;
+    }
     const index = keys[status].indexOf(ticketKey);
     const previous = index > 0 ? ticketByKey.get(keys[status][index - 1])?.rank : undefined;
     const next = index < keys[status].length - 1 ? ticketByKey.get(keys[status][index + 1])?.rank : undefined;
@@ -241,6 +247,10 @@ export function AdminLearningBoard({ tickets, allTickets }: { tickets: AdminTick
     const nextGroups = move(groupedKeys, event) as GroupedKeys;
     const nextStatus = deliveryStatuses.find((status) => nextGroups[status].includes(sourceKey));
     if (!nextStatus) return;
+    if (filtered && nextStatus === ticket.deliveryStatus) {
+      setAnnouncement(`${ticket.key} was not reordered. Clear search and filters to change order within a column.`);
+      return;
+    }
     setGroupedKeys(nextGroups);
     stageMove(ticket, nextStatus, nextGroups, rollback);
   }
@@ -267,7 +277,7 @@ export function AdminLearningBoard({ tickets, allTickets }: { tickets: AdminTick
       <div className="adminBoardHeader">
         <div>
           <strong>Admin board controls</strong>
-          <span>Drag with pointer or touch, use the keyboard handle, or choose a status.</span>
+          <span>{filtered ? "Status changes remain available. Clear search and filters to reorder within a column." : "Drag with pointer or touch, use the keyboard handle, or choose a status."}</span>
         </div>
         <button
           className="button secondary"
@@ -280,6 +290,7 @@ export function AdminLearningBoard({ tickets, allTickets }: { tickets: AdminTick
       </div>
       <CreateTicketForm />
       <p className="srOnly" aria-live="assertive">{announcement}</p>
+      {filtered ? <p className="adminWarning" role="status">Within-column reordering is disabled while the board is filtered. Status dropdowns remain available.</p> : null}
       {activeTicketCount > 2 ? <p className="adminWarning" role="status">The two-ticket active-work soft limit is exceeded. Record the reason when adding more active work.</p> : null}
       <DragDropProvider onDragEnd={handleDragEnd}>
         <div className="kanbanBoard adminKanbanBoard">

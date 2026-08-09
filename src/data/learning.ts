@@ -296,6 +296,7 @@ export type LearningEvidence = {
 };
 
 export type BoardFilters = {
+  query?: string;
   initiative?: string;
   delivery?: DeliveryStatus;
   evidence?: EvidenceState;
@@ -304,7 +305,11 @@ export type BoardFilters = {
   issueType?: IssueType;
 };
 
-export type TimelineFilters = Pick<BoardFilters, "initiative" | "capability" | "role">;
+export const timelineKinds = ["planned", "actual", "open", "completed"] as const;
+export type TimelineKind = (typeof timelineKinds)[number];
+export type TimelineFilters = Pick<BoardFilters, "initiative" | "capability" | "role"> & {
+  kind?: TimelineKind;
+};
 
 export type LearningTimelineEvent = {
   id: string;
@@ -1440,6 +1445,54 @@ export const learningTickets = [
     notClaimed: "The authenticated Create Ticket form is not public and no submission is automatically published, prioritized, or classified.",
   }),
   systemTicket({
+    key: "PRODUCT-249",
+    issueType: "Spike",
+    title: "Link GitHub work items to canonical CareerOS tickets",
+    publicSummary: "Design a safe, low-cost relationship between GitHub Issues, pull requests, commits, releases, and canonical CareerOS tickets without creating a second source of truth.",
+    deliveryStatus: "Backlog",
+    evidenceState: "Planned",
+    priority: "Low",
+    parentKey: "PRODUCT-242",
+    dependencies: ["PRODUCT-244"],
+    definitionOfDone: "CareerOS can retain typed, approved references to related GitHub work while preserving CareerOS as the authority for product priority, delivery state, privacy, and publication. GitHub activity may supply implementation evidence but cannot autonomously create, prioritize, complete, or publish CareerOS work.",
+    acceptanceCriteria: ["CareerOS remains the product-state authority", "GitHub remains the code-review authority", "Typed manual links are idempotent and auditable", "Merged pull requests do not autonomously complete CareerOS tickets", "Private Bug Log observations never copy to public GitHub", "Any future webhook has repository allowlisting and signature, replay, redaction, rate-limit, and cost controls"],
+    capabilitySlugs: ["delivery-modeling", "privacy-review", "evidence-design"],
+    evidenceIds: [],
+    nextAction: "Use manual ticket keys in branches, pull-request titles, pull-request bodies, and approved evidence links while the integration remains a deferred spike.",
+    notClaimed: "No GitHub synchronization, polling, webhook, automatic ticket creation, or automatic status transition is implemented.",
+  }),
+  systemTicket({
+    key: "PRODUCT-250",
+    issueType: "Bug",
+    title: "Investigate Google Password Manager passkey registration failure",
+    publicSummary: "A production registration attempt with Google Password Manager did not create a usable CareerOS passkey, while Windows Hello registration and re-entry succeeded.",
+    deliveryStatus: "Backlog",
+    evidenceState: "Planned",
+    priority: "Low",
+    parentKey: "PRODUCT-243",
+    dependencies: [],
+    definitionOfDone: "The Google Password Manager registration path is reproduced with sanitized diagnostics, its compatibility boundary is identified, and any focused correction or documented limitation is verified without weakening Windows Hello or email recovery.",
+    acceptanceCriteria: ["Reproduction uses the canonical production origin", "Diagnostics exclude credential and personal data", "Windows Hello regression check", "Email recovery regression check", "Root cause or support boundary is documented"],
+    capabilitySlugs: ["testing", "root-cause-analysis", "privacy-review"],
+    evidenceIds: [],
+    nextAction: "Capture the exact browser and authenticator conditions during a fresh Google Password Manager registration attempt before changing passkey code.",
+    notClaimed: "The root cause is not yet known, and successful Windows Hello registration does not prove interoperability with every passkey provider.",
+    bugClassification: {
+      category: "Authentication",
+      severity: "Low",
+      detectedOn: "2026-08-08",
+      affectedService: "CareerOS passkey registration",
+      environment: "Production",
+      affectedFeatureKeys: ["PRODUCT-243"],
+      relatedIncidentKey: "OPS-INC-004",
+      publicSymptom: "A Google Password Manager registration attempt did not create a usable CareerOS passkey, while Windows Hello registration succeeded.",
+      publicRootCause: "Not yet determined; browser and authenticator compatibility conditions still require a controlled reproduction.",
+      publicFix: "No fix has been applied. Windows Hello and email recovery remain the verified access paths.",
+      publicVerification: "Windows Hello passkey re-entry and durable protected-route access were verified separately on the same production origin.",
+      prevention: "Retain provider-specific registration checks and avoid treating one authenticator's success as universal passkey interoperability.",
+    },
+  }),
+  systemTicket({
     key: "PRODUCT-217",
     issueType: "Story",
     title: "Seed the healthcare SQL initiative",
@@ -2306,9 +2359,11 @@ export function getTicketEffortMinutes(ticketKey: string) {
 const evidenceStateSet = new Set<EvidenceState>(evidenceStates);
 const deliveryStatusSet = new Set<DeliveryStatus>(deliveryStatuses);
 const issueTypeSet = new Set<IssueType>(issueTypes);
+const timelineKindSet = new Set<TimelineKind>(timelineKinds);
 
 export function parseBoardFilters(search: string): BoardFilters {
   const parameters = new URLSearchParams(search);
+  const query = parameters.get("q")?.trim().slice(0, 120) || undefined;
   const initiative = parameters.get("initiative") ?? undefined;
   const delivery = parameters.get("delivery") ?? undefined;
   const evidence = parameters.get("evidence") ?? undefined;
@@ -2316,6 +2371,7 @@ export function parseBoardFilters(search: string): BoardFilters {
   const role = parameters.get("role") ?? undefined;
   const issueType = parameters.get("type") ?? undefined;
   return {
+    query,
     initiative: initiative && learningInitiatives.some((item) => item.slug === initiative) ? initiative : undefined,
     delivery: delivery && deliveryStatusSet.has(delivery as DeliveryStatus) ? (delivery as DeliveryStatus) : undefined,
     evidence: evidence && evidenceStateSet.has(evidence as EvidenceState) ? (evidence as EvidenceState) : undefined,
@@ -2326,8 +2382,10 @@ export function parseBoardFilters(search: string): BoardFilters {
 }
 
 export function filterLearningTickets(filters: BoardFilters, tickets: readonly LearningTicket[] = learningTickets) {
+  const normalizedQuery = filters.query?.toLowerCase();
   return tickets.filter((ticket) =>
-    (!filters.initiative || ticket.initiativeSlug === filters.initiative)
+    (!normalizedQuery || [ticket.key, ticket.title, ticket.publicSummary].some((value) => value.toLowerCase().includes(normalizedQuery)))
+    && (!filters.initiative || ticket.initiativeSlug === filters.initiative)
     && (!filters.delivery || ticket.deliveryStatus === filters.delivery)
     && (!filters.evidence || ticket.evidenceState === filters.evidence)
     && (!filters.capability || ticket.capabilitySlugs.includes(filters.capability))
@@ -2337,7 +2395,13 @@ export function filterLearningTickets(filters: BoardFilters, tickets: readonly L
 
 export function parseTimelineFilters(search: string): TimelineFilters {
   const filters = parseBoardFilters(search);
-  return { initiative: filters.initiative, capability: filters.capability, role: filters.role };
+  const kind = new URLSearchParams(search).get("kind");
+  return {
+    initiative: filters.initiative,
+    capability: filters.capability,
+    role: filters.role,
+    kind: kind && timelineKindSet.has(kind as TimelineKind) ? kind as TimelineKind : undefined,
+  };
 }
 
 type TimelineSessionSource = {

@@ -6,10 +6,9 @@ import {
   capabilityLabels,
   getCourseProgressPercentage,
   getCurrentCourseProgress,
-  getLearningInitiative,
-  getLearningTicket,
   learningRoleLabels,
 } from "../data/learning";
+import { selectInitiativeBySlug, selectTicketByKey } from "../data/learningSelectors";
 import { StateBadge } from "./UI";
 
 export function DeliveryBadge({ status }: { status: LearningTicket["deliveryStatus"] }) {
@@ -21,7 +20,8 @@ export function VisibilityBadge() {
 }
 
 export function TicketCard({ ticket }: { ticket: LearningTicket }) {
-  const initiative = getLearningInitiative(ticket.initiativeSlug)!;
+  const admin = useLearningAdmin();
+  const initiative = selectInitiativeBySlug(admin.publicInitiatives, ticket.initiativeSlug);
   const openBlockers = ticket.blockers.filter((blocker) => blocker.status === "Open");
 
   return (
@@ -37,7 +37,7 @@ export function TicketCard({ ticket }: { ticket: LearningTicket }) {
         <DeliveryBadge status={ticket.deliveryStatus} />
         <StateBadge state={ticket.evidenceState} />
       </div>
-      <small className="learningTicketParent">{initiative.title}</small>
+      <small className="learningTicketParent">{initiative?.title ?? ticket.initiativeSlug}</small>
       {ticket.targetDate ? (
         <time dateTime={ticket.targetDate}>Target {formatLearningDate(ticket.targetDate)}</time>
       ) : null}
@@ -60,11 +60,13 @@ export function CurrentLearningCourseCard({ course }: { course: LearningCourse }
   const admin = useLearningAdmin();
   const publicPreview = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("view") === "public";
   const adminMode = admin.authState === "admin" && !publicPreview;
-  const initiative = getLearningInitiative(course.initiativeSlug)!;
-  const ticket = getLearningTicket(course.relatedTicketKey)!;
+  const initiative = selectInitiativeBySlug(admin.publicInitiatives, course.initiativeSlug);
+  const ticket = selectTicketByKey(admin.publicTickets, course.relatedTicketKey);
   const adminTicket = admin.adminTickets.find((item) => item.key === course.relatedTicketKey);
   const currentProgress = getCurrentCourseProgress(course);
   const currentPercentage = currentProgress ? getCourseProgressPercentage(currentProgress) : undefined;
+
+  if (!ticket) return null;
 
   return (
     <article className="currentLearningCourse">
@@ -184,7 +186,7 @@ export function CurrentLearningCourseCard({ course }: { course: LearningCourse }
             course: course.slug,
             evidence: course.evidenceState,
             delivery: ticket.deliveryStatus,
-            initiative: initiative.slug,
+            initiative: initiative?.slug ?? course.initiativeSlug,
             ctaLocation: "current-learning",
           })}
         >

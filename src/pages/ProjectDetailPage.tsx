@@ -1,6 +1,8 @@
 import { ArrowUpRight, CheckCircle2, Github, ImageOff } from "lucide-react";
 import { trackPortfolioEvent } from "../analytics";
+import { useLearningAdmin } from "../admin/AdminContext";
 import { LinkButton, PageHero, SectionHeader, StateBadge } from "../components/UI";
+import { selectInitiativeBySlug, selectInitiativeTickets } from "../data/learningSelectors";
 import type { EvidenceState, InitiativePhaseStatus, Project } from "../data/site";
 
 const roleSlugs: Record<string, string> = {
@@ -21,6 +23,9 @@ const phaseEvidenceState: Record<InitiativePhaseStatus, EvidenceState> = {
 };
 
 export function ProjectDetailPage({ project }: { project: Project }) {
+  const admin = useLearningAdmin();
+  const canonicalInitiative = selectInitiativeBySlug(admin.publicInitiatives, project.slug);
+  const canonicalTickets = canonicalInitiative ? selectInitiativeTickets(admin.publicTickets, canonicalInitiative.slug) : [];
   return (
     <>
       <PageHero
@@ -130,7 +135,30 @@ export function ProjectDetailPage({ project }: { project: Project }) {
         </section>
       ) : null}
 
-      {project.initiative ? (
+      {canonicalInitiative ? (
+        <section className="section band">
+          <div className="shell">
+            <SectionHeader
+              kicker="Canonical delivery state"
+              title={`${canonicalInitiative.title}: ${canonicalInitiative.currentPhase}`}
+              copy={canonicalInitiative.publicSummary}
+            />
+            <div className="initiativePhaseGrid">
+              {canonicalInitiative.milestones.map((milestone) => (
+                <article className={`initiativePhase phase-${milestone.status.toLowerCase()}`} key={milestone.id}>
+                  <div className="roadmapMeta">
+                    <span>Milestone</span>
+                    <StateBadge state={phaseEvidenceState[milestone.status]} label={milestone.status} />
+                  </div>
+                  <h3>{milestone.title}</h3>
+                </article>
+              ))}
+            </div>
+            <p className="canonicalInitiativeNext"><strong>Next action:</strong> {canonicalInitiative.nextAction}</p>
+            <a className="initiativeLink" href={`/learning/board?initiative=${canonicalInitiative.slug}`}>Review {canonicalTickets.length} canonical {canonicalTickets.length === 1 ? "ticket" : "tickets"} <ArrowUpRight size={17} aria-hidden="true" /></a>
+          </div>
+        </section>
+      ) : project.initiative ? (
         <section className="section band">
           <div className="shell">
             <SectionHeader

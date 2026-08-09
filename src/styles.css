@@ -2327,7 +2327,8 @@ code {
   font-weight: 750;
 }
 
-.learningFilters select {
+.learningFilters select,
+.learningFilters input[type="search"] {
   width: 100%;
   min-height: 46px;
   border: 1px solid var(--line);
@@ -2335,6 +2336,153 @@ code {
   padding: 9px 36px 9px 11px;
   color: var(--text);
   background: var(--panel);
+}
+
+.learningSearchField {
+  grid-column: 1 / -1;
+}
+
+.learningNoResults {
+  margin-top: 24px;
+  padding: 20px 0;
+  border-block: 1px solid var(--line);
+}
+
+.learningNoResults h3,
+.learningNoResults p {
+  margin: 0 0 6px;
+}
+
+.learningNoResults a {
+  color: var(--accent);
+  font-weight: 750;
+}
+
+.learningLocalNav {
+  display: flex;
+  gap: 4px;
+  padding-block: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.learningLocalNav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.learningLocalNav a:hover,
+.learningLocalNav a:focus-visible,
+.learningLocalNav a[aria-current="page"] {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.courseStateSummary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  border-block: 1px solid var(--line);
+}
+
+.courseStateSummary div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px;
+}
+
+.courseStateSummary div + div {
+  border-left: 1px solid var(--line);
+}
+
+.courseStateSummary dt {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.courseStateSummary dd {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.7rem;
+  font-weight: 850;
+}
+
+.recentEvidenceList article time,
+.recentEvidenceList article small {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.recentEvidenceList article > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.learningOverviewDestinations,
+.learningMacroSummary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.learningOverviewDestinations > div,
+.learningMacroSummary > div {
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.learningOverviewDestinations a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  font-weight: 750;
+}
+
+.learningMacroSummary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.learningMacroSummary ul {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  margin: 14px 0 0;
+  list-style: none;
+}
+
+.learningMacroSummary li strong,
+.learningMacroSummary li span {
+  display: block;
+}
+
+.learningMacroSummary li strong {
+  font-size: 0.84rem;
+}
+
+.learningMacroSummary li span,
+.learningMacroSummary p {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.canonicalInitiativeNext {
+  margin-top: 22px;
 }
 
 .learningFilterActions {
@@ -3196,13 +3344,27 @@ code {
   font-weight: 700;
 }
 
-.deliveryTimelineLegend span {
+.deliveryTimelineLegend span,
+.deliveryTimelineLegend a {
   display: inline-flex;
   align-items: center;
   gap: 7px;
 }
 
-.deliveryTimelineLegend span::before {
+.deliveryTimelineLegend a {
+  padding: 5px 7px;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.deliveryTimelineLegend a:hover,
+.deliveryTimelineLegend a:focus-visible,
+.deliveryTimelineLegend a.active {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.deliveryTimelineLegend span::before,
+.deliveryTimelineLegend a::before {
   width: 20px;
   height: 7px;
   border: 2px solid currentColor;
@@ -3282,6 +3444,7 @@ code {
 }
 
 .deliveryTimelineTrack {
+  display: block;
   position: relative;
   height: 34px;
   border-inline: 1px solid var(--line);
@@ -3453,7 +3616,7 @@ code {
 
 .deliveryPulseNumbers {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   border-block: 1px solid var(--line);
 }
 
@@ -4125,6 +4288,9 @@ code {
   }
 
   .learningFocus,
+  .courseStateSummary,
+  .learningOverviewDestinations,
+  .learningMacroSummary,
   .careerTrackSummary,
   .academicProgramContext,
   .academicCourseGrid,
@@ -4148,6 +4314,19 @@ code {
   .adminFieldGrid,
   .adminEvidenceList > div {
     grid-template-columns: 1fr;
+  }
+
+  .courseStateSummary div + div {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .learningLocalNav {
+    overflow-x: auto;
+  }
+
+  .learningLocalNav a {
+    flex: 0 0 auto;
   }
 
   .careerTrackActions {

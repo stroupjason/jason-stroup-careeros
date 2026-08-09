@@ -20,7 +20,7 @@ Audit date: August 8, 2026
 | PRODUCT-224 | Validated source; exact scope; newest verified selection; provider API deferred | Candidate/verified snapshots, source metadata, private reference, approval, and projection rules exist | Course progress and backend-contract tests cover candidate/verified selection and private boundaries | Verified historical SQL progress is live; the full admin mutation/reload path is not recorded | Authorized snapshot mutation, reload, and public projection refresh | In Review |
 | PRODUCT-225 | Deterministic local model; points are not hours; missing inputs; user estimate preserved | Task Coach factors, split recommendation, planning range separation, and editor controls exist | Seventeen focused boundary and guidance tests pass | No specific production review of SQL-002 missing-input guidance is recorded | Production UI review and confirmation that user estimate remains unchanged | In Review |
 | PRODUCT-226 | Three official course records; no invented progress; no credit/admission claim | Program, specialization, course, ticket, and truth-boundary records exist | Backend and Learning tests cover course numbers, snapshots, empty progress, and claims | CU coursework release is deployed and public records have been reviewed | Durable/public snapshot parity should be rechecked during PRODUCT-244 | Done |
-| PRODUCT-227 | Anonymous/non-admin denial; no secrets; refresh; persistence | Security policies, membership RPC, direct routes, rollback scripts, and many focused checks exist | Secret, migration, data, route, and authorization contract checks exist | Authorized access, production seeding, and prior repairs are verified, but the complete matrix is not | Persisted session, passkey, recovery, safe return, reversible movement, stale rejection, projection refresh, mobile/keyboard, and recovery matrix | In Progress |
+| PRODUCT-227 | Anonymous/non-admin denial; no secrets; refresh; persistence | Security policies, membership RPC, direct routes, rollback scripts, and many focused checks exist | Secret, migration, data, route, and authorization contract checks exist | Cross-browser email recovery, Windows Hello registration, local sign-out, passkey re-entry, authorization, protected-route access, and durable reload passed on the canonical origin | Reversible movement, stale-write rejection, projection refresh, and the remaining mobile/keyboard recovery matrix | In Progress |
 
 No ticket is moved to Done merely because controls or RPCs exist.
 
@@ -35,7 +35,14 @@ reversible reconciliation case; a seed change must not overwrite it.
 
 ## PRODUCT-243 production gate
 
-Automated checks may verify client opt-in, unsupported/cancelled behavior,
-safe return paths, and membership enforcement. They cannot prove a real
-WebAuthn ceremony. Production verification requires Jason to register and use
-a passkey at `https://www.jasonstroup.website`, then confirm email recovery.
+Automated checks verify client opt-in, unsupported/cancelled behavior, safe
+return paths, and membership enforcement. Jason completed the real production
+gate on August 8, 2026 at `https://www.jasonstroup.website`: cross-browser email
+recovery succeeded, Windows Hello registered a passkey, local sign-out and
+passkey re-entry succeeded, the protected admin route opened, and durable data
+persisted after reload. The durable PRODUCT-243 row still requires the audited
+completion transition used by PRODUCT-244 reconciliation.
+
+Google Password Manager registration did not create a usable credential in a
+separate attempt. PRODUCT-250 tracks that provider-specific observation as a
+Backlog Bug; no root cause or compatibility fix is claimed.
