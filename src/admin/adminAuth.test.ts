@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   adminReturnToStorageKey,
+  buildAdminRecoveryRedirect,
   isPasskeySupported,
   isCanonicalPasskeyOrigin,
   magicLinkNotice,
@@ -36,6 +37,18 @@ describe("CareerOS admin authentication helpers", () => {
     const storage = memoryStorage();
     expect(resolveAdminReturnTo("?returnTo=%2Flearning%2Fboard", storage)).toBe("/learning/board");
     expect(resolveAdminReturnTo("", storage)).toBe("/learning/board");
+  });
+
+  it("carries a validated destination into a cross-browser recovery link", () => {
+    const storage = memoryStorage("/admin/operations/bugs");
+    expect(buildAdminRecoveryRedirect("https://www.jasonstroup.website", "", storage)).toBe(
+      "https://www.jasonstroup.website/admin/login?returnTo=%2Fadmin%2Foperations%2Fbugs",
+    );
+    expect(buildAdminRecoveryRedirect(
+      "https://www.jasonstroup.website",
+      "?returnTo=https%3A%2F%2Fevil.example",
+      storage,
+    )).toBe("https://www.jasonstroup.website/admin/login");
   });
 
   it("replaces a malicious stored destination with the safe default", () => {

@@ -25,6 +25,10 @@ export function AdminLoginPage() {
     () => resolveAdminReturnTo(window.location.search, window.sessionStorage),
     [],
   );
+  const hasUnfinishedPkceCode = useMemo(
+    () => new URLSearchParams(window.location.search).has("code"),
+    [],
+  );
 
   useEffect(() => {
     if (admin.authState !== "admin") return;
@@ -129,6 +133,12 @@ export function AdminLoginPage() {
               </button>
               {!admin.passkeySupported ? <p role="status">This browser does not support passkeys. Use email recovery.</p> : null}
               {admin.passkeySupported && !admin.passkeyOriginReady ? <p role="status">Passkey sign-in is available only at https://www.jasonstroup.website.</p> : null}
+              {hasUnfinishedPkceCode ? (
+                <p role="status">
+                  This older secure link could not finish in this browser. Request a new recovery link after
+                  the email cooldown; new links can complete when your email opens a different browser.
+                </p>
+              ) : null}
 
               <details className="adminRecovery">
                 <summary>Email secure-link recovery</summary>
