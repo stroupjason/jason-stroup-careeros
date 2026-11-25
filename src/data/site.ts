@@ -59,6 +59,11 @@ export type ProjectOwnership = {
 };
 
 export type Project = {
+  architecture?: {
+    title: string;
+    caption: string;
+    steps: string[];
+  };
   slug: string;
   title: string;
   shortTitle: string;
@@ -863,21 +868,38 @@ export const projects: Project[] = [
     status: "Active build",
     evidenceState: "Practicing",
     summary:
-      "An active off-grid solar trailer project connecting edge compute, power telemetry, local networking, and planned control services.",
+      "An off-grid solar trailer build exploring how power visibility and edge computing can support cleaner, more efficient energy use.",
     problem:
-      "Create useful visibility and control for an off-grid trailer where power, connectivity, environmental conditions, and field reliability matter.",
+      "Understand solar input, battery state, and everyday power demand when connectivity and energy are limited.",
     outcome:
-      "A working systems-integration direction with active edge and power-visibility work plus clearly planned subsystems.",
+      "An active trailer build with electrical planning, a documented monitoring concept, and a defined first power-observation exercise. Measured telemetry and field results are still pending.",
     approach:
-      "I am approaching Rallye Control as a sequence of field-tested subsystems. Power visibility and the Raspberry Pi edge environment come first; messaging, sensor nodes, backend services, and mobile control follow only when their interfaces and evidence are clear. That order keeps the project useful under off-grid power and connectivity constraints without presenting planned architecture as finished implementation.",
+      "My interest in energy conservation starts with understanding where power comes from and where it goes. I’m building Rallye Control around small, observable steps: document the power setup, record a routine load, and compare what the display reports before, during, and after use. Raspberry Pi monitoring is the next integration step. I want useful information in the field even when internet access is limited.",
+    architecture: {
+      title: "From solar input to useful power",
+      caption:
+        "Concept reconstructed from the project planning notes. Component connections and data access still need field verification.",
+      steps: [
+        "Solar input",
+        "Portable power station",
+        "Routine appliance load",
+        "Display observations",
+      ],
+    },
+    ownership: {
+      statement: "A personal build motivated by energy conservation.",
+      summary:
+        "I’m exploring cleaner, more efficient power through practical systems integration, careful observation, and an off-grid trailer build.",
+    },
     stack: [
-      "Raspberry Pi",
-      "ESP32",
-      "MQTT",
-      "Python/FastAPI",
-      "Docker",
-      "React Native/Expo",
-      "TypeScript",
+      "Solar power planning",
+      "Manual power observations",
+      "Raspberry Pi (in development)",
+      "MQTT (learning)",
+      "ESP32 (planned)",
+      "Python/FastAPI (learning)",
+      "Docker (learning)",
+      "React Native/Expo (planned)",
     ],
     capabilities: [
       "IoT architecture",
@@ -894,9 +916,10 @@ export const projects: Project[] = [
       "FDE",
     ],
     verifiedFacts: [
-      "I am building around an off-grid solar trailer and edge observability.",
-      "Current work focuses on Raspberry Pi edge computing, live power visibility, and local connectivity.",
-      "MQTT, ESP32, Python/FastAPI, Docker, and mobile control remain planned or in learning states.",
+      "The personal trailer project has documented electrical planning and a Raspberry Pi monitoring roadmap.",
+      "The design treats the Raspberry Pi as a monitoring and convenience layer.",
+      "The first measurement exercise will compare power-display observations around a routine load.",
+      "MQTT, ESP32, backend services, and mobile control have individual development states below.",
     ],
     unknowns: [
       "Battery, panel, inverter, and telemetry hardware specifications",
@@ -905,20 +928,46 @@ export const projects: Project[] = [
       "Measured telemetry, alerting, and field-reliability outcomes",
       "Public repository, photographs, architecture diagram, and demo links",
     ],
-    proofNote: "The build is active; a reviewed architecture diagram and field evidence are still being assembled.",
-    nextProof: "Publish one owned architecture diagram and a measured power-telemetry walkthrough.",
+    proofNote: "The concept is documented. An owned trailer photo and measured field observations are the next artifacts.",
+    nextProof: "Capture one owned photo of the power setup and log display readings before, during, and after a routine load.",
+    detailSections: [
+      {
+        kicker: "Design decision",
+        title: "Start with observations the hardware can support",
+        state: "Practicing",
+        summary:
+          "The first useful result is a clear picture of one load and the power available to run it.",
+        items: [
+          "Record the actual power source, load, and display used for the observation.",
+          "Keep power monitoring useful locally when internet access is unavailable.",
+          "Verify the available hardware interface before choosing a telemetry protocol.",
+        ],
+      },
+      {
+        kicker: "Next experiment",
+        title: "One load, three observations",
+        state: "Planned",
+        summary:
+          "Use the same routine load and compare a baseline, steady use, and recovery after the load is removed.",
+        items: [
+          "Record timestamps, solar input, output power, and battery state when the display exposes those values.",
+          "Note conditions and capture an original display photo alongside the readings.",
+          "Leave unavailable values blank and describe what the observations can establish.",
+        ],
+      },
+    ],
     subsystems: [
       {
         name: "Solar and power telemetry",
         state: "Practicing",
         detail:
-          "Active focus on live power visibility and useful operational monitoring.",
+          "Power-system planning and observation design are active. Recorded field measurements are pending.",
       },
       {
         name: "Raspberry Pi edge environment",
         state: "Practicing",
         detail:
-          "Edge-compute foundation for local services, networking, and system integration.",
+          "Monitoring architecture is in development. A working data connection and reproducible runtime artifact are pending.",
       },
       {
         name: "MQTT data flow",

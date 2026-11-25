@@ -7,6 +7,17 @@
 **Date:** 2026–Present
 **Public status:** Active architecture and build journal
 
+## Public page evidence
+
+The page includes an original conceptual power-and-observation diagram,
+clean-energy motivation, the first manual observation exercise, and every
+subsystem's evidence state. The diagram is a reconstruction of the monitoring
+concept and requires field verification.
+
+The next artifact is an owned photo of the power setup accompanied by display
+observations before, during, and after using a routine load. No measured energy
+savings, runtime, or completed telemetry connection is established yet.
+
 ## Verified direction
 
 Rallye Control is an off-grid solar trailer telemetry and control project. Its

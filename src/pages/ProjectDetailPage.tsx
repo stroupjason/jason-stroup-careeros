@@ -79,6 +79,16 @@ export function ProjectDetailPage({ project }: { project: Project }) {
         </div>
       </section>
 
+      {project.architecture ? (
+        <section className="section shell">
+          <SectionHeader kicker="Monitoring concept" title={project.architecture.title} />
+          <ol className="projectFlow" aria-label="Conceptual power and observation sequence">
+            {project.architecture.steps.map((step) => <li key={step}>{step}</li>)}
+          </ol>
+          <p className="projectFlowCaption">{project.architecture.caption}</p>
+        </section>
+      ) : null}
+
       <section className="section shell projectApproach">
         <SectionHeader kicker="Approach" title="How I worked the problem" />
         <p>{project.approach}</p>
@@ -212,7 +222,7 @@ export function ProjectDetailPage({ project }: { project: Project }) {
             title="Built and planned components"
           />
           <div className="capabilityGrid">
-            {project.subsystems.slice(0, 3).map((subsystem) => (
+            {project.subsystems.map((subsystem) => (
               <article className="capabilityCard" key={subsystem.name}>
                 <StateBadge state={subsystem.state} />
                 <h3>{subsystem.name}</h3>
