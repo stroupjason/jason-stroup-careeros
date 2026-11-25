@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { ArrowUpRight, Github, Linkedin, LogOut, Menu, ShieldCheck, X } from "lucide-react";
+import { ArrowUpRight, Download, Github, Linkedin, LogOut, Menu, ShieldCheck, X } from "lucide-react";
 import { useLearningAdmin } from "../admin/AdminContext";
 import {
   isAnalyticsEnabled,
@@ -22,7 +22,7 @@ const navItems = [
   { href: "/roles", label: "Role Fit" },
   { href: "/writing", label: "Writing" },
   { href: "/roadmap", label: "Roadmap" },
-  { href: "/resume-contact", label: "Contact", cta: true },
+  { href: "/resume-contact", label: "Résumé & Contact", cta: true },
 ];
 
 function isActive(currentPath: string, href: string) {
@@ -161,7 +161,10 @@ export function SiteLayout({ currentPath, children }: SiteLayoutProps) {
             <a href="/roadmap">Roadmap</a>
             <a href="/about">About</a>
             <a href="/resume-contact">
-              Contact <ArrowUpRight size={17} />
+              Résumé & Contact <ArrowUpRight size={17} aria-hidden="true" />
+            </a>
+            <a href={profile.resumeUrl} download>
+              <Download size={17} aria-hidden="true" /> Download résumé (PDF)
             </a>
           </div>
           <p className="footerNote">

@@ -62,9 +62,14 @@ export function ResumeContactPage() {
         title="See my work and connect."
         copy="Download my résumé or reach me on LinkedIn to talk about a role or a project."
         actions={
-          <a className="button primary" href={profile.resumeUrl} download>
-            Download résumé (PDF) <Download size={17} aria-hidden="true" />
-          </a>
+          <>
+            <a className="button primary" href={profile.resumeUrl} download>
+              Download résumé (PDF) <Download size={17} aria-hidden="true" />
+            </a>
+            <a className="button secondary" href={profile.resumeUrl}>
+              Open shareable PDF
+            </a>
+          </>
         }
       />
       <section className="section shell sectionAfterHero">
