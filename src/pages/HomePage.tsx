@@ -101,6 +101,9 @@ export function HomePage() {
             <ProjectCard key={project.slug} project={project} location="home" />
           ))}
         </div>
+        <div className="heroActions">
+          <LinkButton href="/case-studies" secondary>Explore professional engagements</LinkButton>
+        </div>
       </section>
 
       <section className="section shell">

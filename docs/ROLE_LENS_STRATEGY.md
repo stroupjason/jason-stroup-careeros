@@ -52,7 +52,7 @@ clear on each role page.
 
 These paths build from current technical depth toward reviewed code, tests,
 deployment, and maintainable delivery. Software Engineering also reflects
-Jason's confirmed pursuit of a master's degree in computer science; no school,
+Jason's confirmed pursuit of a Master of Science in Data Science (MSDS); no school,
 dates, coursework, specialization, or academic outcomes are yet public facts.
 
 ### Long-term

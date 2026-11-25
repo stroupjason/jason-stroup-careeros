@@ -55,6 +55,9 @@ export function ProjectDetailPage({ project }: { project: Project }) {
       />
 
       <section className="section shell sectionAfterHero">
+        {project.professionalEngagement ? (
+          <p className="engagementNote">Anonymized professional account. Public supporting artifacts and quantified outcomes are pending.</p>
+        ) : null}
         {project.ownership ? (
           <div className="projectOwnership">
             <span className="kicker">Ownership</span>
@@ -100,8 +103,8 @@ export function ProjectDetailPage({ project }: { project: Project }) {
       <section className="section band">
         <div className="shell">
           <SectionHeader
-            kicker="Verified facts"
-            title="What I can support"
+            kicker={project.professionalEngagement ? "My contribution" : "Verified facts"}
+            title={project.professionalEngagement ? "Work described in this engagement" : "What I can support"}
           />
           <div className="factGrid">
             {project.verifiedFacts.map((fact) => (
@@ -188,7 +191,7 @@ export function ProjectDetailPage({ project }: { project: Project }) {
       <section className="section shell">
         <SectionHeader
           kicker="Project proof"
-          title={project.liveUrl ? "Live beta" : project.media?.length ? "Reviewed artifacts" : "Still building"}
+          title={project.professionalEngagement ? "Public artifacts pending" : project.liveUrl ? "Live beta" : project.media?.length ? "Reviewed artifacts" : "Still building"}
         />
         {project.media?.length ? (
           <div className="mediaGrid">

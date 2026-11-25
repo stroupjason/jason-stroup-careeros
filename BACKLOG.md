@@ -1,5 +1,18 @@
 # CareerOS implementation backlog
 
+## Next priority — Dedicated Stroup Software Solutions business site
+
+Jason confirmed `stroup-software-solutions.com` and requested a separate
+business presence as the next priority. The current portfolio includes only
+the `/business` placeholder. Full implementation is deferred until resumed.
+
+- Define focused software/automation and marketing service packages and audiences.
+- Build original content and an inquiry path before paid national advertising.
+- Add approved customer references or case studies only with permission;
+  the current professional engagements are not LLC client claims.
+- Plan qualified-lead and revenue measurement without promising results.
+- Review domain routing separately when the dedicated site is ready.
+
 ## EPIC 1 — Portfolio launch
 
 - PORT-001 Validate all routes and direct refresh

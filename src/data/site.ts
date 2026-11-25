@@ -59,6 +59,7 @@ export type ProjectOwnership = {
 };
 
 export type Project = {
+  professionalEngagement?: boolean;
   architecture?: {
     title: string;
     caption: string;
@@ -205,6 +206,7 @@ export const externalProfileUrls = {
 
 export const businessProfile = {
   name: "Stroup Software Solutions LLC",
+  domain: "stroup-software-solutions.com",
   founded: "July 2025",
   engineering:
     "I offer custom software development, build and deployment workflows, SDET-style test automation, and AI-assisted developer tooling.",
@@ -221,11 +223,11 @@ export const profile = {
   location: "Fort Collins, Colorado",
   availability: "Open to remote opportunities",
   currentRole: "Founder, Stroup Software Solutions LLC",
-  professionalIdentity: "Customer-Facing Technical Systems Professional",
+  professionalIdentity: "Founder | Software Engineer | Data & AI",
   supportingLine:
-    "Technical solutions, SaaS integrations, application support, and software delivery.",
+    "Custom software, platform automation, and data-driven insights.",
   coreIdentity:
-    "I’m a customer-facing technical systems professional specializing in troubleshooting, integrations, analytics, solution delivery, and business value.",
+    "I build custom software, automate technical workflows, and turn data into practical decisions.",
   headline:
     "I turn complex customer problems into clear technical solutions.",
   summary:
@@ -735,6 +737,102 @@ export const capabilities: Array<{
     evidence:
       "A future evidence track requiring public notebooks, experiment design, evaluation, and reproducible analysis—not just course completion.",
     supports: ["Data Science"],
+  },
+];
+
+export const professionalEngagements: Project[] = [
+  {
+    slug: "healthcare-data-interpretation",
+    professionalEngagement: true,
+    title: "Healthcare Data Interpretation & Decision Support",
+    shortTitle: "Healthcare Data Interpretation",
+    type: "Anonymized professional engagement",
+    status: "Ongoing analytical work",
+    evidenceState: "Practicing",
+    summary: "Translate ambiguous questions and dataset results into understandable findings, mappings, and practical next actions.",
+    problem: "A dataset can contain results without making their business meaning or the next decision clear.",
+    outcome: "Ongoing work interpreting results across datasets and connecting findings to business questions. Public examples and measured outcomes are pending.",
+    approach: "I work from the question the user needs answered, interpret what each dataset can support, and map the results into findings and actions. The analytical work connects technical detail to the business decision while preserving uncertainty where a result needs more context.",
+    stack: ["Dataset interpretation", "Data mapping", "Requirements analysis", "Decision support"],
+    capabilities: ["Ambiguity management", "Analytical reasoning", "Business communication", "Data interpretation"],
+    roleLinks: ["Data Analytics", "TAM", "CSE"],
+    verifiedFacts: [
+      "I interpret ambiguous dataset results in a healthcare-related professional context.",
+      "My contribution includes connecting data findings to business meaning and next actions.",
+    ],
+    unknowns: ["Public example datasets and mappings", "Measured decision or operational outcomes"],
+    proofNote: "Professional summary based on my account. Public supporting artifacts are pending.",
+    nextProof: "Create a fictional dataset example showing the question, mapping decisions, findings, and resulting action.",
+  },
+  {
+    slug: "incident-automation-observability",
+    professionalEngagement: true,
+    title: "Incident Automation & Azure Observability",
+    shortTitle: "Incident Automation",
+    type: "Anonymized professional engagement",
+    status: "Deployed operational tooling",
+    evidenceState: "Demonstrated",
+    summary: "Connect incident workflows, severity classification, operational dashboards, and team routing to reduce manual coordination.",
+    problem: "Incident context and updates spread across support, incident management, and engineering systems create repeated handoffs.",
+    outcome: "An Azure-backed observability tool is deployed for outage classification and routing across P1–P3 severity levels. Workflow integrations and dashboard work support incident coordination; quantified time savings are pending.",
+    approach: "I build integrations across CRM, incident-management, and engineering work-tracking tools so incident context can move between teams. My work includes outage classification and routing, Grafana customer dashboards, and incident.io metrics dashboards and templates. The aim is a clearer operational picture and less manual coordination during incidents.",
+    stack: ["Salesforce", "incident.io", "Azure DevOps", "Azure monitoring", "Grafana", "Workflow automation"],
+    capabilities: ["Systems integration", "Observability", "Incident coordination", "Severity classification", "Dashboard design"],
+    roleLinks: ["Senior TSE", "Application Engineer", "TAM", "FDE"],
+    verifiedFacts: [
+      "I have built incident workflow integrations and metrics dashboards and templates.",
+      "The Azure-backed observability tool has been deployed for severity classification and routing.",
+      "I have built customer dashboards in Grafana.",
+    ],
+    unknowns: ["Measured time saved", "Public demonstration and test artifacts", "Public operational reliability results"],
+    proofNote: "Professional summary based on my account. Public supporting artifacts are pending.",
+    nextProof: "Build an independent fictional incident example that demonstrates classification, handoff, and status updates.",
+  },
+  {
+    slug: "service-operations-reporting",
+    professionalEngagement: true,
+    title: "Service Operations Reporting & Automation",
+    shortTitle: "Service Operations Insights",
+    type: "Anonymized professional engagement",
+    status: "Reporting work in progress",
+    evidenceState: "Practicing",
+    summary: "Turn user requirements, ticket data, and queue activity into Power BI reporting and Power Automate workflows.",
+    problem: "Operational activity needs interpretation before teams can decide what to prioritize or investigate.",
+    outcome: "Active dashboard and reporting work connects user requirements to findings about tickets and queue activity. Public outputs and quantified impact are pending.",
+    approach: "I translate the user's question into reporting requirements, map relevant data to the measures needed, and present findings in Power BI. Power Automate supports reporting workflows so users can act on the information. The emphasis is making the relationship between a requirement, a measure, and a decision understandable.",
+    stack: ["Power BI", "Power Automate", "Requirements analysis", "Data mapping", "Operational reporting"],
+    capabilities: ["Business intelligence", "Requirements translation", "Workflow automation", "Actionable reporting"],
+    roleLinks: ["Data Analytics", "TAM", "CSE", "Application Engineer"],
+    verifiedFacts: [
+      "I translate user requirements into Power BI dashboard and Power Automate reporting work.",
+      "The reporting focuses on findings, ticket activity, and user queues.",
+    ],
+    unknowns: ["Public dashboard examples", "Approved metric definitions", "Measured operational impact"],
+    proofNote: "Professional summary based on my account. Public supporting artifacts are pending.",
+    nextProof: "Create a synthetic ticket dataset and an original report demonstrating requirements, measures, findings, and recommended actions.",
+  },
+  {
+    slug: "cybersecurity-saas-investigation",
+    professionalEngagement: true,
+    title: "Cybersecurity SaaS & Integration Investigation",
+    shortTitle: "Cybersecurity SaaS",
+    type: "Anonymized professional engagement",
+    status: "Professional support experience",
+    evidenceState: "Demonstrated",
+    summary: "Investigate authentication, integration, data-quality, and runtime issues in a cybersecurity SaaS context.",
+    problem: "Customer-facing issues can cross API, authentication, data, and system boundaries before the cause becomes clear.",
+    outcome: "Professional troubleshooting and escalation experience supports structured investigation, clearer communication, and technical follow-through. Public case artifacts and measured outcomes are pending.",
+    approach: "I narrow symptoms, investigate API and authentication behavior, examine logs and data flow, and communicate findings and next steps. Linux administration and runtime investigation support the diagnosis, while structured escalation gives engineering a clearer problem to work from.",
+    stack: ["REST APIs", "Authentication", "Linux", "Logs", "Data-quality investigation"],
+    capabilities: ["Technical troubleshooting", "Customer communication", "Systems investigation", "Escalation ownership"],
+    roleLinks: ["Senior TSE", "CSE", "Application Engineer"],
+    verifiedFacts: [
+      "My professional experience includes cybersecurity SaaS troubleshooting and customer issue ownership.",
+      "My investigations span APIs, authentication, logs, integrations, and data quality.",
+    ],
+    unknowns: ["Public independent reproduction", "Measured outcomes and reviewed case artifacts"],
+    proofNote: "Professional summary based on my account. Public supporting artifacts are pending.",
+    nextProof: "Write an original fictional investigation showing symptom, hypothesis, validation, and customer-facing next steps.",
   },
 ];
 
@@ -1486,6 +1584,7 @@ export const projects: Project[] = [
     nextProof:
       "Continue CSCA 5063 and independently create a reproducible packet-flow or protocol-troubleshooting exercise.",
   },
+  ...professionalEngagements,
 ];
 
 export const roleLenses: RoleLens[] = [
@@ -1514,6 +1613,8 @@ export const roleLenses: RoleLens[] = [
       "careeros-learning-delivery",
       "healthcare-sql-customer-operations",
       "python-mongodb-debugging-lab",
+      "incident-automation-observability",
+      "cybersecurity-saas-investigation",
     ],
     gaps: [
       "More public-safe examples of mentoring and technical leadership",
@@ -1565,6 +1666,9 @@ export const roleLenses: RoleLens[] = [
       "careeros-learning-delivery",
       "healthcare-sql-customer-operations",
       "rallye-control",
+      "incident-automation-observability",
+      "healthcare-data-interpretation",
+      "service-operations-reporting",
     ],
     gaps: [
       "A public-safe proactive account plan or success-plan example",
@@ -1618,6 +1722,9 @@ export const roleLenses: RoleLens[] = [
       "healthcare-sql-customer-operations",
       "automatic-nerf-turret",
       "rallye-control",
+      "cybersecurity-saas-investigation",
+      "healthcare-data-interpretation",
+      "service-operations-reporting",
     ],
     gaps: [
       "More end-to-end implementation and onboarding case studies",
@@ -1669,6 +1776,8 @@ export const roleLenses: RoleLens[] = [
       "careeros-learning-delivery",
       "healthcare-sql-customer-operations",
       "rallye-control",
+      "healthcare-data-interpretation",
+      "service-operations-reporting",
     ],
     gaps: [
       "A polished public analytics case study with a reproducible dataset",
@@ -1721,6 +1830,9 @@ export const roleLenses: RoleLens[] = [
       "careeros",
       "careeros-analytics-integrations",
       "careeros-learning-delivery",
+      "incident-automation-observability",
+      "cybersecurity-saas-investigation",
+      "service-operations-reporting",
     ],
     gaps: [
       "Reviewed production backend contributions",
@@ -1758,7 +1870,7 @@ export const roleLenses: RoleLens[] = [
     headline:
       "Building from customer-facing technical depth into tested, maintainable software delivery.",
     overview:
-      "I’m currently pursuing a master’s degree in computer science while strengthening my software engineering practice through shipped projects, backend development, testing, and deployment.",
+      "I’m pursuing a Master of Science in Data Science (MSDS) while strengthening my software engineering practice through shipped projects, backend development, testing, and deployment.",
     contribution:
       "I bring customer-facing production context, structured debugging, and a MERN/full-stack foundation to software work. My focus is turning that foundation into maintainable backend delivery, automated tests, and repeatable deployment evidence.",
     demonstratedEvidence: [
@@ -1780,7 +1892,7 @@ export const roleLenses: RoleLens[] = [
       "Automated testing depth",
       "Software design and maintainability evidence",
       "Repeatable deployment ownership",
-      "Data structures, algorithms, and computer-science depth through the master’s program",
+      "Data structures, algorithms, and computer-science fundamentals",
     ],
     gapDisplayLimit: 5,
     nextProof:

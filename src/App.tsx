@@ -8,6 +8,7 @@ import { SiteLayout } from "./components/SiteLayout";
 import { projects, roleLenses } from "./data/site";
 import { getLearningTicket } from "./data/learning";
 import { AboutPage } from "./pages/AboutPage";
+import { BusinessPage } from "./pages/BusinessPage";
 import { AdminLoginPage } from "./pages/AdminLoginPage";
 import { AdminOperationsBugsPage } from "./pages/AdminOperationsBugsPage";
 import { CaseStudiesPage } from "./pages/CaseStudiesPage";
@@ -109,9 +110,9 @@ export function App() {
 export function resolveRoute(path: string) {
   if (path === "/") {
     return {
-      title: "Jason Stroup | Technical Solutions, Integrations & Application Support",
+      title: "Jason Stroup | Founder, Software Engineer, Data & AI",
       description:
-        "Jason Stroup is a customer-facing technical systems professional specializing in SaaS integrations, application support, troubleshooting, data, and software delivery.",
+        "Jason Stroup builds custom software, platform automation, and data-driven solutions as the founder of Stroup Software Solutions LLC.",
       element: <HomePage />,
     };
   }
@@ -236,7 +237,7 @@ export function resolveRoute(path: string) {
     return {
       title: "Case Studies",
       description:
-        "A reserved space for future technical case studies with supporting artifacts.",
+        "Anonymized professional engagements in data interpretation, incident automation, operational reporting, and cybersecurity SaaS.",
       element: <CaseStudiesPage />,
     };
   }
@@ -246,6 +247,13 @@ export function resolveRoute(path: string) {
       description:
         "Jason Stroup founded Stroup Software Solutions LLC, offering custom software, platform engineering, marketing, and advertising.",
       element: <AboutPage />,
+    };
+  }
+  if (path === "/business") {
+    return {
+      title: "Stroup Software Solutions LLC",
+      description: "Custom software, platform automation, marketing, and advertising. A dedicated business website is planned.",
+      element: <BusinessPage />,
     };
   }
   if (path === "/resume-contact") {

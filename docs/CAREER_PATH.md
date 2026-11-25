@@ -54,7 +54,7 @@ Current positioning:
 - active development path, not strongest current alignment
 - React, JavaScript, TypeScript, and an existing MERN/full-stack foundation
 - shipped project, API, database, testing, and deployment evidence in development
-- currently pursuing a master's degree in computer science
+- pursuing a Master of Science in Data Science (MSDS)
 
 Required next evidence:
 
@@ -62,7 +62,7 @@ Required next evidence:
 - automated testing depth
 - maintainable software-design evidence
 - repeatable deployment ownership
-- data structures, algorithms, and computer-science depth through the master's program
+- data structures, algorithms, and computer-science fundamentals
 
 ## Long-term convergence
 

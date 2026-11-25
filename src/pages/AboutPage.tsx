@@ -8,13 +8,14 @@ export function AboutPage() {
       <PageHero
         eyebrow="About"
         title="I work between the customer, the data, and the codebase."
-        copy={`I’m the founder of ${businessProfile.name} and a customer-facing technical systems professional based in ${profile.location}. ${profile.availability}.`}
+        copy={`I’m the founder of ${businessProfile.name}, building software, platform automation, and data-driven solutions from ${profile.location}. ${profile.availability}.`}
       />
       <section className="section shell sectionAfterHero aboutPageGrid">
         <article>
           <SectionHeader kicker={`Founded ${businessProfile.founded}`} title={businessProfile.name} />
           <p>{businessProfile.engineering}</p>
           <p>{businessProfile.principles}</p>
+          <p>A dedicated business site is next. <a href="/business">Explore the business direction</a> or <a href="/case-studies">review my professional engagements</a>.</p>
         </article>
         <article>
           <SectionHeader kicker="Services" title="Custom marketing and advertising" />

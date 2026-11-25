@@ -160,6 +160,8 @@ export function SiteLayout({ currentPath, children }: SiteLayoutProps) {
             <a href="/writing">Writing</a>
             <a href="/roadmap">Roadmap</a>
             <a href="/about">About</a>
+            <a href="/case-studies">Professional engagements</a>
+            <a href="/business">Stroup Software Solutions</a>
             <a href="/resume-contact">
               Résumé & Contact <ArrowUpRight size={17} aria-hidden="true" />
             </a>

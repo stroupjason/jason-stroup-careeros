@@ -3,7 +3,9 @@ import { describe, expect, it } from "vitest";
 import { ProjectCard } from "../components/UI";
 import { ProjectDetailPage } from "../pages/ProjectDetailPage";
 import { ProjectsPage } from "../pages/ProjectsPage";
-import { projects } from "./site";
+import { BusinessPage } from "../pages/BusinessPage";
+import { CaseStudiesPage } from "../pages/CaseStudiesPage";
+import { businessProfile, professionalEngagements, projects, roleLenses } from "./site";
 
 const careerOS = projects.find((project) => project.slug === "careeros")!;
 const nerfTurret = projects.find((project) => project.slug === "automatic-nerf-turret")!;
@@ -43,5 +45,41 @@ describe("public project source proof", () => {
     expect(projectsMarkup).toContain(">Source ");
     expect(projectsMarkup).toContain('target="_blank"');
     expect(homeCardMarkup).not.toContain(">Source ");
+  });
+});
+
+describe("anonymized professional engagement boundaries", () => {
+  it("exposes four distinct summaries with explicit evidence gaps and no unverified proof links", () => {
+    expect(professionalEngagements).toHaveLength(4);
+    expect(new Set(projects.map((project) => project.slug)).size).toBe(projects.length);
+    for (const engagement of professionalEngagements) {
+      expect(projects).toContain(engagement);
+      expect(engagement.professionalEngagement).toBe(true);
+      expect(engagement.unknowns.length).toBeGreaterThan(0);
+      expect(engagement.sourceUrl).toBeUndefined();
+      expect(engagement.liveUrl).toBeUndefined();
+      const markup = renderToStaticMarkup(<ProjectDetailPage project={engagement} />);
+      expect(markup).toContain("Anonymized professional account");
+      expect(markup).toContain("Public artifacts pending");
+      expect(markup).not.toContain("Verified facts");
+    }
+  });
+
+  it("keeps the professional roster separate from company clients and the business site honestly planned", () => {
+    expect(renderToStaticMarkup(<CaseStudiesPage />)).toContain("not a Stroup Software Solutions client list");
+    const markup = renderToStaticMarkup(<BusinessPage />);
+    expect(businessProfile.domain).toBe("stroup-software-solutions.com");
+    expect(markup).toContain("Business website in development");
+    expect(markup).toContain("Discuss a project on LinkedIn");
+    expect(markup).not.toContain("<form");
+  });
+
+  it("keeps role project references resolvable and Data Science exploratory", () => {
+    for (const role of roleLenses) {
+      for (const slug of role.relevantProjects) {
+        expect(projects.some((project) => project.slug === slug)).toBe(true);
+      }
+    }
+    expect(roleLenses.find((role) => role.slug === "data-science")?.group).toBe("Exploratory");
   });
 });

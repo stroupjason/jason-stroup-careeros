@@ -1,4 +1,4 @@
-import { EvidenceLegend, PageHero, ProjectCard, SectionHeader, StateBadge } from "../components/UI";
+import { EvidenceLegend, LinkButton, PageHero, ProjectCard, SectionHeader, StateBadge } from "../components/UI";
 import { projects } from "../data/site";
 
 export function ProjectsPage() {
@@ -11,12 +11,13 @@ export function ProjectsPage() {
         eyebrow="Projects"
         title="Technical work with clear proof states."
         copy="I separate demonstrated work, active builds, and planned proof so each project is easy to evaluate."
+        actions={<LinkButton href="/case-studies" secondary>Professional engagements</LinkButton>}
       />
       <section className="section shell sectionAfterHero">
         <SectionHeader
           kicker="Featured work"
           title="Demonstrated and active"
-          copy="Four projects show product thinking, analytics, integrations, computer vision, edge systems, and technical delivery."
+          copy="Products, personal builds, and anonymized professional work show how I approach technical delivery."
         />
         <div className="projectGrid projectCollectionGrid">
           {activeProjects.map((project) => (

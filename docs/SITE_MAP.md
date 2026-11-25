@@ -15,7 +15,8 @@
 | `/roadmap` | Portfolio Delivery Intelligence timeline, metrics, evidence map, and execution sequence |
 | `/admin/operations/bugs` | Unadvertised, membership-protected Bug classification and RCA view |
 | `/journal` | Learning and engineering history |
-| `/case-studies` | Case-study pipeline |
+| `/case-studies` | Anonymized professional engagements with explicit public-evidence gaps |
+| `/business` | Stroup Software Solutions placeholder; dedicated business site deferred |
 | `/about` | Professional narrative |
 | `/resume-contact` | Recruiter conversion and reviewed resume |
 
@@ -28,6 +29,10 @@
 - `/projects/automatic-nerf-turret`
 - `/projects/rallye-control`
 - `/projects/python-mongodb-debugging-lab`
+- `/projects/healthcare-data-interpretation`
+- `/projects/incident-automation-observability`
+- `/projects/service-operations-reporting`
+- `/projects/cybersecurity-saas-investigation`
 
 ## Role-lens pages
 
