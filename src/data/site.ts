@@ -14,6 +14,8 @@ export type ProjectMedia = {
   src: string;
   alt: string;
   caption: string;
+  width: number;
+  height: number;
 };
 
 export type InitiativePhaseStatus = "Completed" | "Active" | "Next" | "Planned";
@@ -839,10 +841,19 @@ export const projects: Project[] = [
       "Specific camera, servo, and mechanical component models",
       "Surviving source-code or repository link",
       "Measured latency, tracking accuracy, or reliability metrics",
-      "Available photographs or demonstration video",
+      "Reviewed public demonstration video",
     ],
-    proofNote: "The working prototype is verified, but the original public code and media are not currently available.",
-    nextProof: "Recover owned media or publish a clearly labeled reconstruction and architecture diagram.",
+    proofNote: "An approved original photo shows the assembled capstone prototype.",
+    nextProof: "Review original demo footage and document the engineering lessons from the prototype.",
+    media: [
+      {
+        src: "/projects/automatic-nerf-turret/prototype.jpg",
+        alt: "Blue and orange Nerf toy mounted on a wooden prototype stand.",
+        caption: "Original capstone photo of the assembled prototype.",
+        width: 4032,
+        height: 3024,
+      },
+    ],
   },
   {
     slug: "rallye-control",
@@ -1857,11 +1868,11 @@ export const roadmap = [
   },
   {
     phase: "02",
-    title: "Own the Nerf Turret proof",
-    date: "Now",
-    status: "active",
+    title: "Publish the Nerf Turret photo",
+    date: "Complete",
+    status: "complete",
     detail:
-      "Recover owned media or publish a clearly labeled reconstruction and original architecture diagram.",
+      "The project page includes an approved original photo of the assembled prototype.",
   },
   {
     phase: "03",

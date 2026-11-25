@@ -5,7 +5,7 @@
 **Evidence state:** Demonstrated
 
 **Date:** unresolved; do not publish a date until confirmed
-**Public status:** Portfolio reconstruction in progress
+**Public status:** Original prototype photo published
 
 ## Verified facts
 
@@ -16,6 +16,7 @@
   and physical components.
 - Used SQLAlchemy and web technologies for state/workflow management.
 - Validated the prototype through personal end-to-end testing.
+- The project page includes an approved original photo of the assembled prototype with location metadata removed.
 
 ## Portfolio thesis
 
@@ -30,7 +31,7 @@ Science, and FDE.
 - complete hardware inventory
 - camera, servo, controller, and mechanical details
 - surviving code or repository
-- photographs and video
+- reviewed public demonstration video
 - architecture and control-flow diagram
 - measured or qualitative reliability observations
 - what failed and what would be redesigned today

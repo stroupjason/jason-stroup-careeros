@@ -184,7 +184,13 @@ export function ProjectDetailPage({ project }: { project: Project }) {
           <div className="mediaGrid">
             {project.media.map((item) => (
               <figure className="mediaCard" key={item.src}>
-                <img src={item.src} alt={item.alt} loading="lazy" />
+                <img
+                  src={item.src}
+                  alt={item.alt}
+                  width={item.width}
+                  height={item.height}
+                  loading="lazy"
+                />
                 <figcaption>{item.caption}</figcaption>
               </figure>
             ))}
