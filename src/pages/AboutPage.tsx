@@ -1,6 +1,6 @@
 import { BookOpenCheck, Github, Linkedin, Workflow } from "lucide-react";
 import { PageHero, SectionHeader } from "../components/UI";
-import { profile } from "../data/site";
+import { businessProfile, profile } from "../data/site";
 
 export function AboutPage() {
   return (
@@ -8,22 +8,18 @@ export function AboutPage() {
       <PageHero
         eyebrow="About"
         title="I work between the customer, the data, and the codebase."
-        copy="I’m a customer-facing technical systems professional with deep experience in SaaS troubleshooting, integrations, observability, analytics, and customer ownership. Based in Fort Collins, Colorado, and open to remote opportunities."
+        copy={`I’m the founder of ${businessProfile.name} and a customer-facing technical systems professional based in ${profile.location}. ${profile.availability}.`}
       />
       <section className="section shell sectionAfterHero aboutPageGrid">
         <article>
-          <SectionHeader kicker="Current strength" title="Customer context plus technical depth" />
-          <p>
-            I investigate difficult SaaS problems across APIs, integrations, logs,
-            data flows, and runtime signals while keeping customers and internal teams aligned.
-          </p>
+          <SectionHeader kicker={`Founded ${businessProfile.founded}`} title={businessProfile.name} />
+          <p>{businessProfile.engineering}</p>
+          <p>{businessProfile.principles}</p>
         </article>
         <article>
-          <SectionHeader kicker="Direction" title="Own more of the delivery path" />
-          <p>
-            I’m building deeper backend, testing, deployment, and implementation
-            evidence so I can carry customer ambiguity farther into delivery and validation.
-          </p>
+          <SectionHeader kicker="Services" title="Custom marketing and advertising" />
+          <p>{businessProfile.marketing}</p>
+          <p>{businessProfile.markets}</p>
         </article>
       </section>
       <section className="section band">

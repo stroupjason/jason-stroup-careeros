@@ -109,6 +109,7 @@ export type RoleLens = {
 
 export type SkillCategory =
   | "Customer & Technical Delivery"
+  | "Platform Engineering & Software Quality"
   | "APIs & Backend"
   | "Observability & Infrastructure"
   | "Data & Analytics"
@@ -195,11 +196,24 @@ export const externalProfileUrls = {
   medium: "https://medium.com/@jasonstroup12",
 };
 
+export const businessProfile = {
+  name: "Stroup Software Solutions LLC",
+  founded: "July 2025",
+  engineering:
+    "I offer custom software development, build and deployment workflows, SDET-style test automation, and AI-assisted developer tooling.",
+  principles:
+    "I emphasize reproducible fixes, human-reviewed changes, and clear handoffs.",
+  marketing:
+    "I provide end-to-end custom marketing and advertising, from campaign strategy and landing pages to analytics and reporting.",
+  markets:
+    "I focus on real estate teams that use platforms such as Zillow, small and midsize businesses, SaaS, DaaS, and PaaS providers, and healthcare companies.",
+};
+
 export const profile = {
   name: "Jason Stroup",
   location: "Fort Collins, Colorado",
   availability: "Open to remote opportunities",
-  currentRole: "Technical Support Engineer",
+  currentRole: "Founder, Stroup Software Solutions LLC",
   professionalIdentity: "Customer-Facing Technical Systems Professional",
   supportingLine:
     "Technical solutions, SaaS integrations, application support, and software delivery.",
@@ -211,6 +225,7 @@ export const profile = {
     "I specialize in SaaS troubleshooting, integrations, observability, analytics, and customer ownership while building deeper backend delivery skills.",
   github: externalProfileUrls.github,
   linkedin: externalProfileUrls.linkedin,
+  resumeUrl: "/resume/Jason-Stroup-Resume.pdf",
 };
 
 export const publicationProfiles: PublicationProfile[] = [
@@ -302,6 +317,7 @@ export const evidenceStates: Array<{
 
 export const skillCategories: SkillCategory[] = [
   "Customer & Technical Delivery",
+  "Platform Engineering & Software Quality",
   "APIs & Backend",
   "Observability & Infrastructure",
   "Data & Analytics",
@@ -309,6 +325,60 @@ export const skillCategories: SkillCategory[] = [
 ];
 
 export const skills: Skill[] = [
+  {
+    id: "ci-cd-and-deployment",
+    name: "CI/CD and software delivery",
+    category: "Platform Engineering & Software Quality",
+    careerOsStatus: "Demonstrated",
+    evidenceSummary:
+      "I use Git and GitHub to ship CareerOS, with automated type and build checks, Vercel deployments, and production route smoke tests.",
+    evidenceSources: [
+      { type: "project", label: "CareerOS delivery workflow", verified: true },
+    ],
+    relatedProjectSlugs: ["careeros"],
+    relatedRoleSlugs: ["application-engineer", "software-engineer"],
+    visible: true,
+  },
+  {
+    id: "sdet-test-automation",
+    name: "Test automation and SDET practices",
+    category: "Platform Engineering & Software Quality",
+    careerOsStatus: "Practicing",
+    evidenceSummary:
+      "I reproduce defects and validate fixes with automated regression and integration tests, API checks, and smoke tests. In the Python/MongoDB lab, a failing test captured a stale response before the fix.",
+    evidenceSources: [
+      { type: "lab", label: "Locally validated Python/MongoDB lab", verified: true },
+    ],
+    relatedProjectSlugs: ["python-mongodb-debugging-lab"],
+    relatedRoleSlugs: ["application-engineer", "software-engineer"],
+    visible: true,
+  },
+  {
+    id: "containers-and-runtime-diagnostics",
+    name: "Containers and runtime diagnostics",
+    category: "Platform Engineering & Software Quality",
+    careerOsStatus: "Practicing",
+    evidenceSummary:
+      "I use structured logs to trace API and database behavior. I prepared and validated the Docker Compose configuration for an isolated Python/MongoDB lab workflow.",
+    evidenceSources: [
+      { type: "lab", label: "Python/MongoDB lab configuration and diagnostics", verified: true },
+    ],
+    relatedProjectSlugs: ["python-mongodb-debugging-lab"],
+    relatedRoleSlugs: ["application-engineer", "forward-deployed-engineer"],
+    visible: true,
+  },
+  {
+    id: "ai-assisted-developer-tooling",
+    name: "AI-assisted developer tooling",
+    category: "Platform Engineering & Software Quality",
+    careerOsStatus: "Practicing",
+    evidenceSummary:
+      "I’m developing terminal-based workflows with Claude Code CLI and OpenAI Codex for code exploration, test development, and documentation, with human review and validation before changes ship.",
+    evidenceSources: [],
+    relatedProjectSlugs: [],
+    relatedRoleSlugs: ["application-engineer", "software-engineer"],
+    visible: true,
+  },
   {
     id: "customer-troubleshooting",
     name: "Complex SaaS troubleshooting",
@@ -514,9 +584,9 @@ export const developingSkills: Skill[] = [
     category: "Currently Developing",
     careerOsStatus: "Learning",
     evidenceSummary:
-      "Next: trace one symptom through logs, Python, stored data, a test, and validation.",
+      "I traced a stale API response through structured logs, a Python query, and MongoDB fixtures. Next is to package the lab for a repeatable setup.",
     evidenceSources: [
-      { type: "lab", label: "Planned Python/MongoDB debugging lab", provider: "CareerOS", verified: true },
+      { type: "lab", label: "Locally validated Python/MongoDB debugging lab", provider: "CareerOS", verified: true },
     ],
     relatedProjectSlugs: ["python-mongodb-debugging-lab"],
     relatedRoleSlugs: ["application-engineer", "software-engineer"],
@@ -1291,37 +1361,36 @@ export const projects: Project[] = [
     title: "Python/MongoDB Debugging Lab",
     shortTitle: "Backend Debugging Lab",
     type: "Independent engineering lab",
-    status: "Planned lab",
-    evidenceState: "Planned",
+    status: "Validated locally",
+    evidenceState: "Practicing",
     summary:
-      "A planned fictional backend environment for practicing code tracing, MongoDB debugging, regression tests, and Docker deployment.",
+      "A fictional greenhouse service for practicing code tracing, MongoDB debugging, and automated regression testing.",
     problem:
       "Create a safe, independent environment for demonstrating the complete path from customer symptom to code, data, test, fix, and validation.",
     outcome:
-      "Not yet completed. The lab specification and evidence goals are defined so the eventual build can produce a credible public case study.",
+      "The initial regression reproduced a stale reading. After correcting the sort order, all three tests passed and an HTTP smoke test returned the newest reading.",
     approach:
-      "The lab will start with a small fictional service and one reproducible failure. I will trace the symptom through structured logs, Python code, and MongoDB data; state a testable hypothesis; add a regression test; make the narrowest useful fix; and validate the deployed behavior. Nothing on this page represents that workflow as completed today. The finished proof will include runnable code, tests, logs, and a concise end-to-end retrospective for review.",
-    stack: ["Python", "MongoDB", "Docker", "Tests", "Structured logs"],
+      "I traced the response through structured logs, the Flask request handler, and MongoDB fixtures, then added a regression test and corrected the query. The tests ran against a local MongoDB instance.",
+    stack: ["Python", "Flask", "MongoDB", "Docker Compose", "unittest", "Structured logs"],
     capabilities: [
       "Backend debugging",
       "Regression testing",
       "Data-flow tracing",
-      "Safe deployment",
+      "Local validation",
       "Technical documentation",
     ],
     roleLinks: ["Senior TSE", "Application Engineer", "FDE"],
     verifiedFacts: [
-      "The planned lab is fictional and independent from employer architecture.",
-      "The intended workflow runs from symptom and logs through code/data tracing, a test, a small fix, and validation.",
-      "No working lab exists yet.",
+      "The lab uses fictional greenhouse readings and original code.",
+      "An integration test reproduced the stale response against MongoDB before the query was corrected.",
+      "After the fix, three tests passed and direct HTTP requests confirmed the newest reading and the missing-station response.",
     ],
     unknowns: [
-      "Final service domain and failure scenario",
-      "Repository and deployment URL",
-      "Completed tests, screenshots, and outcome",
+      "Public source repository and deployment URL",
+      "Container runtime validation",
     ],
-    proofNote: "No working lab or artifact exists yet; this project is planned.",
-    nextProof: "Build the smallest runnable service, reproduce one failure, and add a regression test.",
+    proofNote: "The lab runs locally. Public source and a hosted demo are pending.",
+    nextProof: "Validate the Compose workflow and prepare reviewed source and test instructions.",
   },
   {
     slug: "network-reliability-cloud-troubleshooting-lab",
@@ -1804,11 +1873,11 @@ export const roadmap = [
   },
   {
     phase: "04",
-    title: "Add reviewed contact materials",
-    date: "Next",
-    status: "planned",
+    title: "Publish the reviewed résumé",
+    date: "Complete",
+    status: "complete",
     detail:
-      "Publish a resume and direct contact method only after both are reviewed for accuracy and privacy.",
+      "The reviewed résumé is available on the contact page, with LinkedIn as the public contact method.",
   },
   {
     phase: "05",
@@ -1816,6 +1885,6 @@ export const roadmap = [
     date: "Then",
     status: "planned",
     detail:
-      "Complete the Python/MongoDB lab and a small reviewed contribution, moving from Application Engineering toward FDE delivery.",
+      "Package the locally validated Python/MongoDB lab and make a small reviewed contribution, moving from Application Engineering toward FDE delivery.",
   },
 ];

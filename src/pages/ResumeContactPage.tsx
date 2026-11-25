@@ -1,4 +1,4 @@
-import { BookOpenCheck, Github, Linkedin, Newspaper, PenLine, type LucideIcon } from "lucide-react";
+import { BookOpenCheck, Download, Github, Linkedin, Newspaper, PenLine, type LucideIcon } from "lucide-react";
 import { trackPortfolioEvent } from "../analytics";
 import { PageHero, SectionHeader } from "../components/UI";
 import { profile, publicationProfiles } from "../data/site";
@@ -58,9 +58,14 @@ export function ResumeContactPage() {
   return (
     <>
       <PageHero
-        eyebrow="Contact"
+        eyebrow="Résumé & contact"
         title="See my work and connect."
-        copy="LinkedIn is the best way to reach me. GitHub shows my public repositories and code history."
+        copy="Download my résumé or reach me on LinkedIn to talk about a role or a project."
+        actions={
+          <a className="button primary" href={profile.resumeUrl} download>
+            Download résumé (PDF) <Download size={17} aria-hidden="true" />
+          </a>
+        }
       />
       <section className="section shell sectionAfterHero">
         <SectionHeader

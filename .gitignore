@@ -14,3 +14,4 @@ private/**
 !private/project-intake/
 !private/project-intake/.gitkeep
 public/resume/*.pdf
+!public/resume/Jason-Stroup-Resume.pdf

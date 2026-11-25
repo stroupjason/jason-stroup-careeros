@@ -127,7 +127,7 @@ export function resolveRoute(path: string) {
     return {
       title: "Skills & Learning",
       description:
-        "Jason Stroup's evidence-backed technical skills, current learning, supporting projects, and public learning profiles.",
+        "Jason Stroup's platform engineering, software delivery, test automation, and technical skills, with supporting projects.",
       element: <SkillsPage />,
     };
   }
@@ -244,14 +244,14 @@ export function resolveRoute(path: string) {
     return {
       title: "About",
       description:
-        "About Jason Stroup: customer-facing technical systems professional, builder, and CareerOS creator.",
+        "Jason Stroup founded Stroup Software Solutions LLC, offering custom software, platform engineering, marketing, and advertising.",
       element: <AboutPage />,
     };
   }
   if (path === "/resume-contact") {
     return {
-      title: "Contact",
-      description: "Connect with Jason Stroup through LinkedIn and GitHub.",
+      title: "Résumé & Contact",
+      description: "Download Jason Stroup's résumé and connect through LinkedIn and GitHub.",
       element: <ResumeContactPage />,
     };
   }

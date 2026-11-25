@@ -1,6 +1,7 @@
 import { BookOpenCheck, ExternalLink } from "lucide-react";
 import { LinkButton, PageHero, SectionHeader, StateBadge } from "../components/UI";
 import {
+  businessProfile,
   developingSkills,
   evidenceStates,
   learningProfiles,
@@ -31,7 +32,7 @@ export function SkillsPage() {
       <PageHero
         eyebrow="Skills & learning"
         title="Skills backed by work, projects, and continuous learning."
-        copy="What I use today, what I’m strengthening, and the evidence behind each skill."
+        copy={`The skills behind my software and delivery work at ${businessProfile.name}, and the capabilities I’m building next.`}
       />
 
       <section className="section shell sectionAfterHero compactSkillsIntro">
@@ -51,7 +52,6 @@ export function SkillsPage() {
           <SectionHeader
             kicker="Evidence-backed skills"
             title="What I use today"
-            copy="Each skill links to public-safe evidence."
           />
           <div className="skillGroups">
             {skillCategories.map((category) => {
