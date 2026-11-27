@@ -31,8 +31,10 @@ analytics, or a public DTO.
 
 The stable owner route is `/admin`, with `/admin/login` retained as the exact
 Magic Link callback. The Supabase client persists and refreshes the browser
-session, detects PKCE callback sessions, and opts into experimental passkeys.
-Public self-sign-up remains disabled.
+session, completes implicit callback sessions across browser contexts, and opts
+into experimental passkeys. Implicit flow is intentional here because Jason's
+email client may open the recovery link in a different browser than the one
+that requested it. Public self-sign-up remains disabled.
 
 The production passkey configuration is Jason-controlled:
 
@@ -48,7 +50,9 @@ does not grant CareerOS administration. Every restored session still calls
 Magic Link remains the recovery method with `shouldCreateUser: false` and a
 neutral response for authorized and unauthorized addresses. The exact callback
 remains `https://www.jasonstroup.website/admin/login`. A validated destination
-is preserved in same-origin session storage, not added to the callback URL.
+is included in the signed-in redirect only after same-origin allowlist
+validation, so cross-browser recovery can preserve it without trusting an
+arbitrary external destination.
 Only `/admin`, the private Bug Log, the Learning board and timeline, and public
 Learning ticket routes are accepted. Protocol-relative, external, malformed,
 and unapproved destinations fall back to `/admin`.
@@ -68,8 +72,12 @@ settings remain a production-dashboard verification item. Local sign-out uses
 6. Sign in with the passkey and verify an approved `returnTo` destination.
 7. Sign out again and confirm Magic Link recovery still works.
 
-Until these steps pass, PRODUCT-243 remains In Review and no production
-passkey enrollment claim is made.
+This gate passed on August 8, 2026 with Windows Hello: email recovery,
+registration, local sign-out, passkey re-entry, administrator authorization,
+route access, and durable data reload all succeeded on the canonical origin.
+Google Password Manager registration did not create a usable credential in a
+separate observed attempt; PRODUCT-250 retains that provider-specific
+compatibility question without weakening the verified Windows Hello path.
 
 ## Migration
 
@@ -86,7 +94,7 @@ migration.
 Each authorized load invokes the idempotent seed path. The historical
 `22-ticket` value is an explicit baseline-key subset, while the pre-Delivery
 Intelligence public projection contained 39 keys and the reviewed source
-projection now contains 51. Stable-key inserts use `ON CONFLICT DO NOTHING`, so
+projection now contains 53. Stable-key inserts use `ON CONFLICT DO NOTHING`, so
 new records can be added without overwriting durable edits or forcing a stale
 total. The operations seed derives three sanitized incident/RCA records from
 their canonical Bug tickets after those ticket keys exist.

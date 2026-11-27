@@ -6,7 +6,8 @@ import {
   type DeliveryTimeline,
   type EvidenceMapNode,
 } from "../data/deliveryIntelligence";
-import type { LearningInitiative, LearningTicket } from "../data/learning";
+import { timelineKinds, type LearningInitiative, type LearningTicket, type TimelineKind } from "../data/learning";
+import { selectDeliveryPulse } from "../data/learningSelectors";
 
 type TimelineStyle = CSSProperties & {
   "--timeline-start": string;
@@ -44,22 +45,40 @@ export function DeliveryMetricSummary({ tickets, referenceAt }: { tickets: reado
   );
 }
 
-export function DeliveryTimelineView({ tickets, initiatives, compact = false }: {
+const timelineKindLabels: Record<TimelineKind, string> = {
+  planned: "Planned window",
+  actual: "Actual work",
+  open: "Open-ended work",
+  completed: "Completion milestone",
+};
+
+export function DeliveryTimelineView({ tickets, initiatives, compact = false, activeKind, kindHref }: {
   tickets: readonly LearningTicket[];
   initiatives: readonly LearningInitiative[];
   compact?: boolean;
+  activeKind?: TimelineKind;
+  kindHref?: (kind?: TimelineKind) => string;
 }) {
   const timeline = buildDeliveryTimeline(tickets, initiatives);
-  const scheduled = compact ? timeline.scheduled.slice(-6) : timeline.scheduled;
+  const kindFiltered = activeKind
+    ? timeline.scheduled.filter((item) => item.kind === activeKind)
+    : timeline.scheduled;
+  const scheduled = compact ? kindFiltered.slice(-6) : kindFiltered;
   const unscheduled = compact ? timeline.unscheduled.slice(0, 4) : timeline.unscheduled;
 
   return (
     <div className={`deliveryTimelineView${compact ? " compact" : ""}`}>
-      <div className="deliveryTimelineLegend" aria-label="Timeline legend">
-        <span className="planned">Planned window</span>
-        <span className="actual">Actual work</span>
-        <span className="open">Open-ended work</span>
-        <span className="completed">Completion milestone</span>
+      <div className="deliveryTimelineLegend" aria-label={kindHref ? "Filter timeline by work kind" : "Timeline legend"}>
+        {timelineKinds.map((kind) => kindHref ? (
+          <a
+            className={`${kind}${activeKind === kind ? " active" : ""}`}
+            href={activeKind === kind ? kindHref(undefined) : kindHref(kind)}
+            aria-current={activeKind === kind ? "true" : undefined}
+            key={kind}
+          >
+            {timelineKindLabels[kind]}
+          </a>
+        ) : <span className={kind} key={kind}>{timelineKindLabels[kind]}</span>)}
       </div>
       {timeline.rangeStart && timeline.rangeEnd ? (
         <div className="deliveryTimelineAxis" aria-hidden="true"><span>{formatDate(timeline.rangeStart)}</span><span>{formatDate(timeline.rangeEnd)}</span></div>
@@ -72,10 +91,10 @@ export function DeliveryTimelineView({ tickets, initiatives, compact = false }: 
               <small>{item.initiativeTitle} / {item.status}</small>
               <span className="deliveryTimelineMobileText">{item.label}</span>
             </div>
-            <div className="deliveryTimelineTrack">
+            <a className="deliveryTimelineTrack" href={item.href} aria-label={`Open ${item.key}: ${item.title}`}>
               <span className={`deliveryTimelineBar ${item.kind}`} style={timelineStyle(item.start, item.end, timeline)} aria-hidden="true" />
               <span className="deliveryTimelineText">{item.label}</span>
-            </div>
+            </a>
             <div className="deliveryTimelineSignals" aria-label="Relationships and evidence">
               {item.blocked ? <span><Ban size={14} aria-hidden="true" /> Blocked</span> : null}
               {item.hasDependencies ? <span><GitBranch size={14} aria-hidden="true" /> Dependencies</span> : null}
@@ -84,11 +103,12 @@ export function DeliveryTimelineView({ tickets, initiatives, compact = false }: 
           </li>
         ))}
       </ol>
-      <div className="deliveryUnscheduled">
+      {scheduled.length === 0 ? <p className="learningEmptyState">No scheduled work matches this timeline filter.</p> : null}
+      {!activeKind ? <div className="deliveryUnscheduled">
         <h3>Unscheduled</h3>
         <p>These items remain usable without invented dates.</p>
         {unscheduled.length ? <ul>{unscheduled.map((item) => <li key={item.key}><a href={item.href}><strong>{item.key}</strong> {item.title}</a><span>{item.label}</span></li>)}</ul> : <p>No unscheduled items in this view.</p>}
-      </div>
+      </div> : null}
     </div>
   );
 }
@@ -122,14 +142,19 @@ export function DeliveryPulse({ tickets, initiatives, nextAction }: {
   nextAction: string;
 }) {
   const referenceAt = new Date().toISOString();
-  const metrics = deriveDeliveryMetrics(tickets, referenceAt);
-  const activeTickets = tickets.filter((ticket) => ["In Progress", "Blocked", "In Review"].includes(ticket.deliveryStatus));
+  const { metrics, activeTickets } = selectDeliveryPulse(tickets, referenceAt);
+  const cycleTimeLabel = metrics.medianCycleDays === undefined
+    ? "Withheld"
+    : metrics.medianCycleDays < 1
+      ? "<1d"
+      : `${Number(metrics.medianCycleDays.toFixed(1))}d`;
   return (
     <div className="deliveryPulse">
       <div className="deliveryPulseNumbers">
         <span><strong>{metrics.workInProgress}</strong> active work items</span>
         <span><strong>{metrics.blockedCount + metrics.agingActiveCount}</strong> blocked or aging</span>
         <span><strong>{metrics.throughput}</strong> completed in 30 days</span>
+        <span><strong>{cycleTimeLabel}</strong> median cycle time</span>
       </div>
       <div className="deliveryPulseNext"><span className="kicker">Highest-value next action</span><strong>{nextAction}</strong></div>
       <DeliveryTimelineView tickets={activeTickets} initiatives={initiatives} compact />

@@ -8,11 +8,10 @@ import { LinkButton, PageHero, SectionHeader, StateBadge } from "../components/U
 import { NotFoundPage } from "./NotFoundPage";
 import {
   capabilityLabels,
-  getLearningInitiative,
-  getLearningTicket,
   learningRoleLabels,
   type LearningTicket,
 } from "../data/learning";
+import { selectInitiativeBySlug, selectTicketByKey } from "../data/learningSelectors";
 
 export function LearningTicketPage({ ticket: fallbackTicket }: { ticket: LearningTicket }) {
   const admin = useLearningAdmin();
@@ -21,7 +20,8 @@ export function LearningTicketPage({ ticket: fallbackTicket }: { ticket: Learnin
   const ticket = (adminMode
     ? admin.adminTickets.find((item) => item.key === fallbackTicket.key)
     : admin.publicTickets.find((item) => item.key === fallbackTicket.key)) ?? fallbackTicket;
-  const initiative = getLearningInitiative(ticket.initiativeSlug)!;
+  const sourceTickets = adminMode ? admin.adminTickets : admin.publicTickets;
+  const initiative = selectInitiativeBySlug(admin.publicInitiatives, ticket.initiativeSlug);
   const sessions = admin.publicSessions.filter((session) => session.ticketKey === ticket.key);
   const evidence = admin.publicEvidence.filter((artifact) => ticket.evidenceIds.includes(artifact.id));
   const effortMinutes = sessions.reduce((total, session) => total + session.durationMinutes, 0);
@@ -34,6 +34,8 @@ export function LearningTicketPage({ ticket: fallbackTicket }: { ticket: Learnin
       initiative: ticket.initiativeSlug,
     });
   }, [ticket.deliveryStatus, ticket.evidenceState, ticket.initiativeSlug, ticket.issueType]);
+
+  if (!initiative) return <NotFoundPage />;
 
   return (
     <>
@@ -113,7 +115,7 @@ export function LearningTicketPage({ ticket: fallbackTicket }: { ticket: Learnin
           </dl>
           <div>
             <h3>Dependencies</h3>
-            {ticket.dependencies.length > 0 ? <div className="ticketLinkList">{ticket.dependencies.map((key) => getLearningTicket(key) ? <a key={key} href={`/learning/tickets/${key}`}><Link2 size={15} aria-hidden="true" /> {key}</a> : <span key={key}>{key} · repository backlog dependency</span>)}</div> : <p>No dependencies recorded.</p>}
+            {ticket.dependencies.length > 0 ? <div className="ticketLinkList">{ticket.dependencies.map((key) => selectTicketByKey(sourceTickets, key) ? <a key={key} href={`/learning/tickets/${key}`}><Link2 size={15} aria-hidden="true" /> {key}</a> : <span key={key}>{key} · repository backlog dependency</span>)}</div> : <p>No dependencies recorded.</p>}
             <h3>Blockers</h3>
             {ticket.blockers.length > 0 ? <ul className="cleanList">{ticket.blockers.map((blocker) => <li key={blocker.id}>{blocker.status}: {blocker.summary}</li>)}</ul> : <p>No public blockers recorded.</p>}
           </div>
